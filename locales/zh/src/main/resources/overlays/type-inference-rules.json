@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "rules": [
+    { "pattern": "^(?:是否|有无|能否|可否|允许|启用|禁用)", "flags": "", "type": "Bool", "priority": 11 },
+    { "pattern": "(?:批准|通过|有效|合格|可疑|确认|验证)$", "flags": "", "type": "Bool", "priority": 8 },
+    { "pattern": "(?:评分|年龄|数量|次数|额度|金额|保费|免赔额|账龄|卡数)$", "flags": "", "type": "Int", "priority": 10 },
+    { "pattern": "(?:利率|费率|比率|百分比)$", "flags": "", "type": "Float", "priority": 9 }
+  ]
+}

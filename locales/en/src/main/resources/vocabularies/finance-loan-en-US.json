@@ -1,0 +1,65 @@
+{
+  "id": "finance.loan",
+  "name": "Finance Loan",
+  "locale": "en-US",
+  "version": "1.0.0",
+  "metadata": {
+    "author": "Aster Team",
+    "createdAt": "2025-01-06",
+    "description": "Finance loan domain identifier mappings for English"
+  },
+  "structs": [
+    { "canonical": "Applicant", "localized": "Applicant", "aliases": ["Borrower"] },
+    { "canonical": "LoanRequest", "localized": "LoanRequest", "aliases": ["LoanApplication"] },
+    { "canonical": "ApprovalResult", "localized": "ApprovalResult" },
+    { "canonical": "CreditReport", "localized": "CreditReport" },
+    { "canonical": "Collateral", "localized": "Collateral" },
+    { "canonical": "RepaymentPlan", "localized": "RepaymentPlan" }
+  ],
+  "fields": [
+    { "canonical": "id", "localized": "id", "parent": "Applicant" },
+    { "canonical": "age", "localized": "age", "parent": "Applicant" },
+    { "canonical": "income", "localized": "income", "parent": "Applicant" },
+    { "canonical": "creditScore", "localized": "creditScore", "parent": "Applicant" },
+    { "canonical": "workYears", "localized": "workYears", "parent": "Applicant", "aliases": ["yearsEmployed"] },
+    { "canonical": "debtRatio", "localized": "debtRatio", "parent": "Applicant", "aliases": ["debtToIncomeRatio"] },
+    { "canonical": "employer", "localized": "employer", "parent": "Applicant" },
+    { "canonical": "name", "localized": "name", "parent": "Applicant" },
+    { "canonical": "idNumber", "localized": "idNumber", "parent": "Applicant" },
+    { "canonical": "amount", "localized": "amount", "parent": "LoanRequest", "aliases": ["loanAmount"] },
+    { "canonical": "termMonths", "localized": "termMonths", "parent": "LoanRequest", "aliases": ["loanTerm"] },
+    { "canonical": "purpose", "localized": "purpose", "parent": "LoanRequest", "aliases": ["loanPurpose"] },
+    { "canonical": "loanType", "localized": "loanType", "parent": "LoanRequest" },
+    { "canonical": "approved", "localized": "approved", "parent": "ApprovalResult" },
+    { "canonical": "reason", "localized": "reason", "parent": "ApprovalResult" },
+    { "canonical": "interestRate", "localized": "interestRate", "parent": "ApprovalResult" },
+    { "canonical": "monthlyPayment", "localized": "monthlyPayment", "parent": "ApprovalResult" },
+    { "canonical": "approvedAmount", "localized": "approvedAmount", "parent": "ApprovalResult" },
+    { "canonical": "score", "localized": "score", "parent": "CreditReport" },
+    { "canonical": "level", "localized": "level", "parent": "CreditReport", "aliases": ["creditLevel"] },
+    { "canonical": "latePayments", "localized": "latePayments", "parent": "CreditReport" },
+    { "canonical": "totalDebt", "localized": "totalDebt", "parent": "CreditReport" },
+    { "canonical": "type", "localized": "type", "parent": "Collateral" },
+    { "canonical": "value", "localized": "value", "parent": "Collateral" },
+    { "canonical": "description", "localized": "description", "parent": "Collateral" }
+  ],
+  "functions": [
+    { "canonical": "evaluateLoan", "localized": "evaluateLoan", "aliases": ["assessLoan"] },
+    { "canonical": "checkBasicQualification", "localized": "checkBasicQualification" },
+    { "canonical": "calculateCreditLevel", "localized": "calculateCreditLevel" },
+    { "canonical": "calculateInterestRate", "localized": "calculateInterestRate" },
+    { "canonical": "calculateMonthlyPayment", "localized": "calculateMonthlyPayment" },
+    { "canonical": "checkDebtRatio", "localized": "checkDebtRatio" },
+    { "canonical": "assessCollateral", "localized": "assessCollateral", "aliases": ["evaluateCollateral"] }
+  ],
+  "enumValues": [
+    { "canonical": "Excellent", "localized": "Excellent" },
+    { "canonical": "Good", "localized": "Good" },
+    { "canonical": "Fair", "localized": "Fair" },
+    { "canonical": "Poor", "localized": "Poor" },
+    { "canonical": "Personal", "localized": "Personal", "aliases": ["PersonalLoan"] },
+    { "canonical": "Mortgage", "localized": "Mortgage", "aliases": ["HomeLoan"] },
+    { "canonical": "Business", "localized": "Business", "aliases": ["BusinessLoan"] },
+    { "canonical": "Auto", "localized": "Auto", "aliases": ["AutoLoan", "CarLoan"] }
+  ]
+}

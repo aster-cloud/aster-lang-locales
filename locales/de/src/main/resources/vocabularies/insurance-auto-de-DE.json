@@ -1,0 +1,60 @@
+{
+  "id": "insurance.auto",
+  "name": "Kfz-Versicherung",
+  "locale": "de-DE",
+  "version": "1.0.0",
+  "metadata": {
+    "author": "Aster Team",
+    "createdAt": "2025-01-06",
+    "description": "Kfz-Versicherung Fachbegriffe auf Deutsch"
+  },
+  "structs": [
+    { "canonical": "Driver", "localized": "Fahrer", "aliases": ["Fahrzeugfuehrer"] },
+    { "canonical": "Vehicle", "localized": "Fahrzeug", "aliases": ["Kfz", "Auto"] },
+    { "canonical": "QuoteResult", "localized": "Angebotsergebnis", "aliases": ["Angebot"] },
+    { "canonical": "Claim", "localized": "Schadensfall", "aliases": ["Schadensmeldung"] },
+    { "canonical": "Policy", "localized": "Versicherungspolice", "aliases": ["Police"] },
+    { "canonical": "Coverage", "localized": "Deckungsumfang", "aliases": ["Versicherungsschutz"] }
+  ],
+  "fields": [
+    { "canonical": "age", "localized": "Alter", "parent": "Driver" },
+    { "canonical": "drivingYears", "localized": "Fahrjahre", "parent": "Driver", "aliases": ["Fahrerfahrung"] },
+    { "canonical": "accidents", "localized": "Unfaelle", "parent": "Driver", "aliases": ["Unfallzahl"] },
+    { "canonical": "licenseType", "localized": "Fuehrerscheinklasse", "parent": "Driver" },
+    { "canonical": "name", "localized": "Name", "parent": "Driver" },
+    { "canonical": "plateNo", "localized": "Kennzeichen", "parent": "Vehicle", "aliases": ["Nummernschild"] },
+    { "canonical": "brand", "localized": "Marke", "parent": "Vehicle", "aliases": ["Hersteller"] },
+    { "canonical": "model", "localized": "Modell", "parent": "Vehicle" },
+    { "canonical": "year", "localized": "Baujahr", "parent": "Vehicle" },
+    { "canonical": "safetyRating", "localized": "Sicherheitsbewertung", "parent": "Vehicle" },
+    { "canonical": "mileage", "localized": "Kilometerstand", "parent": "Vehicle", "aliases": ["Laufleistung"] },
+    { "canonical": "engineType", "localized": "Motortyp", "parent": "Vehicle", "aliases": ["Antriebsart"] },
+    { "canonical": "approved", "localized": "genehmigt", "parent": "QuoteResult" },
+    { "canonical": "reason", "localized": "Grund", "parent": "QuoteResult", "aliases": ["Begruendung"] },
+    { "canonical": "monthlyPremium", "localized": "Monatsbeitrag", "parent": "QuoteResult", "aliases": ["Monatspraemie"] },
+    { "canonical": "annualPremium", "localized": "Jahresbeitrag", "parent": "QuoteResult", "aliases": ["Jahrespraemie"] },
+    { "canonical": "deductible", "localized": "Selbstbeteiligung", "parent": "QuoteResult" },
+    { "canonical": "coverageAmount", "localized": "Deckungssumme", "parent": "QuoteResult", "aliases": ["Versicherungssumme"] },
+    { "canonical": "policyNumber", "localized": "Policennummer", "parent": "Policy", "aliases": ["Versicherungsnummer"] },
+    { "canonical": "startDate", "localized": "Vertragsbeginn", "parent": "Policy", "aliases": ["Startdatum"] },
+    { "canonical": "endDate", "localized": "Vertragsende", "parent": "Policy", "aliases": ["Ablaufdatum"] },
+    { "canonical": "status", "localized": "Status", "parent": "Policy", "aliases": ["Vertragsstatus"] }
+  ],
+  "functions": [
+    { "canonical": "generateQuote", "localized": "AngebotErstellen", "aliases": ["Angebot erstellen", "Angebot berechnen"] },
+    { "canonical": "calculatePremium", "localized": "PraemieBerechnen", "aliases": ["Praemie berechnen"] },
+    { "canonical": "calculateAgeFactor", "localized": "AltersfaktorBerechnen", "aliases": ["Altersfaktor berechnen"] },
+    { "canonical": "calculateDrivingYearsFactor", "localized": "ErfahrungsfaktorBerechnen", "aliases": ["Erfahrungsfaktor berechnen"] },
+    { "canonical": "assessRisk", "localized": "RisikoBewerten", "aliases": ["Risiko bewerten", "Risikobewertung"] },
+    { "canonical": "validateDriver", "localized": "FahrerPruefen", "aliases": ["Fahrer pruefen", "Fahrerpruefung"] },
+    { "canonical": "validateVehicle", "localized": "FahrzeugPruefen", "aliases": ["Fahrzeug pruefen", "Fahrzeugpruefung"] }
+  ],
+  "enumValues": [
+    { "canonical": "Approved", "localized": "Genehmigt", "aliases": ["Bewilligt"] },
+    { "canonical": "Rejected", "localized": "Abgelehnt" },
+    { "canonical": "Pending", "localized": "Ausstehend", "aliases": ["In Bearbeitung"] },
+    { "canonical": "HighRisk", "localized": "HohesRisiko", "aliases": ["Hohes Risiko"] },
+    { "canonical": "MediumRisk", "localized": "MittleresRisiko", "aliases": ["Mittleres Risiko"] },
+    { "canonical": "LowRisk", "localized": "NiedrigesRisiko", "aliases": ["Niedriges Risiko"] }
+  ]
+}

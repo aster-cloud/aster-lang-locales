@@ -1,0 +1,60 @@
+{
+  "id": "insurance.auto",
+  "name": "汽车保险",
+  "locale": "zh-CN",
+  "version": "1.0.0",
+  "metadata": {
+    "author": "Aster Team",
+    "createdAt": "2025-01-06",
+    "description": "汽车保险业务领域的中文标识符映射"
+  },
+  "structs": [
+    { "canonical": "Driver", "localized": "驾驶员", "aliases": ["司机", "驾驶人"] },
+    { "canonical": "Vehicle", "localized": "车辆", "aliases": ["汽车", "机动车"] },
+    { "canonical": "QuoteResult", "localized": "报价结果" },
+    { "canonical": "Claim", "localized": "理赔", "aliases": ["索赔"] },
+    { "canonical": "Policy", "localized": "保单", "aliases": ["保险单"] },
+    { "canonical": "Coverage", "localized": "保障范围", "aliases": ["承保范围"] }
+  ],
+  "fields": [
+    { "canonical": "age", "localized": "年龄", "parent": "Driver" },
+    { "canonical": "drivingYears", "localized": "驾龄", "parent": "Driver", "aliases": ["驾驶年限"] },
+    { "canonical": "accidents", "localized": "事故次数", "parent": "Driver", "aliases": ["事故数"] },
+    { "canonical": "licenseType", "localized": "驾照类型", "parent": "Driver", "aliases": ["驾驶证类型"] },
+    { "canonical": "name", "localized": "姓名", "parent": "Driver" },
+    { "canonical": "plateNo", "localized": "车牌号", "parent": "Vehicle", "aliases": ["车牌", "牌照"] },
+    { "canonical": "brand", "localized": "品牌", "parent": "Vehicle" },
+    { "canonical": "model", "localized": "型号", "parent": "Vehicle", "aliases": ["车型"] },
+    { "canonical": "year", "localized": "年份", "parent": "Vehicle", "aliases": ["出厂年份"] },
+    { "canonical": "safetyRating", "localized": "安全评分", "parent": "Vehicle", "aliases": ["安全等级"] },
+    { "canonical": "mileage", "localized": "里程", "parent": "Vehicle", "aliases": ["行驶里程"] },
+    { "canonical": "engineType", "localized": "发动机类型", "parent": "Vehicle", "aliases": ["动力类型"] },
+    { "canonical": "approved", "localized": "批准", "parent": "QuoteResult", "aliases": ["是否批准", "通过"] },
+    { "canonical": "reason", "localized": "原因", "parent": "QuoteResult", "aliases": ["理由"] },
+    { "canonical": "monthlyPremium", "localized": "月保费", "parent": "QuoteResult", "aliases": ["每月保费"] },
+    { "canonical": "annualPremium", "localized": "年保费", "parent": "QuoteResult", "aliases": ["每年保费"] },
+    { "canonical": "deductible", "localized": "免赔额", "parent": "QuoteResult" },
+    { "canonical": "coverageAmount", "localized": "保额", "parent": "QuoteResult", "aliases": ["赔偿金额"] },
+    { "canonical": "policyNumber", "localized": "保单号", "parent": "Policy", "aliases": ["保险单号"] },
+    { "canonical": "startDate", "localized": "生效日期", "parent": "Policy", "aliases": ["开始日期"] },
+    { "canonical": "endDate", "localized": "到期日期", "parent": "Policy", "aliases": ["结束日期"] },
+    { "canonical": "status", "localized": "状态", "parent": "Policy", "aliases": ["保单状态"] }
+  ],
+  "functions": [
+    { "canonical": "generateQuote", "localized": "生成报价", "aliases": ["计算报价"] },
+    { "canonical": "calculatePremium", "localized": "计算保费" },
+    { "canonical": "calculateAgeFactor", "localized": "计算年龄因子", "aliases": ["年龄因子计算"] },
+    { "canonical": "calculateDrivingYearsFactor", "localized": "计算驾龄因子" },
+    { "canonical": "assessRisk", "localized": "评估风险", "aliases": ["风险评估"] },
+    { "canonical": "validateDriver", "localized": "验证驾驶员", "aliases": ["驾驶员验证"] },
+    { "canonical": "validateVehicle", "localized": "验证车辆", "aliases": ["车辆验证"] }
+  ],
+  "enumValues": [
+    { "canonical": "Approved", "localized": "批准", "aliases": ["通过"] },
+    { "canonical": "Rejected", "localized": "拒绝", "aliases": ["否决"] },
+    { "canonical": "Pending", "localized": "待审", "aliases": ["待处理"] },
+    { "canonical": "HighRisk", "localized": "高风险" },
+    { "canonical": "MediumRisk", "localized": "中等风险", "aliases": ["中风险"] },
+    { "canonical": "LowRisk", "localized": "低风险" }
+  ]
+}

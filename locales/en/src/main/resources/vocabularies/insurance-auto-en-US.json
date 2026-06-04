@@ -1,0 +1,60 @@
+{
+  "id": "insurance.auto",
+  "name": "Auto Insurance",
+  "locale": "en-US",
+  "version": "1.0.0",
+  "metadata": {
+    "author": "Aster Team",
+    "createdAt": "2025-01-06",
+    "description": "Auto insurance domain identifier mappings for English"
+  },
+  "structs": [
+    { "canonical": "Driver", "localized": "Driver" },
+    { "canonical": "Vehicle", "localized": "Vehicle", "aliases": ["Car", "Automobile"] },
+    { "canonical": "QuoteResult", "localized": "QuoteResult", "aliases": ["Quote"] },
+    { "canonical": "Claim", "localized": "Claim" },
+    { "canonical": "Policy", "localized": "Policy", "aliases": ["InsurancePolicy"] },
+    { "canonical": "Coverage", "localized": "Coverage" }
+  ],
+  "fields": [
+    { "canonical": "age", "localized": "age", "parent": "Driver" },
+    { "canonical": "drivingYears", "localized": "drivingYears", "parent": "Driver", "aliases": ["yearsOfDriving"] },
+    { "canonical": "accidents", "localized": "accidents", "parent": "Driver", "aliases": ["accidentCount"] },
+    { "canonical": "licenseType", "localized": "licenseType", "parent": "Driver" },
+    { "canonical": "name", "localized": "name", "parent": "Driver" },
+    { "canonical": "plateNo", "localized": "plateNo", "parent": "Vehicle", "aliases": ["licensePlate", "plateNumber"] },
+    { "canonical": "brand", "localized": "brand", "parent": "Vehicle", "aliases": ["make"] },
+    { "canonical": "model", "localized": "model", "parent": "Vehicle" },
+    { "canonical": "year", "localized": "year", "parent": "Vehicle", "aliases": ["modelYear"] },
+    { "canonical": "safetyRating", "localized": "safetyRating", "parent": "Vehicle" },
+    { "canonical": "mileage", "localized": "mileage", "parent": "Vehicle" },
+    { "canonical": "engineType", "localized": "engineType", "parent": "Vehicle" },
+    { "canonical": "approved", "localized": "approved", "parent": "QuoteResult" },
+    { "canonical": "reason", "localized": "reason", "parent": "QuoteResult" },
+    { "canonical": "monthlyPremium", "localized": "monthlyPremium", "parent": "QuoteResult" },
+    { "canonical": "annualPremium", "localized": "annualPremium", "parent": "QuoteResult" },
+    { "canonical": "deductible", "localized": "deductible", "parent": "QuoteResult" },
+    { "canonical": "coverageAmount", "localized": "coverageAmount", "parent": "QuoteResult" },
+    { "canonical": "policyNumber", "localized": "policyNumber", "parent": "Policy" },
+    { "canonical": "startDate", "localized": "startDate", "parent": "Policy", "aliases": ["effectiveDate"] },
+    { "canonical": "endDate", "localized": "endDate", "parent": "Policy", "aliases": ["expirationDate"] },
+    { "canonical": "status", "localized": "status", "parent": "Policy" }
+  ],
+  "functions": [
+    { "canonical": "generateQuote", "localized": "generateQuote" },
+    { "canonical": "calculatePremium", "localized": "calculatePremium" },
+    { "canonical": "calculateAgeFactor", "localized": "calculateAgeFactor" },
+    { "canonical": "calculateDrivingYearsFactor", "localized": "calculateDrivingYearsFactor" },
+    { "canonical": "assessRisk", "localized": "assessRisk", "aliases": ["evaluateRisk"] },
+    { "canonical": "validateDriver", "localized": "validateDriver" },
+    { "canonical": "validateVehicle", "localized": "validateVehicle" }
+  ],
+  "enumValues": [
+    { "canonical": "Approved", "localized": "Approved" },
+    { "canonical": "Rejected", "localized": "Rejected", "aliases": ["Denied"] },
+    { "canonical": "Pending", "localized": "Pending" },
+    { "canonical": "HighRisk", "localized": "HighRisk" },
+    { "canonical": "MediumRisk", "localized": "MediumRisk" },
+    { "canonical": "LowRisk", "localized": "LowRisk" }
+  ]
+}

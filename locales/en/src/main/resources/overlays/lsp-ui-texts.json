@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "texts": {
+    "effectsLabel": "Effects:",
+    "moduleDeclaration": "Module declaration",
+    "moduleDeclarationDoc": "Declares the module name for this file",
+    "typeDefinition": "Type definition",
+    "typeDefinitionDoc": "Define a new data type or enum",
+    "functionDefinition": "Function definition",
+    "functionDefinitionDoc": "Define a new function",
+    "functionLabel": "Function",
+    "typeLabel": "type",
+    "enumLabel": "enum",
+    "localLabel": "Local",
+    "parameterLabel": "Parameter",
+    "patternBindingLabel": "Pattern binding",
+    "piiWarningHeader": "PII Data",
+    "piiL3Hint": "🔴 High sensitivity: SSN, passport, biometric\nGDPR: Requires explicit consent (Art. 9)\nHIPAA: PHI - encryption required",
+    "piiL2Hint": "🟠 Medium sensitivity: email, phone, address\nGDPR: Lawful basis required (Art. 6)\nConsider encryption at rest",
+    "piiL1Hint": "🟡 Low sensitivity: name, preferences\nGDPR: Document processing purpose",
+    "piiRedactHint": "Use `redact()` or `tokenize()` before external transmission",
+    "hintPrefix": "Hint:",
+    "fixPrefix": "Fix:",
+    "missingModuleHeader": "Missing module header. Add \"Module <name>.\""
+  }
+}

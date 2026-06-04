@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "texts": {
+    "effectsLabel": "效果：",
+    "moduleDeclaration": "模块声明",
+    "moduleDeclarationDoc": "声明此文件的模块名称",
+    "typeDefinition": "类型定义",
+    "typeDefinitionDoc": "定义数据类型或枚举",
+    "functionDefinition": "函数定义",
+    "functionDefinitionDoc": "定义函数",
+    "functionLabel": "函数",
+    "typeLabel": "类型",
+    "enumLabel": "枚举",
+    "localLabel": "局部变量",
+    "parameterLabel": "参数",
+    "patternBindingLabel": "模式绑定",
+    "piiWarningHeader": "PII 数据",
+    "piiL3Hint": "🔴 高敏感: 身份证号、护照、生物识别\nGDPR: 需要明确同意 (Art. 9)\nHIPAA: PHI - 必须加密",
+    "piiL2Hint": "🟠 中等敏感: 邮箱、电话、地址\nGDPR: 需要合法依据 (Art. 6)\n建议静态加密",
+    "piiL1Hint": "🟡 低敏感: 姓名、偏好\nGDPR: 需记录处理目的",
+    "piiRedactHint": "在外部传输前使用 `redact()` 或 `tokenize()`",
+    "hintPrefix": "提示：",
+    "fixPrefix": "修复：",
+    "missingModuleHeader": "缺少模块头。请添加 \"模块 <名称>。\""
+  }
+}

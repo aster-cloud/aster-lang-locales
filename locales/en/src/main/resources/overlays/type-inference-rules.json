@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "rules": [
+    { "pattern": "^(?:is|has|can|should|was|will|did|does|allow|enable|disable|active|valid|require)", "flags": "i", "type": "Bool", "priority": 11 },
+    { "pattern": "(?:Flag|Enabled|Disabled|Active|Valid|Approved|Rejected|Completed|Confirmed|Sufficient|Success|Passed|Verified)$", "flags": "i", "type": "Bool", "priority": 8 },
+    { "pattern": "(?:Date|Time|At|Timestamp|Created|Updated|Modified|Expired|Birthday|Anniversary)$", "flags": "i", "type": "DateTime", "priority": 10 },
+    { "pattern": "(?:Type|Status|Category|Kind|Mode)$", "flags": "i", "type": "Text", "priority": 8 },
+    { "pattern": "(?:Make|Model|Brand|Manufacturer)$", "flags": "i", "type": "Text", "priority": 7 },
+    { "pattern": "(?:Name|Title|Description|Comment|Note|Remark|Address|Email|Phone|Url|Path|Reason|Recommendation|Factors|Purpose)$", "flags": "i", "type": "Text", "priority": 7 },
+    { "pattern": "(?:Rating|Limit|Premium|Deductible|Multiplier|Deposit|Line|Utilization|Inquiries|Rent|Debt|Cards|Value|Payments)$", "flags": "i", "type": "Int", "priority": 9 },
+    { "pattern": "(?:Licensed|Employed|Job|Experience)$", "flags": "i", "type": "Int", "priority": 8 },
+    { "pattern": "(?:Bps|APR|APY)$", "flags": "i", "type": "Int", "priority": 9 },
+    { "pattern": "(?:Checked)$", "flags": "i", "type": "Int", "priority": 8 }
+  ]
+}

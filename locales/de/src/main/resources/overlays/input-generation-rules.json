@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "rules": [
+    { "pattern": "Kreditbewertung", "flags": "i", "value": 720, "priority": 10 },
+    { "pattern": "Darlehensbetrag", "flags": "i", "value": 50000.0, "priority": 10 },
+    { "pattern": "Alter", "flags": "i", "value": 35, "priority": 10 },
+    { "pattern": "Name", "flags": "i", "value": "Max Mustermann", "priority": 8 },
+    { "pattern": "Adresse", "flags": "i", "value": "Musterstraße 1, 10115 Berlin", "priority": 8 },
+    { "pattern": "Telefon", "flags": "i", "value": "+49-30-12345678", "priority": 9 },
+    { "pattern": "Praemie", "flags": "i", "value": 1200, "priority": 9 },
+    { "pattern": "Selbstbeteiligung", "flags": "i", "value": 500, "priority": 9 }
+  ]
+}

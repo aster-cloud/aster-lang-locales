@@ -1,0 +1,65 @@
+{
+  "id": "finance.loan",
+  "name": "Kreditwesen",
+  "locale": "de-DE",
+  "version": "1.0.0",
+  "metadata": {
+    "author": "Aster Team",
+    "createdAt": "2025-01-06",
+    "description": "Kreditwesen Fachbegriffe auf Deutsch"
+  },
+  "structs": [
+    { "canonical": "Applicant", "localized": "Antragsteller", "aliases": ["Kreditnehmer", "Darlehensnehmer"] },
+    { "canonical": "LoanRequest", "localized": "Kreditantrag", "aliases": ["Darlehensantrag"] },
+    { "canonical": "ApprovalResult", "localized": "Genehmigungsergebnis", "aliases": ["Pruefungsergebnis"] },
+    { "canonical": "CreditReport", "localized": "Bonitaetsbericht", "aliases": ["Schufa-Auskunft"] },
+    { "canonical": "Collateral", "localized": "Sicherheit", "aliases": ["Buergschaft"] },
+    { "canonical": "RepaymentPlan", "localized": "Tilgungsplan", "aliases": ["Rueckzahlungsplan"] }
+  ],
+  "fields": [
+    { "canonical": "id", "localized": "Kennung", "parent": "Applicant", "aliases": ["Nummer"] },
+    { "canonical": "age", "localized": "Alter", "parent": "Applicant" },
+    { "canonical": "income", "localized": "Einkommen", "parent": "Applicant", "aliases": ["Gehalt"] },
+    { "canonical": "creditScore", "localized": "Bonitaetsnote", "parent": "Applicant", "aliases": ["Kreditwuerdigkeit"] },
+    { "canonical": "workYears", "localized": "Berufsjahre", "parent": "Applicant", "aliases": ["Berufserfahrung"] },
+    { "canonical": "debtRatio", "localized": "Verschuldungsgrad", "parent": "Applicant", "aliases": ["Schuldenquote"] },
+    { "canonical": "employer", "localized": "Arbeitgeber", "parent": "Applicant" },
+    { "canonical": "name", "localized": "Name", "parent": "Applicant" },
+    { "canonical": "idNumber", "localized": "Ausweisnummer", "parent": "Applicant", "aliases": ["Personalausweisnummer"] },
+    { "canonical": "amount", "localized": "Betrag", "parent": "LoanRequest", "aliases": ["Kreditbetrag", "Darlehenssumme"] },
+    { "canonical": "termMonths", "localized": "Laufzeit", "parent": "LoanRequest", "aliases": ["Kreditlaufzeit"] },
+    { "canonical": "purpose", "localized": "Verwendungszweck", "parent": "LoanRequest", "aliases": ["Kreditzweck"] },
+    { "canonical": "loanType", "localized": "Kreditart", "parent": "LoanRequest", "aliases": ["Darlehensart"] },
+    { "canonical": "approved", "localized": "genehmigt", "parent": "ApprovalResult" },
+    { "canonical": "reason", "localized": "Grund", "parent": "ApprovalResult", "aliases": ["Begruendung"] },
+    { "canonical": "interestRate", "localized": "Zinssatz", "parent": "ApprovalResult", "aliases": ["Effektivzins"] },
+    { "canonical": "monthlyPayment", "localized": "Monatsrate", "parent": "ApprovalResult", "aliases": ["Monatliche Rate"] },
+    { "canonical": "approvedAmount", "localized": "GenehmigterBetrag", "parent": "ApprovalResult", "aliases": ["Genehmigter Betrag", "Kreditrahmen"] },
+    { "canonical": "score", "localized": "Punktzahl", "parent": "CreditReport", "aliases": ["Bewertung"] },
+    { "canonical": "level", "localized": "Stufe", "parent": "CreditReport", "aliases": ["Bonitaetsstufe"] },
+    { "canonical": "latePayments", "localized": "Zahlungsverzoegerungen", "parent": "CreditReport", "aliases": ["Zahlungsrueckstaende"] },
+    { "canonical": "totalDebt", "localized": "Gesamtverschuldung", "parent": "CreditReport", "aliases": ["Gesamtschulden"] },
+    { "canonical": "type", "localized": "Typ", "parent": "Collateral", "aliases": ["Art"] },
+    { "canonical": "value", "localized": "Wert", "parent": "Collateral", "aliases": ["Schaetzwert"] },
+    { "canonical": "description", "localized": "Beschreibung", "parent": "Collateral" }
+  ],
+  "functions": [
+    { "canonical": "evaluateLoan", "localized": "KreditBewerten", "aliases": ["Kredit bewerten", "Kreditpruefung"] },
+    { "canonical": "checkBasicQualification", "localized": "GrundvoraussetzungenPruefen", "aliases": ["Grundvoraussetzungen pruefen"] },
+    { "canonical": "calculateCreditLevel", "localized": "BonitaetsstufeBerechnen", "aliases": ["Bonitaetsstufe berechnen"] },
+    { "canonical": "calculateInterestRate", "localized": "ZinssatzBerechnen", "aliases": ["Zinssatz berechnen"] },
+    { "canonical": "calculateMonthlyPayment", "localized": "MonatsrateBerechnen", "aliases": ["Monatsrate berechnen"] },
+    { "canonical": "checkDebtRatio", "localized": "VerschuldungsgradPruefen", "aliases": ["Verschuldungsgrad pruefen"] },
+    { "canonical": "assessCollateral", "localized": "SicherheitBewerten", "aliases": ["Sicherheit bewerten"] }
+  ],
+  "enumValues": [
+    { "canonical": "Excellent", "localized": "Ausgezeichnet" },
+    { "canonical": "Good", "localized": "Gut" },
+    { "canonical": "Fair", "localized": "Befriedigend", "aliases": ["Ausreichend"] },
+    { "canonical": "Poor", "localized": "Mangelhaft", "aliases": ["Ungenuegend"] },
+    { "canonical": "Personal", "localized": "Privatkredit", "aliases": ["Konsumentenkredit"] },
+    { "canonical": "Mortgage", "localized": "Hypothek", "aliases": ["Baufinanzierung", "Immobilienkredit"] },
+    { "canonical": "Business", "localized": "Geschaeftskredit", "aliases": ["Firmenkredit", "Unternehmenskredit"] },
+    { "canonical": "Auto", "localized": "Autokredit", "aliases": ["Fahrzeugfinanzierung"] }
+  ]
+}

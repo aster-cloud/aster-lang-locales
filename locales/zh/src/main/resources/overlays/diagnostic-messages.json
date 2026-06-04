@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "messages": {
+    "E008": "If分支返回类型不一致: then分支 {thenType} vs else分支 {elseType}",
+    "E013": "构造 {type} 缺少必需字段 '{field}'",
+    "E070": "禁止将 PII 数据赋给较低等级目标: {source} -> {target}",
+    "E072": "PII 等级 {level} 数据未脱敏即输出到 {sinkKind}",
+    "E073": "PII 参数类型不匹配: 期望 {expected}, 实际 {actual}",
+    "E205": "函数 '{func}' 缺少 @io 效果声明，推断要求 IO。",
+    "E206": "函数 '{func}' 缺少 @cpu 效果声明，推断要求 CPU（或 @io）。",
+    "E207": "函数 '{func}' 声明了 @io，但推断未发现 IO 副作用。",
+    "E208": "函数 '{func}' 声明了 @cpu，但推断未发现 CPU 副作用。",
+    "E209": "函数 '{func}' 同时声明 @cpu 和 @io；由于需要 @io，@cpu 可移除。",
+    "E210": "效应变量 {var} 未声明",
+    "E211": "效应变量 {vars} 无法推断出具体效果",
+    "W071": "检测到隐式 PII 等级提升: {source} -> {target}",
+    "W074": "可能有 PII 数据流向 {sinkKind} 但缺少注解",
+    "W105": "Workflow retry 配置可能不合理: {reason}",
+    "W106": "Workflow timeout 配置可能不合理: {reason}"
+  }
+}

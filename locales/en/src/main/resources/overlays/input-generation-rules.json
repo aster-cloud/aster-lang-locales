@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "rules": [
+    { "pattern": "credit\\s*score|fico", "flags": "i", "value": 720, "priority": 10 },
+    { "pattern": "loan\\s*amount|principal", "flags": "i", "value": 50000.0, "priority": 10 },
+    { "pattern": "annual\\s*income|yearly\\s*income", "flags": "i", "value": 85000.0, "priority": 9 },
+    { "pattern": "monthly\\s*income", "flags": "i", "value": 7000.0, "priority": 9 },
+    { "pattern": "debt|liabilit", "flags": "i", "value": 1500.0, "priority": 8 },
+    { "pattern": "interest\\s*rate|apr", "flags": "i", "value": 5.5, "priority": 9 },
+    { "pattern": "loan\\s*term|term", "flags": "i", "value": 36, "priority": 9 },
+    { "pattern": "premium", "flags": "i", "value": 1200, "priority": 9 },
+    { "pattern": "deductible", "flags": "i", "value": 500, "priority": 9 },
+    { "pattern": "coverage\\s*limit|policy\\s*limit", "flags": "i", "value": 100000, "priority": 9 },
+    { "pattern": "driving\\s*experience|years\\s*driving", "flags": "i", "value": 8, "priority": 8 },
+    { "pattern": "accident\\s*count|accidents", "flags": "i", "value": 0, "priority": 8 },
+    { "pattern": "age", "flags": "i", "value": 35, "priority": 10 },
+    { "pattern": "name|applicant", "flags": "i", "value": "John Doe", "priority": 8 },
+    { "pattern": "email", "flags": "i", "value": "john.doe@example.com", "priority": 9 },
+    { "pattern": "phone|mobile", "flags": "i", "value": "+1-555-0123", "priority": 9 },
+    { "pattern": "address", "flags": "i", "value": "100 Main St, San Francisco, CA 94105", "priority": 8 },
+    { "pattern": "score", "flags": "i", "value": 85, "priority": 5 },
+    { "pattern": "amount", "flags": "i", "value": 1000.0, "priority": 5 },
+    { "pattern": "count|number", "flags": "i", "value": 10, "priority": 5 },
+    { "pattern": "limit|cap", "flags": "i", "value": 50000, "priority": 8 },
+    { "pattern": "account\\s*age|tenure", "flags": "i", "value": 5, "priority": 8 },
+    { "pattern": "card\\s*count|num\\s*cards", "flags": "i", "value": 3, "priority": 8 },
+    { "pattern": "percent|percentage|ratio|rate", "flags": "i", "value": 0.25, "priority": 6 }
+  ]
+}

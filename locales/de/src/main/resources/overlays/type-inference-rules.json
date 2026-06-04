@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "rules": [
+    { "pattern": "(?:genehmigt|berechtigt|verdaechtig|aktiviert|deaktiviert|aktiv|gueltig|erfolgreich|bestanden|bestaetigt|verifiziert|abgelehnt|abgeschlossen|erforderlich)$", "flags": "i", "type": "Bool", "priority": 8 }
+  ]
+}

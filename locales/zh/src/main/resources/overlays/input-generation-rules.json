@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "rules": [
+    { "pattern": "信用评分|信用分", "flags": "", "value": 720, "priority": 10 },
+    { "pattern": "贷款金额", "flags": "", "value": 50000.0, "priority": 10 },
+    { "pattern": "年收入", "flags": "", "value": 85000.0, "priority": 9 },
+    { "pattern": "月收入", "flags": "", "value": 7000.0, "priority": 9 },
+    { "pattern": "债务", "flags": "", "value": 1500.0, "priority": 8 },
+    { "pattern": "利率", "flags": "", "value": 5.5, "priority": 9 },
+    { "pattern": "贷款期限", "flags": "", "value": 36, "priority": 9 },
+    { "pattern": "保费", "flags": "", "value": 1200, "priority": 9 },
+    { "pattern": "免赔额", "flags": "", "value": 500, "priority": 9 },
+    { "pattern": "保险限额", "flags": "", "value": 100000, "priority": 9 },
+    { "pattern": "驾龄", "flags": "", "value": 8, "priority": 8 },
+    { "pattern": "事故次数", "flags": "", "value": 0, "priority": 8 },
+    { "pattern": "年龄", "flags": "", "value": 35, "priority": 10 },
+    { "pattern": "姓名|申请人", "flags": "", "value": "张三", "priority": 8 },
+    { "pattern": "邮箱", "flags": "", "value": "zhangsan@example.com", "priority": 9 },
+    { "pattern": "电话|手机", "flags": "", "value": "13800138000", "priority": 9 },
+    { "pattern": "地址", "flags": "", "value": "北京市朝阳区建国路1号", "priority": 8 },
+    { "pattern": "评分", "flags": "", "value": 85, "priority": 5 },
+    { "pattern": "金额", "flags": "", "value": 1000.0, "priority": 5 },
+    { "pattern": "数量|次数", "flags": "", "value": 10, "priority": 5 },
+    { "pattern": "额度", "flags": "", "value": 50000, "priority": 8 },
+    { "pattern": "账龄", "flags": "", "value": 5, "priority": 8 },
+    { "pattern": "卡数", "flags": "", "value": 3, "priority": 8 },
+    { "pattern": "百分比|比率|费率", "flags": "", "value": 0.25, "priority": 6 }
+  ]
+}

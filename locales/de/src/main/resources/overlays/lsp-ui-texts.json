@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "texts": {
+    "effectsLabel": "Effekte:",
+    "moduleDeclaration": "Modul-Deklaration",
+    "moduleDeclarationDoc": "Deklariert den Modulnamen für diese Datei",
+    "typeDefinition": "Typdefinition",
+    "typeDefinitionDoc": "Einen neuen Datentyp oder Enum definieren",
+    "functionDefinition": "Funktionsdefinition",
+    "functionDefinitionDoc": "Eine neue Funktion definieren",
+    "functionLabel": "Funktion",
+    "typeLabel": "Typ",
+    "enumLabel": "Enum",
+    "localLabel": "Lokal",
+    "parameterLabel": "Parameter",
+    "patternBindingLabel": "Pattern-Bindung",
+    "piiWarningHeader": "PII-Daten",
+    "piiL3Hint": "🔴 Hohe Sensitivität: Sozialvers.-Nr., Reisepass, Biometrie\nDSGVO: Explizite Einwilligung erforderlich (Art. 9)\nHIPAA: PHI – Verschlüsselung Pflicht",
+    "piiL2Hint": "🟠 Mittlere Sensitivität: E-Mail, Telefon, Adresse\nDSGVO: Rechtsgrundlage erforderlich (Art. 6)\nVerschlüsselung im Ruhezustand erwägen",
+    "piiL1Hint": "🟡 Niedrige Sensitivität: Name, Präferenzen\nDSGVO: Verarbeitungszweck dokumentieren",
+    "piiRedactHint": "Vor externer Übertragung `redact()` oder `tokenize()` verwenden",
+    "hintPrefix": "Hinweis:",
+    "fixPrefix": "Fix:",
+    "missingModuleHeader": "Fehlender Modul-Header. Fügen Sie \"Module <name>.\" hinzu"
+  }
+}
