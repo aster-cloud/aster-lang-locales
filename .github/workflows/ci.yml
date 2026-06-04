@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Self checks out into a named subdir + aster-lang-core checks out
+      # as a sibling so locales/en's verifyLexiconParity can resolve the
+      # core builtin copy at ../../../aster-lang-core (relative to
+      # locales/en/). This mirrors the layout the parity gate repos use.
+      - uses: actions/checkout@v6
+        with:
+          path: aster-lang-locales
+
+      - uses: actions/checkout@v6
+        with:
+          repository: aster-cloud/aster-lang-core
+          path: aster-lang-core
+          token: ${{ secrets.CROSS_REPO_TOKEN || github.token }}
+
+      - uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      # Publish core to Maven Local — the three locale packs depend on
+      # cloud.aster-lang:aster-lang-core at compile time.
+      - name: Publish core to Maven Local
+        working-directory: aster-lang-core
+        run: ./gradlew publishToMavenLocal -x test
+
+      - name: Build & Test (all 3 modules)
+        working-directory: aster-lang-locales
+        run: ./gradlew build
