@@ -12,6 +12,13 @@ dependencyResolutionManagement {
         mavenLocal()
         mavenCentral()
     }
+    // 共享版本目录（aster-lang-platform，ADR 0012）：aster-lang 生态依赖
+    // 版本的单一来源。用 asterLibs.* 别名代替散落的版本字面量。
+    versionCatalogs {
+        create("asterLibs") {
+            from("cloud.aster-lang:aster-lang-platform:0.1.0")
+        }
+    }
 }
 
 // First-party locale packs consolidated from the formerly-separate

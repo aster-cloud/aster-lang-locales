@@ -10,6 +10,13 @@
 // so existing Maven consumers (aster-api, aster-lang-core tests, …) keep
 // resolving the same artifact ids during the deprecation window.
 
+// 共享版本目录句柄（aster-lang-platform，ADR 0012）。subprojects {} 块里
+// 无法用 root 生成的 asterLibs.* type-safe 访问器，故通过
+// VersionCatalogsExtension 显式查表，效果等价。
+val asterLibs: VersionCatalog =
+    extensions.getByType<VersionCatalogsExtension>().named("asterLibs")
+val asterCore = asterLibs.findLibrary("core").get()
+
 subprojects {
     apply(plugin = "java-library")
     apply(plugin = "maven-publish")
@@ -30,8 +37,8 @@ subprojects {
 
     dependencies {
         // The Aster compiler core — provides the lexicon/SPI interfaces
-        // each pack implements.
-        add("implementation", "cloud.aster-lang:aster-lang-core:0.0.1")
+        // each pack implements. Version from the shared catalog.
+        add("implementation", asterCore)
         add("testImplementation", "org.junit.jupiter:junit-jupiter:6.0.0")
         add("testImplementation", "org.assertj:assertj-core:3.27.3")
         add("testRuntimeOnly", "org.junit.platform:junit-platform-launcher")

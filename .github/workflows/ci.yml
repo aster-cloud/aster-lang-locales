@@ -18,6 +18,15 @@ jobs:
         with:
           path: aster-lang-locales
 
+      # Shared version catalog (ADR 0012). Published into Maven Local so
+      # the catalog import in settings.gradle resolves without a GitHub
+      # Packages round-trip.
+      - uses: actions/checkout@v6
+        with:
+          repository: aster-cloud/aster-lang-platform
+          path: aster-lang-platform
+          token: ${{ secrets.CROSS_REPO_TOKEN || github.token }}
+
       - uses: actions/checkout@v6
         with:
           repository: aster-cloud/aster-lang-core
@@ -30,8 +39,12 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
 
-      # Publish core to Maven Local — the three locale packs depend on
-      # cloud.aster-lang:aster-lang-core at compile time.
+      # Publish the version catalog + core to Maven Local — the three
+      # locale packs depend on cloud.aster-lang:aster-lang-core (version
+      # via the catalog) at compile time.
+      - name: Publish version catalog to Maven Local
+        working-directory: aster-lang-platform
+        run: ./gradlew publishToMavenLocal
       - name: Publish core to Maven Local
         working-directory: aster-lang-core
         run: ./gradlew publishToMavenLocal -x test
