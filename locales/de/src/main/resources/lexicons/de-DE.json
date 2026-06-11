@@ -9,6 +9,7 @@
     "MODULE_DECL": "Modul",
     "IMPORT": "verwende",
     "IMPORT_ALIAS": "als",
+    "IMPORT_VERSION": "version",
     "TYPE_DEF": "Definiere",
     "TYPE_WITH": "mit",
     "TYPE_HAS": "hat",

@@ -10,6 +10,7 @@
     "MODULE_DECL": "模块",
     "IMPORT": "引用",
     "IMPORT_ALIAS": "作为",
+    "IMPORT_VERSION": "版本",
     "TYPE_DEF": "定义",
     "TYPE_WITH": "包含",
     "TYPE_HAS": "包含",
