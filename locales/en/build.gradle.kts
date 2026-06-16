@@ -19,8 +19,14 @@ publishing {
  * 本 locale 包仍保留 lexicon 文件以向后兼容旧消费者，但**两份内容必须同步**。
  * CI 跑此 task：任一仓库改了 lexicon JSON 未同步另一份 → 立即 fail。
  *
- * 路径说明：合并后本模块位于 aster-lang-locales/locales/en/，故 core
- * 副本相对路径为 ../../../aster-lang-core（比旧的独立仓多两层）。
+ * 路径说明：合并后本模块位于 aster-lang-locales/locales/en/。CI（见
+ * .github/workflows/ci.yml）把本仓库 checkout 到 $WORKSPACE/aster-lang-locales/，
+ * aster-lang-core checkout 为 sibling $WORKSPACE/aster-lang-core/。故从本模块
+ * projectDir（aster-lang-locales/locales/en）回到 workspace 根需上溯三层，
+ * core backbone 的相对路径为 ../../../aster-lang-core（比旧的独立仓多两层）。
+ *
+ * 兼容性：为防不同 checkout 嵌套深度（本地 monorepo / sibling / nested）下
+ * 静默 skip，按候选列表依次探测，命中第一个存在的为准。
  *
  * 同步流程：改完一方后，cp <src> <dst>，commit 两份。
  */
@@ -29,7 +35,14 @@ tasks.register("verifyLexiconParity") {
     description = "Ensure locales/en en-US.json matches aster-lang-core/builtin/en-US.json byte-for-byte"
 
     val ours = file("src/main/resources/lexicons/en-US.json")
-    val coreCopy = file("../../../aster-lang-core/src/main/resources/builtin/en-US.json")
+    // CI sibling layout first (../../../), then fall back to other common
+    // nestings so the gate runs rather than silently skipping on a layout shift.
+    val coreCandidates = listOf(
+        "../../../aster-lang-core/src/main/resources/builtin/en-US.json",
+        "../../../../aster-lang-core/src/main/resources/builtin/en-US.json",
+        "../aster-lang-core/src/main/resources/builtin/en-US.json"
+    ).map { file(it) }
+    val coreCopy = coreCandidates.firstOrNull { it.exists() } ?: coreCandidates.first()
 
     inputs.file(ours)
 

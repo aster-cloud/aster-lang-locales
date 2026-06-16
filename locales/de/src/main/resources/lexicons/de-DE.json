@@ -3,12 +3,13 @@
     "id": "de-DE",
     "name": "Deutsch",
     "direction": "LTR",
-    "updatedAt": "2026-05-29"
+    "updatedAt": "2026-06-16"
   },
   "keywords": {
     "MODULE_DECL": "Modul",
     "IMPORT": "verwende",
     "IMPORT_ALIAS": "als",
+    "IMPORT_VERSION": "version",
     "TYPE_DEF": "Definiere",
     "TYPE_WITH": "mit",
     "TYPE_HAS": "hat",
@@ -36,6 +37,8 @@
     "MINUS_WORD": "minus",
     "TIMES": "mal",
     "DIVIDED_BY": "geteilt durch",
+    "INTEGER_DIVIDED_BY": "ganzzahlig geteilt durch",
+    "MODULO": "modulo",
     "LESS_THAN": "kleiner als",
     "GREATER_THAN": "groesser als",
     "EQUALS_TO": "entspricht",

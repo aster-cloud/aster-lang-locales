@@ -108,7 +108,7 @@ cd ../aster-lang-locales && ./gradlew build publishToMavenLocal
 - `settings.gradle.kts` 增 `include(":<lang>")` + projectDir 映射
 - 若该语言需要 canonicalizer 翻译目标，`build.gradle.kts` 加 `testRuntimeOnly(project(":en"))`
 - 保留原贡献者署名（git history / NOTICE）
-- 首次随本仓库统一版本发布（当前 `0.1.0` 线）
+- 首次随本仓库统一版本发布（当前 `1.0.2` 线）
 
 **5. 收编后**
 - 原贡献者列入 [contributor 名录](https://aster-lang.dev/community/contributors)；

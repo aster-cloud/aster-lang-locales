@@ -9,6 +9,7 @@
     "MODULE_DECL": "Module",
     "IMPORT": "use",
     "IMPORT_ALIAS": "as",
+    "IMPORT_VERSION": "version",
     "TYPE_DEF": "Define",
     "TYPE_WITH": "with",
     "TYPE_HAS": "has",
@@ -36,6 +37,8 @@
     "MINUS_WORD": "minus",
     "TIMES": "times",
     "DIVIDED_BY": "divided by",
+    "INTEGER_DIVIDED_BY": "integer divided by",
+    "MODULO": "modulo",
     "LESS_THAN": "less than",
     "GREATER_THAN": "greater than",
     "EQUALS_TO": "equals to",
@@ -99,7 +102,7 @@
       ["LESS_THAN", "UNDER"],
       ["GREATER_THAN", "MORE_THAN", "OVER"]
     ],
-    "preTranslationTransformers": ["english-possessive"],
+    "preTranslationTransformers": ["english-possessive", "is-comparator"],
     "postTranslationTransformers": ["result-is", "set-to"]
   },
   "messages": {

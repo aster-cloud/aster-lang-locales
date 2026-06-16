@@ -1,0 +1,81 @@
+name: Release
+
+# Publishes all three first-party locale packs (en/zh/de) to GitHub Packages
+# on a v* tag. Consolidated home per ADR-0011 — these coordinates
+# (cloud.aster-lang:aster-lang-{en,zh,de}) are now published from THIS repo,
+# not the deprecated standalone aster-lang-en/-zh/-de repos.
+#
+# Layout mirrors ci.yml: this repo checks out into aster-lang-locales/ and
+# aster-lang-core / aster-lang-platform check out as siblings so the
+# verifyLexiconParity / verifyLexiconKeywordParity gates can resolve the core
+# backbone at ../../../aster-lang-core (relative to locales/<id>/).
+
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          path: aster-lang-locales
+
+      # Shared version catalog (aster-lang-platform, ADR 0012) — settings.gradle
+      # imports it; must land in Maven Local before any module build resolves
+      # asterLibs.*.
+      - uses: actions/checkout@v6
+        with:
+          repository: aster-cloud/aster-lang-platform
+          path: aster-lang-platform
+          token: ${{ secrets.CROSS_REPO_TOKEN || github.token }}
+
+      - uses: actions/checkout@v6
+        with:
+          repository: aster-cloud/aster-lang-core
+          path: aster-lang-core
+          token: ${{ secrets.CROSS_REPO_TOKEN || github.token }}
+
+      - uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      # Tag↔version guard: the v* tag must match the version the subprojects
+      # publish (subprojects { version = ... } in build.gradle.kts). Stops a
+      # mistagged release from publishing the wrong GAV.
+      - name: Verify tag matches project version
+        working-directory: aster-lang-locales
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          PROJECT_VERSION="$(./gradlew -q :en:properties --no-daemon \
+            | awk -F': ' '/^version:/ {print $2; exit}')"
+          echo "tag=$TAG  projectVersion=$PROJECT_VERSION"
+          if [ "$TAG" != "$PROJECT_VERSION" ]; then
+            echo "::error::Tag v$TAG does not match project version $PROJECT_VERSION. Bump build.gradle.kts or fix the tag."
+            exit 1
+          fi
+
+      - name: Publish version catalog to Maven Local
+        working-directory: aster-lang-platform
+        run: ./gradlew publishToMavenLocal
+
+      - name: Publish core to Maven Local
+        working-directory: aster-lang-core
+        run: ./gradlew publishToMavenLocal -x test
+
+      - name: Build & Test (all 3 modules)
+        working-directory: aster-lang-locales
+        run: ./gradlew build
+
+      - name: Publish en/zh/de to GitHub Packages
+        working-directory: aster-lang-locales
+        run: ./gradlew :en:publish :zh:publish :de:publish
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
