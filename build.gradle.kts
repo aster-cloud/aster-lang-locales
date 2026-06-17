@@ -22,7 +22,7 @@ subprojects {
     apply(plugin = "maven-publish")
 
     group = "cloud.aster-lang"
-    version = "1.0.2"
+    version = "1.0.3"
 
     repositories {
         mavenLocal()
@@ -78,7 +78,7 @@ subprojects {
 //
 // 注意：hi-IN 的 ui-messages 在独立的 aster-lang-hi 仓，其 manifest 由该仓
 // 自行导出；本任务只聚合 locales 仓内的 en-US/zh-CN/de-DE。
-val uiMessagesVersion = "1.0.2"  // 与语言包版本对齐，但走独立发布节奏
+val uiMessagesVersion = "1.0.3"  // 与语言包版本对齐，但走独立发布节奏
 
 val exportUiMessages by tasks.registering {
     group = "aster"
