@@ -28,6 +28,24 @@ First-party Aster CNL 语言包的合并仓库。把原先各自独立的
 因此现有 Maven 消费者（`aster-api`、`aster-lang-core` 测试等）在过渡期
 继续解析同一坐标。
 
+### 为什么没有 Hindi（hi-IN）
+
+本仓库**有意只收纳 en/zh/de**。Hindi（`hi-IN`）**故意保留在独立仓库
+[`aster-lang-hi`](https://github.com/aster-cloud/aster-lang-hi)**，原因：
+
+- ADR 0011 的合并动机是收敛三个**高度同构**的语言包——它们共享同一套关键字
+  backbone 和逐字节/关键字集 parity 工具链（`:en` 甚至与 `aster-lang-core`
+  的 `en-US.json` 逐字节相等）。`hi-IN` 是天城文词法、无 vocabulary/transformer、
+  parity 故事不同，并不从同仓共址中获益。
+- `hi-IN` 是 ADR 0017 之后新增的、可在运行时**热插拔/热卸载**的 SPI pack
+  （core 已把 hi-IN 移出 builtins）。独立 artifact 正好示范"core 语言无关、
+  语言包独立挂载/卸载"。
+- 消费方仍能拿到 Hindi：`aster-lang-platform` 的 `locales` bundle 已包含
+  `hi`（坐标 `cloud.aster-lang:aster-lang-hi`），与 en/zh/de 一同解析。
+
+若未来确定"locales 是所有 first-party 语言包的唯一归宿"，应以 ADR 0011 的
+正式修订（新增 `:hi` module 并弃用 `aster-lang-hi`）来落地，而非静默搬迁。
+
 ## 构建
 
 ```bash
@@ -108,7 +126,7 @@ cd ../aster-lang-locales && ./gradlew build publishToMavenLocal
 - `settings.gradle.kts` 增 `include(":<lang>")` + projectDir 映射
 - 若该语言需要 canonicalizer 翻译目标，`build.gradle.kts` 加 `testRuntimeOnly(project(":en"))`
 - 保留原贡献者署名（git history / NOTICE）
-- 首次随本仓库统一版本发布（当前 `0.1.0` 线）
+- 首次随本仓库统一版本发布（当前 `1.0.2` 线）
 
 **5. 收编后**
 - 原贡献者列入 [contributor 名录](https://aster-lang.dev/community/contributors)；
