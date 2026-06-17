@@ -79,3 +79,19 @@ jobs:
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── ui-messages manifest npm 通道（ADR 0018 统一语言包 Phase 1）──
+      # 界面文案聚合产物走独立 npm 包(@aster-cloud/ui-messages)，不进 JVM jar。
+      # exportUiMessages 由上面的 `build` 已跑过(parity 校验亦在其中)；prepack
+      # 再跑一次确保产物最新，然后 npm publish 到 GitHub Packages npm registry。
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@aster-cloud'
+
+      - name: Publish @aster-cloud/ui-messages to GitHub Packages (npm)
+        working-directory: aster-lang-locales/ui-messages
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
