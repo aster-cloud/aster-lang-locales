@@ -20,6 +20,10 @@ jobs:
     permissions:
       contents: read
       packages: write
+      # OIDC Trusted Publishing：@aster-cloud/ui-messages 发公共 npm 用 OIDC
+      # （同 @aster-cloud/aster-lang-ts，无 NPM_TOKEN）。需在 npmjs.com 为该包配置
+      # Trusted Publisher（关联本仓 + 本 workflow）。
+      id-token: write
     steps:
       - uses: actions/checkout@v6
         with:
@@ -101,18 +105,18 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           scope: '@aster-cloud'
 
-      # npm publish 幂等：同版本已发布时 npm 报 "cannot publish over previously
-      # published versions" 并非真失败（重跑 release/只改 Maven 坐标时 ui-messages
-      # 版本未变）。容忍该情形，不让它拖垮整条 release。
-      - name: Publish @aster-cloud/ui-messages to public npm
+      # 经 OIDC Trusted Publisher 发布（--provenance），无 token。幂等：同版本已发布
+      # 时 npm 报 "cannot publish over the previously published versions" 非真失败
+      # （重跑 release / 只改 Maven 坐标时 ui-messages 版本未变），容忍之。
+      # 注意用 `set -o pipefail` 让 npm 的非零退出穿透 tee，避免真失败被 tee 掩盖。
+      - name: Publish @aster-cloud/ui-messages to public npm (Trusted Publisher)
         working-directory: aster-lang-locales/ui-messages
         run: |
-          if npm publish 2>&1 | tee /tmp/npm.log; then
+          set -o pipefail
+          if npm publish --provenance --access public 2>&1 | tee /tmp/npm.log; then
             echo "ui-messages published"
           elif grep -q "cannot publish over the previously published versions" /tmp/npm.log; then
             echo "ui-messages 同版本已发布，跳过（幂等）"
           else
             echo "npm publish 真失败"; exit 1
           fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
