@@ -17,12 +17,20 @@ val asterLibs: VersionCatalog =
     extensions.getByType<VersionCatalogsExtension>().named("asterLibs")
 val asterCore = asterLibs.findLibrary("core").get()
 
+// Maven lexicon jar 版本 = 版本目录的 asterLang（JVM 生态单一版本源，ADR 0012）。
+// **不**硬编码字面量：曾因 ui-messages npm 包独立 bump 误把 subprojects.version 也 bump
+// （1.0.6），脱离 catalog asterLang(1.0.3)→消费方按 catalog 解析 aster-lang-locales-en:1.0.3
+// 但本仓发的是孤儿 1.0.6→core CI parity 解析失败。从 catalog 取让 Maven jar 永远跟随
+// 生态版本，杜绝此类 drift。npm @aster-cloud/ui-messages 仍走 ui-messages/package.json
+// 的独立版本（与此无关）。
+val asterLangVersion: String = asterLibs.findVersion("asterLang").get().requiredVersion
+
 subprojects {
     apply(plugin = "java-library")
     apply(plugin = "maven-publish")
 
     group = "cloud.aster-lang"
-    version = "1.0.6"
+    version = asterLangVersion
 
     repositories {
         mavenLocal()
