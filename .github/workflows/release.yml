@@ -99,8 +99,18 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
           scope: '@aster-cloud'
 
+      # npm publish 幂等：同版本已发布时 npm 报 "cannot publish over previously
+      # published versions" 并非真失败（重跑 release/只改 Maven 坐标时 ui-messages
+      # 版本未变）。容忍该情形，不让它拖垮整条 release。
       - name: Publish @aster-cloud/ui-messages to GitHub Packages (npm)
         working-directory: aster-lang-locales/ui-messages
-        run: npm publish
+        run: |
+          if npm publish 2>&1 | tee /tmp/npm.log; then
+            echo "ui-messages published"
+          elif grep -q "cannot publish over the previously published versions" /tmp/npm.log; then
+            echo "ui-messages 同版本已发布，跳过（幂等）"
+          else
+            echo "npm publish 真失败"; exit 1
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
