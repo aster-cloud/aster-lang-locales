@@ -91,18 +91,20 @@ jobs:
 
       # ── ui-messages manifest npm 通道（ADR 0018 统一语言包 Phase 1）──
       # 界面文案聚合产物走独立 npm 包(@aster-cloud/ui-messages)，不进 JVM jar。
+      # 发到**公共 npm**（与 @aster-cloud/aster-lang-ts/tokens 同 registry），
+      # 让 aster-cloud 的 CI + Cloudflare Workers 构建免 GitHub Packages 认证即可消费。
       # exportUiMessages 由上面的 `build` 已跑过(parity 校验亦在其中)；prepack
-      # 再跑一次确保产物最新，然后 npm publish 到 GitHub Packages npm registry。
+      # 再跑一次确保产物最新，然后 npm publish。
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-          registry-url: 'https://npm.pkg.github.com'
+          registry-url: 'https://registry.npmjs.org'
           scope: '@aster-cloud'
 
       # npm publish 幂等：同版本已发布时 npm 报 "cannot publish over previously
       # published versions" 并非真失败（重跑 release/只改 Maven 坐标时 ui-messages
       # 版本未变）。容忍该情形，不让它拖垮整条 release。
-      - name: Publish @aster-cloud/ui-messages to GitHub Packages (npm)
+      - name: Publish @aster-cloud/ui-messages to public npm
         working-directory: aster-lang-locales/ui-messages
         run: |
           if npm publish 2>&1 | tee /tmp/npm.log; then
@@ -113,4 +115,4 @@ jobs:
             echo "npm publish 真失败"; exit 1
           fi
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
