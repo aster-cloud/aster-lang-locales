@@ -77,13 +77,17 @@ jobs:
         working-directory: aster-lang-locales
         run: ./gradlew build
 
-      # 注：不再从本仓发布 en/zh/de 的 Maven jar。
-      # cloud.aster-lang:aster-lang-{en,zh,de} 这三个 Maven 包**归属于历史的
-      # aster-lang-en/zh/de 仓**（1.0.0–1.0.2 均由那些仓发布）。GitHub Packages
-      # 不允许从不同源仓发布同名包 → 422 Unprocessable Entity。ADR 0011 的"发布层
-      # 接管"在 Maven 通道上从未真正落地。而界面文案（ui-messages）按 ADR 0018 走
-      # **独立 npm 通道、不进 JVM jar**，aster-api 也改为从 npm 包加载 ui-messages
-      # （不再依赖语言包 jar 携带该资源）。故此处只发 npm，不发 en/zh/de Maven。
+      # 发布 lexicon SPI 包到 GitHub Packages Maven —— **新坐标**
+      # cloud.aster-lang:aster-lang-locales-{en,zh,de}。
+      # 老坐标 cloud.aster-lang:aster-lang-{en,zh,de} 归属已归档的 aster-lang-en/zh/de
+      # 仓（GitHub Packages 包名按首发仓归属，从本仓发同名包 → 422）。ADR 0011 的
+      # "发布层接管"因此在 Maven 通道从未落地。现迁到 locales 自有的新坐标（同 hi 用
+      # 独立坐标 aster-lang-hi 的先例），彻底脱离归档仓 → 随生态版本级联无阻。
+      - name: Publish lexicon packs to GitHub Packages (new coordinates)
+        working-directory: aster-lang-locales
+        run: ./gradlew :en:publish :zh:publish :de:publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # ── ui-messages manifest npm 通道（ADR 0018 统一语言包 Phase 1）──
       # 界面文案聚合产物走独立 npm 包(@aster-cloud/ui-messages)，不进 JVM jar。

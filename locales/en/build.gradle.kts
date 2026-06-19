@@ -6,7 +6,7 @@ publishing {
     publications {
         create<MavenPublication>("mavenJava") {
             from(components["java"])
-            artifactId = "aster-lang-en"
+            artifactId = "aster-lang-locales-en"
         }
     }
 }
