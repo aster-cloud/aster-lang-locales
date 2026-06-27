@@ -157,11 +157,30 @@ jobs:
       # 仓（GitHub Packages 包名按首发仓归属，从本仓发同名包 → 422）。ADR 0011 的
       # "发布层接管"因此在 Maven 通道从未落地。现迁到 locales 自有的新坐标（同 hi 用
       # 独立坐标 aster-lang-hi 的先例），彻底脱离归档仓 → 随生态版本级联无阻。
-      - name: Publish lexicon packs to GitHub Packages (new coordinates)
+      # 逐包独立发布 + 幂等容忍：GH Packages Maven 对已存在的 release 版本重发返
+      # 409 Conflict。三个包合在一条 gradle 命令里时，任一已存在会让整条失败，导致
+      # 其余包补不上（曾发生：1.0.5 时 en 落了、zh/de 因瞬时失败没落，之后重发因 en
+      # 已存在而整体 409 → zh/de 永远补不上）。改为每包独立发布，且把 409
+      # "already exists" 当幂等 no-op，让重跑能自愈、补齐缺失的包。
+      - name: Publish lexicon packs to GitHub Packages (idempotent, per-pack)
         working-directory: aster-lang-locales
-        run: ./gradlew :en:publish :zh:publish :de:publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -o pipefail
+          publish_pack() {
+            local proj="$1"
+            if ./gradlew "${proj}:publish" 2>&1 | tee /tmp/pub.log; then
+              echo "::notice::${proj} published"
+            elif grep -qiE "received status code 409|already exists|Conflict" /tmp/pub.log; then
+              echo "::notice::${proj} 该版本已存在 → 幂等跳过"
+            else
+              echo "::error::${proj} publish 真失败"; return 1
+            fi
+          }
+          fail=0
+          for p in :en :zh :de; do publish_pack "$p" || fail=1; done
+          [ "$fail" = "0" ] || { echo "::error::至少一个 lexicon 包发布真失败"; exit 1; }
 
       # ── ui-messages manifest npm 通道（ADR 0018 统一语言包 Phase 1）──
       # 界面文案聚合产物走独立 npm 包(@aster-cloud/ui-messages)，不进 JVM jar。
