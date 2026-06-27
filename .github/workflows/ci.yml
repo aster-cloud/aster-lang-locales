@@ -34,7 +34,7 @@ jobs:
         run: |
           for ID in locales:maven locales:npm; do
             python3 aster-lang-platform/scripts/release-plan/check-artifact.py \
-              --plan aster-lang-platform/release-plan.json --artifact "$ID" --repo-root .
+              --plan aster-lang-platform/release-plan.json --artifact "$ID" --repo-root aster-lang-locales
           done
 
       - uses: actions/checkout@v6
