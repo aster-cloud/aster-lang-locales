@@ -16,7 +16,7 @@ dependencyResolutionManagement {
     // 版本的单一来源。用 asterLibs.* 别名代替散落的版本字面量。
     versionCatalogs {
         create("asterLibs") {
-            from("cloud.aster-lang:aster-lang-platform:1.0.11")
+            from("cloud.aster-lang:aster-lang-platform:1.0.12")
         }
     }
 }
