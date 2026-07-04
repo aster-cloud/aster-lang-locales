@@ -52,6 +52,16 @@ class DeDeCanonicalizerTest {
     }
 
     @Test
+    @DisplayName("跨模块钉版本：verwende/version/als → use/version/as（ADR 0015）")
+    void keywordTranslation_ImportVersion() {
+        // verwende X version N als Y → use X version N as Y（Java grammar 可解析形式）
+        String result = deCanonicalizer.canonicalize("verwende risk.Scoring version 2 als Score.");
+        assertTrue(result.contains("use"), "'verwende' 应翻译为 'use'，实际: " + result);
+        assertTrue(result.contains("version 2"), "'version 2' 应保留为 'version 2'，实际: " + result);
+        assertTrue(result.contains("as Score"), "'als Score' 应翻译为 'as Score'，实际: " + result);
+    }
+
+    @Test
     @DisplayName("德语关键词翻译：Regel → Rule")
     void keywordTranslation_Rule() {
         String input = "Regel main:";
