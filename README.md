@@ -20,13 +20,20 @@ First-party Aster CNL 语言包的合并仓库。把原先各自独立的
 
 | 模块 | 发布坐标 | 内容 |
 |---|---|---|
-| `:en` | `cloud.aster-lang:aster-lang-en` | 英文词法表 + en-US backbone 同步校验 |
-| `:zh` | `cloud.aster-lang:aster-lang-zh` | 简体中文词法表 + 7 个语法变换器 + CJK v2 一致性 |
-| `:de` | `cloud.aster-lang:aster-lang-de` | 德语词法表 |
+| `:en` | `cloud.aster-lang:aster-lang-locales-en` | 英文词法表 + en-US backbone 同步校验 |
+| `:zh` | `cloud.aster-lang:aster-lang-locales-zh` | 简体中文词法表 + 7 个语法变换器 + CJK v2 一致性 |
+| `:de` | `cloud.aster-lang:aster-lang-locales-de` | 德语词法表 |
 
-**坐标保持不变**：每个模块发布的 artifactId 与合并前的独立仓完全一致，
-因此现有 Maven 消费者（`aster-api`、`aster-lang-core` 测试等）在过渡期
-继续解析同一坐标。
+**坐标已变更**：合并后每个模块发布新的 artifactId
+`aster-lang-locales-{en,zh,de}`（见 `locales/*/build.gradle.kts:9`），
+**而非**旧的独立仓坐标 `aster-lang-{en,zh,de}`。原因是 GitHub Packages
+对归档仓库拥有的包名返回 422，无法在本仓库重用同名坐标。
+
+> **消费者注意**：不要再依赖旧坐标 `cloud.aster-lang:aster-lang-{en,zh,de}`——
+> 那些坐标停留在归档仓库最后发布的冻结版本（`1.0.2` 线的词法表），会与当前
+> core 漂移（keyword/alias 不一致）。请改用新坐标，并以
+> `aster-lang-platform` 版本目录（version catalog，ADR 0012）作为版本的
+> **单一事实来源**：通过 `asterLibs.*` 别名解析，而不要手写版本字面量。
 
 ### 为什么没有 Hindi（hi-IN）
 

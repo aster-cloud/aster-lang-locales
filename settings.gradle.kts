@@ -23,10 +23,13 @@ dependencyResolutionManagement {
 
 // First-party locale packs consolidated from the formerly-separate
 // aster-lang-en / aster-lang-zh / aster-lang-de repos (ADR 0011).
-// Each remains an independently-publishable Maven artifact with the
-// SAME coordinates it had before the consolidation
-// (cloud.aster-lang:aster-lang-{en,zh,de}); the only change is that
-// they now share one build + version graph.
+// Each remains an independently-publishable Maven artifact, but publishes
+// under a NEW artifactId — cloud.aster-lang:aster-lang-locales-{en,zh,de}
+// (see locales/*/build.gradle.kts:9), NOT the pre-consolidation
+// cloud.aster-lang:aster-lang-{en,zh,de}. Reason: GitHub Packages 422s on
+// package names still owned by the now-archived standalone repos, so the
+// coordinates could not be reused. Version source of truth is the
+// aster-lang-platform version catalog (asterLibs.*, from(...) above).
 include(":en", ":zh", ":de")
 project(":en").projectDir = file("locales/en")
 project(":zh").projectDir = file("locales/zh")
