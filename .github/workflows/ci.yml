@@ -43,10 +43,30 @@ jobs:
               --plan aster-lang-platform/release-plan.json --artifact "$ID" --repo-root aster-lang-locales
           done
 
+      # 跨仓 PR 分支匹配：core 存在同名分支（如 fix/lexicon-hi-guard）时用之，
+      # 否则回退 main。让引入新 keyword（如 APPLY）的语言包 PR 能对 companion
+      # core PR 分支联合验证，而非总是拿 core main（否则 verifyLexiconKeywordParity
+      # 会因 core main backbone 尚无该 keyword 而误报 drift）。
+      - name: Resolve core ref (branch-matched)
+        id: core-ref
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+          GH_TOKEN: ${{ secrets.CROSS_REPO_TOKEN || github.token }}
+        run: |
+          set -euo pipefail
+          ref="main"
+          if [ -n "${HEAD_REF:-}" ] && \
+             gh api "repos/aster-cloud/aster-lang-core/branches/${HEAD_REF}" >/dev/null 2>&1; then
+            ref="$HEAD_REF"
+          fi
+          echo "ref=$ref" >> "$GITHUB_OUTPUT"
+          echo "core ref = $ref"
+
       - uses: actions/checkout@v6
         with:
           repository: aster-cloud/aster-lang-core
           path: aster-lang-core
+          ref: ${{ steps.core-ref.outputs.ref }}
           token: ${{ secrets.CROSS_REPO_TOKEN || github.token }}
 
       - uses: actions/setup-java@v5
