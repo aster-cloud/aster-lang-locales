@@ -25,6 +25,7 @@
     "MATCH": "匹配于",
     "WHEN": "当",
     "RETURN": "返回",
+    "APPLY": "应用",
     "RESULT_IS": "结果为",
     "FOR_EACH": "对每个",
     "IN": "属于",
