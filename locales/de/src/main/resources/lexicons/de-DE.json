@@ -24,6 +24,7 @@
     "MATCH": "pruefe",
     "WHEN": "bei",
     "RETURN": "gib zurueck",
+    "APPLY": "wende an",
     "RESULT_IS": "Ergebnis ist",
     "FOR_EACH": "fuer jedes",
     "IN": "in",
