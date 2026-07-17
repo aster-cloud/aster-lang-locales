@@ -95,6 +95,30 @@ class ZhCnOverlayTest {
     }
 
     @Test
+    @DisplayName("diagnostic-help.json 的 E102/E103/E104 语义符合码表裁决（防重复符号/entry 规则语义漂移）")
+    void testScopeCodeHelpRuling() throws Exception {
+        // 错误码码表反向重建后（shared/error_codes.json 为真源）：
+        // E102=MULTIPLE_ENTRY_RULES、E103=IMPORT_SYMBOL_CONFLICT、E104=DUPLICATE_SYMBOL。
+        // 历史上 overlay 残留旧 E102=DUPLICATE_SYMBOL help，导致中文用户可见语义漂移。
+        // 本用例钉死这三个码的中文 help 语义，防回滚旧语义。
+        JsonNode help = loadOverlay("overlays/diagnostic-help.json").get("help");
+
+        // E102 现为 MULTIPLE_ENTRY_RULES：语义应关于 @entry Rule，绝不能再是“重复声明/名称”。
+        assertThat(help.has("E102")).as("E102 应存在").isTrue();
+        String e102 = help.get("E102").asText();
+        assertThat(e102).contains("@entry");
+        assertThat(e102).doesNotContain("选择不同的名称");
+
+        // E103 现为 IMPORT_SYMBOL_CONFLICT：语义应关于导入符号冲突。
+        assertThat(help.has("E103")).as("E103 应存在").isTrue();
+        assertThat(help.get("E103").asText()).contains("导入");
+
+        // E104 现为 DUPLICATE_SYMBOL：承接旧“重复声明”语义。
+        assertThat(help.has("E104")).as("E104 应存在").isTrue();
+        assertThat(help.get("E104").asText()).contains("重复");
+    }
+
+    @Test
     @DisplayName("lsp-ui-texts.json 格式正确且包含必需字段")
     void testLspUiTextsJson() throws Exception {
         JsonNode root = loadOverlay("overlays/lsp-ui-texts.json");
