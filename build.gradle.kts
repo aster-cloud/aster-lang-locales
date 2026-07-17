@@ -86,7 +86,16 @@ subprojects {
 //
 // 注意：hi-IN 的 ui-messages 在独立的 aster-lang-hi 仓，其 manifest 由该仓
 // 自行导出；本任务只聚合 locales 仓内的 en-US/zh-CN/de-DE。
-val uiMessagesVersion = "1.0.6"  // 与语言包版本对齐，但走独立发布节奏
+// 从 npm 包 ui-messages/package.json 读取版本，避免硬编码漂移（组 C 修复：
+// 原硬编码 1.0.6 落后于实际发布版本，直接生成会把 manifest version 写回旧值）。
+val uiMessagesPackageJson = rootProject.projectDir.resolve("ui-messages/package.json")
+val uiMessagesVersion: String = run {
+    @Suppress("UNCHECKED_CAST")
+    val pkg = groovy.json.JsonSlurper().parse(uiMessagesPackageJson) as Map<String, Any>
+    val v = pkg["version"] as? String
+    require(!v.isNullOrBlank()) { "无法从 ${uiMessagesPackageJson} 读取非空 version" }
+    v
+}
 
 val exportUiMessages by tasks.registering {
     group = "aster"
@@ -99,6 +108,8 @@ val exportUiMessages by tasks.registering {
     val outDir = layout.buildDirectory.dir("ui-messages")
 
     moduleMsgDirs.forEach { inputs.dir(it).optional() }
+    // version 来自 package.json → 声明为 input，bump 版本时才会重新导出（否则 up-to-date 留旧 manifest version）。
+    inputs.file(uiMessagesPackageJson)
     outputs.dir(outDir)
 
     doLast {
