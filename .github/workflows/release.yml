@@ -54,7 +54,7 @@ jobs:
       # 只声明 mavenLocal()+mavenCentral()。干净 runner 无法在 settings 评估阶段解析
       # catalog → 先 checkout platform 并 publishToMavenLocal（同 publish job 的 bootstrap），
       # 之后本仓 Gradle 才能解析 catalog-derived version。
-      - uses: actions/checkout@v6
+      - uses: aster-cloud/aster-lang-platform/.github/actions/checkout-sibling@main
         with:
           repository: aster-cloud/aster-lang-platform
           path: aster-lang-platform
@@ -108,13 +108,13 @@ jobs:
           path: aster-lang-locales
 
       # exportUiMessages 走 Gradle；settings.gradle.kts 需要 platform catalog 先进入 Maven Local。
-      - uses: actions/checkout@v6
+      - uses: aster-cloud/aster-lang-platform/.github/actions/checkout-sibling@main
         with:
           repository: aster-cloud/aster-lang-platform
           path: aster-lang-platform
           token: ${{ secrets.CROSS_REPO_TOKEN || github.token }}
 
-      - uses: actions/checkout@v6
+      - uses: aster-cloud/aster-lang-platform/.github/actions/checkout-sibling@main
         with:
           repository: aster-cloud/aster-lang-core
           path: aster-lang-core
@@ -174,13 +174,13 @@ jobs:
       # Shared version catalog (aster-lang-platform, ADR 0012) — settings.gradle
       # imports it; must land in Maven Local before any module build resolves
       # asterLibs.*.
-      - uses: actions/checkout@v6
+      - uses: aster-cloud/aster-lang-platform/.github/actions/checkout-sibling@main
         with:
           repository: aster-cloud/aster-lang-platform
           path: aster-lang-platform
           token: ${{ secrets.CROSS_REPO_TOKEN || github.token }}
 
-      - uses: actions/checkout@v6
+      - uses: aster-cloud/aster-lang-platform/.github/actions/checkout-sibling@main
         with:
           repository: aster-cloud/aster-lang-core
           path: aster-lang-core

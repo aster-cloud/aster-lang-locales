@@ -57,7 +57,7 @@ jobs:
       # Shared version catalog (ADR 0012). Published into Maven Local so
       # the catalog import in settings.gradle resolves without a GitHub
       # Packages round-trip.
-      - uses: actions/checkout@v6
+      - uses: aster-cloud/aster-lang-platform/.github/actions/checkout-sibling@main
         with:
           repository: aster-cloud/aster-lang-platform
           path: aster-lang-platform
