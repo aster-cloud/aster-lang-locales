@@ -286,7 +286,17 @@
       "and": "and",
       "privacyPolicy": "Privacy Policy",
       "alreadyHaveAccount": "Already have an account?",
-      "signIn": "Sign in"
+      "signIn": "Sign in",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "passwordHint": "At least 8 characters.",
+      "createAccount": "Create account",
+      "creating": "Creating…",
+      "or": "or",
+      "passwordTooShort": "Password must be at least 8 characters.",
+      "signupFailed": "Could not create the account. Please try again.",
+      "checkEmailTitle": "Account ready",
+      "checkEmailBody": "Sign in with your email and password. You can verify your email from Settings to unlock AI features."
     },
     "login": {
       "title": "Sign in to your account",
@@ -370,6 +380,15 @@
         "team": "Team policy collaboration",
         "integration": "API integration"
       }
+    },
+    "verifyEmail": {
+      "title": "Verify your email",
+      "verifying": "Verifying your email…",
+      "successTitle": "Email verified",
+      "successMessage": "Your email is verified. AI features are now unlocked.",
+      "invalidToken": "This verification link is invalid or has expired.",
+      "backToSettings": "Back to settings",
+      "goToDashboard": "Go to dashboard"
     }
   },
   "dashboardNav": {
@@ -1485,6 +1504,30 @@
       "title": "AI Keys",
       "subtitle": "Bring your own OpenAI / Anthropic / Vertex AI key. AI calls use your quota and bypass the platform monthly limit.",
       "manageKeys": "Manage AI Keys"
+    },
+    "emailVerification": {
+      "title": "Email verification",
+      "description": "Free accounts must verify their email before AI features unlock.",
+      "statusVerified": "Verified",
+      "statusUnverified": "Not verified",
+      "send": "Send verification email",
+      "sending": "Sending…",
+      "sent": "Verification email sent. Check your inbox — the link expires in 24 hours.",
+      "resend": "Resend email"
+    },
+    "changePassword": {
+      "title": "Change password",
+      "description": "Changing your password signs out all remembered devices.",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm new password",
+      "submit": "Change password",
+      "submitting": "Changing…",
+      "success": "Password changed. Remembered devices were signed out.",
+      "mismatch": "The two passwords do not match.",
+      "tooShort": "Password must be at least 8 characters.",
+      "noPassword": "This account signs in with a social provider and has no password. Use “Forgot password” to set one.",
+      "forgotPasswordLink": "Set a password"
     }
   },
   "security": {

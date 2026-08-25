@@ -286,7 +286,17 @@
       "and": "和",
       "privacyPolicy": "隐私政策",
       "alreadyHaveAccount": "已有账户？",
-      "signIn": "登录"
+      "signIn": "登录",
+      "emailLabel": "邮箱",
+      "passwordLabel": "密码",
+      "passwordHint": "至少 8 个字符。",
+      "createAccount": "创建账号",
+      "creating": "创建中…",
+      "or": "或",
+      "passwordTooShort": "密码至少需要 8 个字符。",
+      "signupFailed": "创建账号失败，请重试。",
+      "checkEmailTitle": "账号已就绪",
+      "checkEmailBody": "请用邮箱和密码登录。可在「设置」中验证邮箱以解锁 AI 功能。"
     },
     "login": {
       "title": "登录您的账户",
@@ -370,6 +380,15 @@
         "team": "团队策略协作",
         "integration": "API 集成"
       }
+    },
+    "verifyEmail": {
+      "title": "验证邮箱",
+      "verifying": "正在验证邮箱…",
+      "successTitle": "邮箱已验证",
+      "successMessage": "邮箱验证成功，AI 功能已解锁。",
+      "invalidToken": "此验证链接无效或已过期。",
+      "backToSettings": "返回设置",
+      "goToDashboard": "前往控制台"
     }
   },
   "dashboardNav": {
@@ -1485,6 +1504,30 @@
       "title": "AI 密钥",
       "subtitle": "绑定你自己的 OpenAI / Anthropic / Vertex AI 密钥。AI 调用走你的配额，不占用平台月度额度。",
       "manageKeys": "管理 AI 密钥"
+    },
+    "emailVerification": {
+      "title": "邮箱验证",
+      "description": "免费版需先验证邮箱才能解锁 AI 功能。",
+      "statusVerified": "已验证",
+      "statusUnverified": "未验证",
+      "send": "发送验证邮件",
+      "sending": "发送中…",
+      "sent": "验证邮件已发送，请查收邮箱。链接 24 小时内有效。",
+      "resend": "重新发送"
+    },
+    "changePassword": {
+      "title": "修改密码",
+      "description": "修改密码后，所有已记住的设备都会被登出。",
+      "currentPassword": "当前密码",
+      "newPassword": "新密码",
+      "confirmPassword": "确认新密码",
+      "submit": "修改密码",
+      "submitting": "修改中…",
+      "success": "密码已修改，已记住的设备均已登出。",
+      "mismatch": "两次输入的密码不一致。",
+      "tooShort": "密码至少需要 8 个字符。",
+      "noPassword": "此账号通过第三方登录，未设置密码。请用「忘记密码」设置一个。",
+      "forgotPasswordLink": "设置密码"
     }
   },
   "security": {
