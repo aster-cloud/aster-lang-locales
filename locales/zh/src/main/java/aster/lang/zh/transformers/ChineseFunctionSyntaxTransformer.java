@@ -29,10 +29,16 @@ public final class ChineseFunctionSyntaxTransformer implements SyntaxTransformer
 
     @Override
     public String transform(String source, CanonicalizationConfig config, StringSegmenter segmenter) {
-        return rewriteRuleFunc(source);
+        // ★必须经 segmenter，只改写字符串**之外**的片段（issue #82）。
+        //   本类此前是 7 个中文变换器里唯一忽略 segmenter 的——直接对整段源码跑正则，
+        //   于是字符串字面量里形如 `规则 X(...)` 的内容会被当作函数声明改写。
+        //   RULE_FUNC 是 MULTILINE 且锚定行首，多行字符串里自成一行的内容尤其危险。
+        //   同目录另外 6 个变换器（Punctuation/Possessive/Operator/SetTo/ResultIs/LetBe）
+        //   一律走 transformOutsideStrings 或 replaceOutsideStrings。
+        return segmenter.transformOutsideStrings(source, ChineseFunctionSyntaxTransformer::rewriteRuleFunc);
     }
 
-    private String rewriteRuleFunc(String s) {
+    private static String rewriteRuleFunc(String s) {
         Matcher m = RULE_FUNC.matcher(s);
         StringBuffer sb = new StringBuffer();
         while (m.find()) {

@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 /**
  * 中文语言包插件 (zh-CN)。
  * <p>
- * 从 JSON 配置加载中文词法表，并通过 SPI 机制将 6 个中文语法变换器注册到对应的注册表。
+ * 从 JSON 配置加载中文词法表，并通过 SPI 机制将 7 个中文语法变换器注册到对应的注册表。
  * 变换器负责将中文标点、所有格、运算符、函数语法等规范化为英文 IR 形式。
  * <p>
  * SPI 发现流程保证 {@link #getTransformers()} 注册的变换器在 {@link #createLexicon()} 之前完成，

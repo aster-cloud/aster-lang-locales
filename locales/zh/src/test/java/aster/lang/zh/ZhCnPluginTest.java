@@ -42,6 +42,36 @@ class ZhCnPluginTest {
         assertThat(lexicon).isNotNull();
     }
 
+    /**
+     * ★守卫：javadoc 里的变换器数量必须与实际注册数一致（issue #83）。
+     *
+     * <p>类 javadoc 曾长期写「6 个」而实际注册 7 个——后加的 chinese-let-be 未同步计数。
+     * 这类「注释声称 ≠ 实现」靠人读是发现不了的，故用测试钉住：
+     * 改了 getTransformers() 却忘了改 javadoc，本条即报红。
+     */
+    @Test
+    @DisplayName("守卫：javadoc 声称的变换器数量与实际注册数一致")
+    void javadocTransformerCountMatchesActual() throws Exception {
+        int actual = new ZhCnPlugin().getTransformers().size();
+
+        java.nio.file.Path src = java.nio.file.Path.of(
+                "src/main/java/aster/lang/zh/ZhCnPlugin.java");
+        org.assertj.core.api.Assertions.assertThat(java.nio.file.Files.isRegularFile(src))
+                .withFailMessage("前置条件：源文件应存在于 %s", src.toAbsolutePath())
+                .isTrue();
+        String text = java.nio.file.Files.readString(src);
+
+        var m = java.util.regex.Pattern.compile("将\\s*(\\d+)\\s*个中文语法变换器").matcher(text);
+        org.assertj.core.api.Assertions.assertThat(m.find())
+                .withFailMessage("javadoc 里应有「将 N 个中文语法变换器」的描述")
+                .isTrue();
+        int claimed = Integer.parseInt(m.group(1));
+
+        org.assertj.core.api.Assertions.assertThat(claimed)
+                .withFailMessage("javadoc 声称注册 %d 个变换器，实际 %d 个", claimed, actual)
+                .isEqualTo(actual);
+    }
+
     @Test
     @DisplayName("词法表 ID 和元数据正确")
     void testLexiconIdAndMeta() {
