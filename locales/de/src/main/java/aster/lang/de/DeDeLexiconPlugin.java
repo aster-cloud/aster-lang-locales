@@ -50,7 +50,11 @@ public final class DeDeLexiconPlugin implements LexiconPlugin, VocabularyPlugin 
     public Map<String, String> getOverlayResources() {
         return Map.of(
                 "typeInferenceRules", "overlays/type-inference-rules.json",
-                "inputGenerationRules", "overlays/input-generation-rules.json"
+                "inputGenerationRules", "overlays/input-generation-rules.json",
+                // ★磁盘上一直有 overlays/lsp-ui-texts.json（23 条完整德语 LSP 文案），
+                //   但从未在此注册 —— 德语 LSP UI 文案**永远不会被加载**。
+                //   对照 zh 插件一直是注册的。见 issue #80。
+                "lspUiTexts", "overlays/lsp-ui-texts.json"
         );
     }
 

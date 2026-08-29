@@ -25,8 +25,44 @@ class EnUsOverlayTest {
     void testOverlayResources() {
         EnUsPlugin plugin = new EnUsPlugin();
         Map<String, String> overlays = plugin.getOverlayResources();
-        assertThat(overlays).containsKeys("typeInferenceRules", "lspUiTexts");
-        assertThat(overlays).hasSize(2);
+        assertThat(overlays).containsKeys("typeInferenceRules", "inputGenerationRules", "lspUiTexts");
+        assertThat(overlays).hasSize(3);
+    }
+
+    /**
+     * ★守卫：resources/overlays/ 下的每个 .json 都必须在 getOverlayResources() 注册。
+     *
+     * <p>issue #80 的根因不是"忘了写一行"，而是**没有任何机制发现忘了写**：
+     * 文件躺在磁盘上却未注册，其内容永远不会被加载；而原测试的 {@code hasSize(N)}
+     * 把遗漏**锁死**了——任何人补上注册反而会让测试变红。
+     *
+     * <p>「文件在磁盘上」与「文件被注册」是两件事，只断言后者永远发现不了前者的缺口。
+     * 本守卫从磁盘反推期望集合，故新增 overlay 文件却忘记注册时必然报红。
+     */
+    @Test
+    @DisplayName("守卫：磁盘上每个 overlay 文件都必须被注册")
+    void everyOverlayFileOnDiskIsRegistered() throws Exception {
+        Map<String, String> overlays = new EnUsPlugin().getOverlayResources();
+        java.util.Set<String> registered = new java.util.HashSet<>(overlays.values());
+
+        java.nio.file.Path dir = java.nio.file.Path.of("src/main/resources/overlays");
+        assertThat(java.nio.file.Files.isDirectory(dir))
+                .withFailMessage("前置条件：overlays 目录应存在于 %s", dir.toAbsolutePath())
+                .isTrue();
+
+        java.util.List<String> unregistered = new java.util.ArrayList<>();
+        try (var files = java.nio.file.Files.list(dir)) {
+            files.filter(f -> f.toString().endsWith(".json"))
+                    .map(f -> "overlays/" + f.getFileName())
+                    .filter(rel -> !registered.contains(rel))
+                    .forEach(unregistered::add);
+        }
+
+        assertThat(unregistered)
+                .withFailMessage(
+                        "以下 overlay 文件在磁盘上却未在 getOverlayResources() 注册，"
+                                + "它们的内容永远不会被加载：%s", unregistered)
+                .isEmpty();
     }
 
     @Test
