@@ -2,6 +2,7 @@ package aster.lang.en;
 
 import aster.core.canonicalizer.Canonicalizer;
 import aster.core.lexicon.LexiconRegistry;
+import aster.core.lexicon.SemanticTokenKind;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -139,13 +140,17 @@ class EnUsCanonicalizerTest {
         }
 
         @Test
-        @DisplayName("a 作操作数（后跟运算符）不吞——运算符词翻译成符号是预期的")
+        @DisplayName("a 作操作数（后跟运算符）不吞——英语运算符保持词形")
         void testArticleAsIdentifier_BeforeOperator() {
-            // plus → + 是正常的运算符翻译；关键是标识符 a 被保留（不再变 `Return + b`）
-            assertEquals("Return a + b.",
+            // ★英语路径下 plus **保持词形**，不再翻成 `+`（core#162）：grammar 本就认
+            //   PLUS_WORD 等词形 token，翻成符号只会缩短行、让 Core IR 的 origin.col
+            //   偏离用户原文。本用例关心的是标识符 a 被保留（不再变 `Return plus b`），
+            //   运算符形态只是顺带断言，故跟随当前契约即可。
+            assertEquals("Return a plus b.",
                 canonicalizer.canonicalize("Return a plus b."));
-            // equals to → ==；逻辑 and/or 保持词形。标识符 a 保留
-            assertEquals("Return a == 1 or b == 2 and c == 3.",
+            // equals to 同样保持词形（不再翻成 `==`）；逻辑 and/or 一向保持词形。
+            // 本用例的真正判据仍是：标识符 a/b/c 被保留，没有被当冠词吞掉。
+            assertEquals("Return a equals to 1 or b equals to 2 and c equals to 3.",
                 canonicalizer.canonicalize(
                     "Return a equals to 1 or b equals to 2 and c equals to 3."));
         }
@@ -155,8 +160,8 @@ class EnUsCanonicalizerTest {
         void testArticleAsIdentifier_TheAndAn() {
             assertEquals("given the as Int, an as Text",
                 canonicalizer.canonicalize("given the as Int, an as Text"));
-            // the/an 标识符保留；plus → +
-            assertEquals("Return the + an.",
+            // the/an 标识符保留；plus 保持词形（core#162）
+            assertEquals("Return the plus an.",
                 canonicalizer.canonicalize("Return the plus an."));
         }
 
@@ -298,28 +303,39 @@ class EnUsCanonicalizerTest {
     @DisplayName("比较运算同义词")
     class ComparisonSynonymTests {
 
+        // ★这三条原本断言 under/over/more than 被翻成 `<` / `>`。
+        //   core#162 起**英语路径不再把规范拼写的运算符翻成符号**：grammar 本就
+        //   认词形 token，翻成符号只会缩短行、让 Core IR 的 origin.col 偏离用户原文。
+        //   于是断言全部失效（实测 `x under 18` → `x under 18`）。
+        //
+        //   语义层面的等价（`under` 与 `less than` 产出相同 Core IR）已由
+        //   core 的 IsComparatorParserTest.assertSameIr 覆盖，那里有完整的
+        //   canonicalize→parse→lower 链路。本仓是 **locale 包**，不该复刻那套
+        //   parser 装置；这里该守的是**词表契约**：比较同义词在 en-US 词表中
+        //   存在、被识别、且规范化后原样保留（不被吞、不被改写）。
+
         @Test
-        void testComparisonSynonym_Under() {
-            String input = "x under 18";
-            String result = canonicalizer.canonicalize(input);
-            assertTrue(result.contains("<"),
-                    "'under' 应翻译为 '<'，实际结果: " + result);
+        @DisplayName("比较同义词在 en-US 词表中存在且互不相同")
+        void comparisonSynonymsExistInLexicon() {
+            // ★前提断言：没有它，下面「规范化后不变」可能只是因为这些词根本不在
+            //   词表里——一个从不被识别的词当然不会被改写，断言恒真。
+            var kw = LexiconRegistry.getInstance().getOrThrow("en-US").getKeywords();
+            assertEquals("under", kw.get(SemanticTokenKind.UNDER));
+            assertEquals("over", kw.get(SemanticTokenKind.OVER));
+            assertEquals("more than", kw.get(SemanticTokenKind.MORE_THAN));
+            assertEquals("less than", kw.get(SemanticTokenKind.LESS_THAN));
+            assertEquals("greater than", kw.get(SemanticTokenKind.GREATER_THAN));
         }
 
         @Test
-        void testComparisonSynonym_Over() {
-            String input = "x over 3";
-            String result = canonicalizer.canonicalize(input);
-            assertTrue(result.contains(">"),
-                    "'over' 应翻译为 '>'，实际结果: " + result);
-        }
-
-        @Test
-        void testComparisonSynonym_MoreThan() {
-            String input = "x more than 3";
-            String result = canonicalizer.canonicalize(input);
-            assertTrue(result.contains(">"),
-                    "'more than' 应翻译为 '>'，实际结果: " + result);
+        @DisplayName("比较同义词规范化后保持词形，不被翻成符号")
+        void comparisonSynonymsKeepWordForm() {
+            assertEquals("x under 18", canonicalizer.canonicalize("x under 18"));
+            assertEquals("x over 3", canonicalizer.canonicalize("x over 3"));
+            assertEquals("x more than 3", canonicalizer.canonicalize("x more than 3"));
+            // 规范拼写同样保持原样——同义词与规范拼写在文本层都不被改写
+            assertEquals("x less than 18", canonicalizer.canonicalize("x less than 18"));
+            assertEquals("x greater than 3", canonicalizer.canonicalize("x greater than 3"));
         }
     }
 
