@@ -19,9 +19,17 @@ public final class ChineseFunctionSyntaxTransformer implements SyntaxTransformer
 
     public static final ChineseFunctionSyntaxTransformer INSTANCE = new ChineseFunctionSyntaxTransformer();
 
-    /** 匹配"规则 funcName（params）：" */
+    /**
+     * 匹配"规则 funcName（params）："。
+     * <p>
+     * 括号同时接受半角 {@code ()} 与全角 {@code （）}（U+FF08/U+FF09）：中文输入法默认输出全角，
+     * 而 core Canonicalizer 的 fullWidthToHalf 在 preTranslationTransformers 链**之后**才执行，
+     * 同链更早的 chinese-punctuation 也只映射 {@code 。，：、}——所以走到本变换器时全角括号
+     * 仍是原样，只认半角会让全角写法静默漏过（issue #91）。行尾的 {@code ：} 无需在此处理，
+     * 它已被 chinese-punctuation 转成 {@code :} 并落在 {@code (.*)} 里原样保留。
+     */
     private static final Pattern RULE_FUNC = Pattern.compile(
-            "^(\\s*)(?:\u89C4\u5219|Rule)\\s+([\\p{L}][\\p{L}0-9_]*)\\s*\\(([^)]*?)\\)\\s*(.*)$",
+            "^(\\s*)(?:\u89C4\u5219|Rule)\\s+([\\p{L}][\\p{L}0-9_]*)\\s*[(\uFF08]([^)\uFF09]*?)[)\uFF09]\\s*(.*)$",
             Pattern.MULTILINE | Pattern.UNICODE_CHARACTER_CLASS
     );
 

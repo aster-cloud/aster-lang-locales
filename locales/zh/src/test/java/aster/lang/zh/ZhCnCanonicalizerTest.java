@@ -316,6 +316,38 @@ class ZhCnCanonicalizerTest {
     }
 
     // ============================================================
+    // 中文函数声明语法糖（规则 名（参数）：）端到端
+    // ============================================================
+
+    @Nested
+    @DisplayName("函数声明语法糖")
+    class FunctionDeclSugarTests {
+
+        // 函数名用「折扣」而非 issue 示例里的「计算」：后者是 zh 词汇表词条（→ cpu），
+        // 端到端会被翻译掉，无法观察重排本身；「整数」→ Int 是预期的类型翻译。
+
+        @Test
+        @DisplayName("半角括号：规则 折扣(甲: 整数): → Rule 折扣 given 甲: Int:")
+        void testRuleFuncSugar_HalfWidth() {
+            String result = zhCanonicalizer.canonicalize("规则 折扣(甲: 整数):\n  返回 甲。\n");
+            assertTrue(result.contains("Rule 折扣 given 甲: Int:"),
+                    "半角括号声明应重排为 Rule … given …，实际结果: " + result);
+        }
+
+        @Test
+        @DisplayName("全角括号：规则 折扣（甲: 整数）： 同样重排（issue #91）")
+        void testRuleFuncSugar_FullWidth() {
+            // 变换器链先于 fullWidthToHalf 执行，若变换器只认半角括号，
+            // 全角写法会被漏过，最终产出语法不接受的 `Rule 折扣(甲: Int):`。
+            String result = zhCanonicalizer.canonicalize("规则 折扣（甲: 整数）：\n  返回 甲。\n");
+            assertTrue(result.contains("Rule 折扣 given 甲: Int:"),
+                    "全角括号声明应重排为 Rule … given …，实际结果: " + result);
+            assertFalse(result.contains("Rule 折扣("),
+                    "不得产出函数名后直接跟括号的非法形式，实际结果: " + result);
+        }
+    }
+
+    // ============================================================
     // 审计 #25（Medium）：歧义关键字表面钉死
     // zh-CN 词法表中 包含→{TYPE_WITH,TYPE_HAS}、等于→{EQUALS_TO,IS} 是等长歧义表面，
     // 最长匹配无法区分，识别结果取决于 map 迭代顺序 —— 双引擎（JVM/ts）漂移隐患。
