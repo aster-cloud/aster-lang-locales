@@ -56,7 +56,13 @@ First-party Aster CNL 语言包的合并仓库。把原先各自独立的
 ## 构建
 
 ```bash
-# 前置：aster-lang-core 已发布到 Maven Local
+# 前置 1：aster-lang-platform 版本目录已发布到 Maven Local。
+#   settings.gradle.kts 在 settings 评估阶段就要从 mavenLocal()/mavenCentral()
+#   解析 cloud.aster-lang:aster-lang-platform（ADR 0012）；缺失时连配置阶段都
+#   过不去，`./gradlew build` 根本跑不起来。
+cd ../aster-lang-platform && ./gradlew publishToMavenLocal
+
+# 前置 2：aster-lang-core 已发布到 Maven Local
 cd ../aster-lang-core && ./gradlew publishToMavenLocal -x test
 
 # 构建 + 发布全部三个语言包到 Maven Local
@@ -64,21 +70,23 @@ cd ../aster-lang-locales && ./gradlew build publishToMavenLocal
 ```
 
 `:en` 模块的 `verifyLexiconParity` 任务会校验 `en-US.json` 与
-`aster-lang-core` 内嵌副本逐字节一致——需在两个仓库都已 checkout 的
-工作区运行。
+`aster-lang-core` 内嵌副本逐字节一致（`:zh`/`:de` 的
+`verifyLexiconKeywordParity` 同理校验关键字键集）。这些门禁按相对路径探测
+sibling checkout（`../aster-lang-core`，与 CI 布局一致），需在两个仓库并列
+checkout 的工作区运行；sibling 不存在时仅告警跳过。
 
 ## 插件加载机制不受合并影响
 
 合并改变的是语言包的**构建来源**，没有改变**加载机制**。`LexiconRegistry`
 （在 `aster-lang-core`）发现语言包的单位始终是 **jar + 其内的
 `META-INF/services/aster.core.lexicon.LexiconPlugin` + SPI ServiceLoader**，
-与"语言包来自哪个 repo / 是否同 repo"无关。每个 module 仍各自产出
-`aster-lang-{en,zh,de}.jar`，坐标不变、SPI 布局不变——对 ServiceLoader 而言
+与"语言包来自哪个 repo / 是否同 repo"无关。每个 module 仍各自产出独立 jar
+（`aster-lang-locales-{en,zh,de}`），SPI 布局不变——对 ServiceLoader 而言
 合并前后的 jar 无法区分。
 
 两条加载路径都保留：
 
-- **构建期 classpath 包**：消费方按需 `runtimeOnly 'cloud.aster-lang:aster-lang-<id>'`，
+- **构建期 classpath 包**：消费方按需 `runtimeOnly 'cloud.aster-lang:aster-lang-locales-<id>'`，
   启动时 `discoverPlugins()` 扫描 app classloader 注册。multi-module ≠ fat jar，
   三个 module 各发各的，可单独依赖。
 - **运行时热插拔包**：`aster-api` 的 `HotPlugLexiconLoader` 监视 jar 目录，
@@ -102,7 +110,7 @@ cd ../aster-lang-locales && ./gradlew build publishToMavenLocal
 - **社区维护**：留在贡献者自己的 repo / maven 坐标，在
   [docs/community/lexicons](https://aster-lang.dev/community/lexicons) 登记。Aster 不维护、不背书。
 - **官方背书 → 收编**：成熟的主流语种可申请被官方**收编**进本仓库，成为一个新 module
-  （`cloud.aster-lang:aster-lang-<lang>`），由 Aster team 接管维护、安全审计与 maven 发布。
+  （`cloud.aster-lang:aster-lang-locales-<lang>`），由 Aster team 接管维护、安全审计与 maven 发布。
   准入流程见下。
 
 ## 官方收编（Adoption）准入流程
@@ -133,7 +141,7 @@ cd ../aster-lang-locales && ./gradlew build publishToMavenLocal
 - `settings.gradle.kts` 增 `include(":<lang>")` + projectDir 映射
 - 若该语言需要 canonicalizer 翻译目标，`build.gradle.kts` 加 `testRuntimeOnly(project(":en"))`
 - 保留原贡献者署名（git history / NOTICE）
-- 首次随本仓库统一版本发布（当前 `1.0.2` 线）
+- 首次随本仓库统一版本发布（版本由 `aster-lang-platform` 版本目录决定，不手写字面量）
 
 **5. 收编后**
 - 原贡献者列入 [contributor 名录](https://aster-lang.dev/community/contributors)；
@@ -145,7 +153,7 @@ cd ../aster-lang-locales && ./gradlew build publishToMavenLocal
 
 ## 迁移状态
 
-合并迁移仍在过渡期。原 `aster-lang-en` / `-zh` / `-de` 仓库在一个
-deprecation release 周期内继续以原坐标发布 thin wrapper，之后归档。
+原 `aster-lang-en` / `-zh` / `-de` 仓库已归档；旧坐标停留在归档前最后发布的
+`1.0.2` 线，不再更新（见上文「消费者注意」）。
 切换 `aster-api` / `aster-deploy` 消费方的工作受 ADR 0011 的 gating
 conditions 约束，单独排期。

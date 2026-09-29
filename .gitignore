@@ -6,3 +6,6 @@
 build/
 .gradle/
 /.claude/**
+
+# 本机指向 sibling checkout 的符号链接；parity 门禁按相对路径 ../aster-lang-core 探测，不依赖它
+/aster-lang-core
