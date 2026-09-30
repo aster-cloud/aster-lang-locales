@@ -5,10 +5,11 @@
 // `subprojects {}` so the three modules don't each carry a near-identical
 // build.gradle.kts (the duplication that motivated the consolidation).
 //
-// Coordinates are preserved: every module publishes
-// `cloud.aster-lang:aster-lang-<id>` exactly as the standalone repos did,
-// so existing Maven consumers (aster-api, aster-lang-core tests, …) keep
-// resolving the same artifact ids during the deprecation window.
+// 发布坐标：每个模块发布 `cloud.aster-lang:aster-lang-locales-<id>`
+// （见 locales/*/build.gradle.kts），**不是**独立仓时代的
+// `cloud.aster-lang:aster-lang-<id>`——GitHub Packages 对已归档仓拥有的包名
+// 返回 422，旧坐标无法在本仓复用，且已冻结在 1.0.2 线不再更新
+// （详见 settings.gradle.kts 与 README「消费者注意」）。
 
 // 共享版本目录句柄（aster-lang-platform，ADR 0012）。subprojects {} 块里
 // 无法用 root 生成的 asterLibs.* type-safe 访问器，故通过

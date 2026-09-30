@@ -1,9 +1,10 @@
 name: Release
 
-# Publishes all three first-party locale packs (en/zh/de) to GitHub Packages
-# on a v* tag. Consolidated home per ADR-0011 — these coordinates
-# (cloud.aster-lang:aster-lang-{en,zh,de}) are now published from THIS repo,
-# not the deprecated standalone aster-lang-en/-zh/-de repos.
+# 在 v* tag 上把三个 first-party 语言包（en/zh/de）发布到 GitHub Packages
+# （ADR-0011 合并仓）。坐标是本仓自有的
+# cloud.aster-lang:aster-lang-locales-{en,zh,de}（locales/*/build.gradle.kts），
+# **不是**已归档独立仓的 aster-lang-{en,zh,de}——GitHub Packages 对那些包名返回
+# 422，无法从本仓重发（见下方 per-pack publish step 的说明）。
 #
 # Layout mirrors ci.yml: this repo checks out into aster-lang-locales/ and
 # aster-lang-core / aster-lang-platform check out as siblings so the

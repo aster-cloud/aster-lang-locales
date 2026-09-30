@@ -98,6 +98,31 @@ class ChineseFunctionSyntaxTransformerTest {
     }
 
     @Test
+    @DisplayName("全角括号 规则 计算（甲: 整数）： → Rule 计算 given 甲: 整数（issue #91）")
+    void testFullWidthParentheses() {
+        // 中文输入法默认输出全角括号，而 core 的 fullWidthToHalf 在变换器链**之后**才执行，
+        // 所以变换器自己必须认识「（）」，否则全角写法永远匹配不上、语法糖静默失效。
+        String result = transformer.transform("规则 计算（甲: 整数）：", config, segmenter);
+        assertThat(result).contains("Rule 计算 given 甲: 整数");
+        assertThat(result).doesNotContain("（").doesNotContain("）");
+    }
+
+    @Test
+    @DisplayName("全角括号无参数函数")
+    void testFullWidthParenthesesWithoutParams() {
+        String result = transformer.transform("规则 你好（）：", config, segmenter);
+        assertThat(result).contains("Rule 你好");
+        assertThat(result).doesNotContain("given");
+    }
+
+    @Test
+    @DisplayName("全角/半角括号混用同样重排")
+    void testMixedWidthParentheses() {
+        String result = transformer.transform("规则 计算（甲: 整数):", config, segmenter);
+        assertThat(result).contains("Rule 计算 given 甲: 整数");
+    }
+
+    @Test
     @DisplayName("非函数行不受影响")
     void testNonFunctionLineUnaffected() {
         String input = "令 x 为 10";
