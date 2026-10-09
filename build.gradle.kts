@@ -216,3 +216,71 @@ exportUiMessages.configure { dependsOn(verifyUiMessagesParity) }
 subprojects {
     tasks.matching { it.name == "check" }.configureEach { dependsOn(verifyUiMessagesParity) }
 }
+
+// ── 控制注册表校验与导出（ADR 0045 §2）──────────────────────────────────
+// 输入可用 -PcontrolsSource 覆盖（负向测试用）。
+val controlsSource: java.io.File = (findProperty("controlsSource") as String?)
+    ?.let { rootProject.file(it) } ?: rootProject.file("controls/registry.json")
+
+val exportControls by tasks.registering {
+    group = "aster"
+    description = "校验并导出控制注册表（ADR 0045）"
+    inputs.file(controlsSource)
+    val outDir = layout.buildDirectory.dir("controls")
+    outputs.dir(outDir)
+    doLast {
+        @Suppress("UNCHECKED_CAST")
+        val reg = groovy.json.JsonSlurper().parse(controlsSource) as Map<String, Any?>
+        val problems = validateControlsRegistry(reg)
+        require(problems.isEmpty()) { "控制注册表不合法（${controlsSource}）：\n" + problems.joinToString("\n") }
+        val out = outDir.get().asFile
+        out.mkdirs()
+        controlsSource.copyTo(out.resolve("registry.json"), overwrite = true)
+        logger.lifecycle("controls registry ${reg["version"]} 已导出")
+    }
+}
+
+val CONTROL_KEY = Regex("^[A-Z0-9_]+:[A-Z0-9_().]+$")
+val EVIDENCE_SOURCES = setOf(
+    "control", "outcome.pending", "outcome.requireApproval", "reviewers.any", "reviewers.guard.any",
+    "reviewers.guard.approved", "reviewers.guard.rejected", "reviewers.guard.two", "whatIf.comparable", "rule.reason",
+)
+val LOCALES = listOf("en", "zh", "de")
+
+/** 逐项检查注册表；返回问题列表（空 = 合法）。 */
+fun validateControlsRegistry(reg: Map<String, Any?>): List<String> {
+    val problems = mutableListOf<String>()
+    if ((reg["version"] as? String).isNullOrBlank()) problems += "缺 version"
+    @Suppress("UNCHECKED_CAST") val frameworks = reg["frameworks"] as? List<Map<String, Any?>> ?: emptyList()
+    @Suppress("UNCHECKED_CAST") val controls = reg["controls"] as? List<Map<String, Any?>> ?: emptyList()
+    @Suppress("UNCHECKED_CAST") val clauses = reg["clauses"] as? List<Map<String, Any?>> ?: emptyList()
+    val frameworkIds = frameworks.map { it["id"] as? String }.toSet()
+    val keys = mutableSetOf<String>()
+    for (c in controls) {
+        val key = c["key"] as? String ?: "".also { problems += "控制点缺 key: $c" }
+        if (!CONTROL_KEY.matches(key) || key.length > 64) problems += "控制键形态非法: $key"
+        if (!keys.add(key)) problems += "控制键重复: $key"
+        if (c["framework"] !in frameworkIds) problems += "控制键 $key 的 framework 未登记: ${c["framework"]}"
+        problems += missingTitles("控制键 $key", c["title"])
+    }
+    for (cl in clauses) {
+        val label = "条款 ${cl["clause"]}"
+        if (cl["control"] !in keys) problems += "$label 引用未登记控制键: ${cl["control"]}"
+        problems += missingTitles(label, cl["title"])
+        for (field in listOf("evidenced", "partial")) {
+            @Suppress("UNCHECKED_CAST") val list = cl[field] as? List<String>
+            if (list == null) { problems += "$label 缺 $field 数组"; continue }
+            list.filter { it !in EVIDENCE_SOURCES }.forEach { problems += "$label 的 $field 含未知证据来源: $it" }
+        }
+    }
+    return problems
+}
+
+fun missingTitles(label: String, title: Any?): List<String> {
+    @Suppress("UNCHECKED_CAST") val t = title as? Map<String, Any?> ?: return listOf("$label 缺 title")
+    return LOCALES.filter { (t[it] as? String).isNullOrBlank() }.map { "$label 缺 $it 标题" }
+}
+
+subprojects {
+    tasks.matching { it.name == "check" }.configureEach { dependsOn(exportControls) }
+}
