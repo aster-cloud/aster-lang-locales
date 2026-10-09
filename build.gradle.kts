@@ -254,7 +254,9 @@ fun validateControlsRegistry(reg: Map<String, Any?>): List<String> {
     @Suppress("UNCHECKED_CAST") val frameworks = reg["frameworks"] as? List<Map<String, Any?>> ?: emptyList()
     @Suppress("UNCHECKED_CAST") val controls = reg["controls"] as? List<Map<String, Any?>> ?: emptyList()
     @Suppress("UNCHECKED_CAST") val clauses = reg["clauses"] as? List<Map<String, Any?>> ?: emptyList()
-    val frameworkIds = frameworks.map { it["id"] as? String }.toSet()
+    // 框架 id 必须非空：缺 id 的框架不进集合，从而引用它（或缺 framework）的控制点必然报错
+    frameworks.filter { (it["id"] as? String).isNullOrBlank() }.forEach { problems += "框架缺 id: $it" }
+    val frameworkIds = frameworks.mapNotNull { (it["id"] as? String)?.takeIf(String::isNotBlank) }.toSet()
     val keys = mutableSetOf<String>()
     for (c in controls) {
         val key = c["key"] as? String ?: "".also { problems += "控制点缺 key: $c" }
@@ -263,8 +265,13 @@ fun validateControlsRegistry(reg: Map<String, Any?>): List<String> {
         if (c["framework"] !in frameworkIds) problems += "控制键 $key 的 framework 未登记: ${c["framework"]}"
         problems += missingTitles("控制键 $key", c["title"])
     }
+    // 同一控制点下条款 id 唯一（证据包与报告表以「控制点 + 条款」为行键）
+    val clauseIds = mutableSetOf<Pair<Any?, String>>()
     for (cl in clauses) {
         val label = "条款 ${cl["clause"]}"
+        val clauseId = cl["clause"] as? String
+        if (clauseId.isNullOrBlank()) problems += "条款缺 clause id: $cl"
+        else if (!clauseIds.add(cl["control"] to clauseId)) problems += "$label 在控制键 ${cl["control"]} 下重复"
         if (cl["control"] !in keys) problems += "$label 引用未登记控制键: ${cl["control"]}"
         problems += missingTitles(label, cl["title"])
         for (field in listOf("evidenced", "partial")) {
