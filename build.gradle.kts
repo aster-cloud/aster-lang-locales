@@ -241,6 +241,7 @@ val exportControls by tasks.registering {
 }
 
 val CONTROL_KEY = Regex("^[A-Z0-9_]+:[A-Z0-9_().]+$")
+val PROFILE_ID = Regex("^[a-z][a-z0-9-]{0,63}$")
 val EVIDENCE_SOURCES = setOf(
     "control", "outcome.pending", "outcome.requireApproval", "reviewers.any", "reviewers.guard.any",
     "reviewers.guard.approved", "reviewers.guard.rejected", "reviewers.guard.two", "whatIf.comparable", "rule.reason",
@@ -280,7 +281,29 @@ fun validateControlsRegistry(reg: Map<String, Any?>): List<String> {
             list.filter { it !in EVIDENCE_SOURCES }.forEach { problems += "$label 的 $field 含未知证据来源: $it" }
         }
     }
+    // 档案：id 形态与唯一、三语标题、requires 三个字段齐全、frameworks 只引用已登记框架
+    @Suppress("UNCHECKED_CAST") val profiles = reg["profiles"] as? List<Map<String, Any?>> ?: emptyList()
+    val profileIds = mutableSetOf<String>()
+    for (p in profiles) {
+        val id = p["id"] as? String ?: "".also { problems += "档案缺 id: $p" }
+        if (!PROFILE_ID.matches(id)) problems += "档案 id 形态非法: $id"
+        if (!profileIds.add(id)) problems += "档案 id 重复: $id"
+        problems += missingTitles("档案 $id", p["title"])
+        problems += profileRequiresProblems(id, p["requires"], frameworkIds)
+    }
     return problems
+}
+
+/** 校验档案 requires：两个布尔开关齐全，frameworks 为数组且只引用已登记框架。 */
+fun profileRequiresProblems(id: String, requires: Any?, frameworkIds: Set<String>): List<String> {
+    @Suppress("UNCHECKED_CAST") val r = requires as? Map<String, Any?> ?: return listOf("档案 $id 缺 requires")
+    val out = mutableListOf<String>()
+    if (r["ruleId"] !is Boolean) out += "档案 $id 的 requires.ruleId 须为布尔"
+    if (r["registeredControls"] !is Boolean) out += "档案 $id 的 requires.registeredControls 须为布尔"
+    @Suppress("UNCHECKED_CAST") val fws = r["frameworks"] as? List<Any?>
+    if (fws == null) return out + "档案 $id 的 requires.frameworks 须为数组"
+    fws.filter { it !in frameworkIds }.forEach { out += "档案 $id 引用未登记框架: $it" }
+    return out
 }
 
 fun missingTitles(label: String, title: Any?): List<String> {
