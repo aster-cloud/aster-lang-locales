@@ -285,13 +285,19 @@ fun validateControlsRegistry(reg: Map<String, Any?>): List<String> {
     @Suppress("UNCHECKED_CAST") val profiles = reg["profiles"] as? List<Map<String, Any?>> ?: emptyList()
     val profileIds = mutableSetOf<String>()
     for (p in profiles) {
-        val id = p["id"] as? String ?: "".also { problems += "档案缺 id: $p" }
-        if (!PROFILE_ID.matches(id)) problems += "档案 id 形态非法: $id"
-        if (!profileIds.add(id)) problems += "档案 id 重复: $id"
+        val id = p["id"] as? String ?: ""
+        profileIdProblem(p, profileIds)?.let { problems += it }
         problems += missingTitles("档案 $id", p["title"])
         problems += profileRequiresProblems(id, p["requires"], frameworkIds)
     }
     return problems
+}
+
+/** 档案 id 至多报一条问题：缺失、形态非法、重复三者互斥；合法且首次出现的 id 记入 seen。 */
+fun profileIdProblem(p: Map<String, Any?>, seen: MutableSet<String>): String? {
+    val id = p["id"] as? String ?: return "档案缺 id: $p"
+    if (!PROFILE_ID.matches(id)) return "档案 id 形态非法: $id"
+    return if (seen.add(id)) null else "档案 id 重复: $id"
 }
 
 /** 校验档案 requires：两个布尔开关齐全，frameworks 为数组且只引用已登记框架。 */
