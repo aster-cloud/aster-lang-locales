@@ -317,6 +317,32 @@ fun missingTitles(label: String, title: Any?): List<String> {
     return LOCALES.filter { (t[it] as? String).isNullOrBlank() }.map { "$label 缺 $it 标题" }
 }
 
+// 负向夹具：每个 bad-*.json 的校验问题须与 expected-problems.json 逐条一致，夹具集合与期望清单也须相同
+val verifyControlsFixtures = tasks.register("verifyControlsFixtures") {
+    group = "verification"
+    description = "对全部负向控制注册表夹具运行校验并比对期望问题列表"
+    val fixturesDir = rootProject.file("controls/src/test-fixtures")
+    inputs.dir(fixturesDir)
+    doLast {
+        val slurper = groovy.json.JsonSlurper()
+        @Suppress("UNCHECKED_CAST")
+        val expected = slurper.parse(fixturesDir.resolve("expected-problems.json")) as Map<String, List<String>>
+        val fixtures = fixturesDir.listFiles()!!.map { it.name }
+            .filter { it.startsWith("bad-") && it.endsWith(".json") }.sorted()
+        val mismatches = mutableListOf<String>()
+        if (fixtures.toSet() != expected.keys) {
+            mismatches += "夹具与期望清单不一致：夹具 $fixtures，期望 ${expected.keys.sorted()}"
+        }
+        for (name in fixtures) {
+            @Suppress("UNCHECKED_CAST")
+            val actual = validateControlsRegistry(slurper.parse(fixturesDir.resolve(name)) as Map<String, Any?>)
+            if (actual != expected[name]) mismatches += "$name：期望 ${expected[name]}，实际 $actual"
+        }
+        if (mismatches.isNotEmpty()) throw GradleException("负向夹具校验结果不符：\n" + mismatches.joinToString("\n"))
+        logger.lifecycle("verifyControlsFixtures: ${fixtures.size} 个负向夹具的问题列表全部一致")
+    }
+}
+
 subprojects {
-    tasks.matching { it.name == "check" }.configureEach { dependsOn(exportControls) }
+    tasks.matching { it.name == "check" }.configureEach { dependsOn(exportControls, verifyControlsFixtures) }
 }

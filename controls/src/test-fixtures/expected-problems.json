@@ -1,0 +1,33 @@
+{
+  "bad-duplicate-clause.json": [
+    "条款 14(1) 在控制键 EU_AI_ACT:ART14 下重复"
+  ],
+  "bad-missing-framework.json": [
+    "框架缺 id: {title={en=x, zh=x, de=x}}",
+    "控制键 EU_AI_ACT:ART14 的 framework 未登记: null"
+  ],
+  "bad-profile-duplicate-id.json": [
+    "档案 id 重复: governed"
+  ],
+  "bad-profile-frameworks-not-array.json": [
+    "档案 eu-ai-act-high-risk 的 requires.frameworks 须为数组"
+  ],
+  "bad-profile-invalid-id.json": [
+    "档案 id 形态非法: EU-High-Risk"
+  ],
+  "bad-profile-missing-id.json": [
+    "档案缺 id: {title={en=EU AI Act high-risk system, zh=欧盟人工智能法高风险系统, de=Hochrisiko-KI-System nach EU-KI-Verordnung}, requires={ruleId=true, registeredControls=true, frameworks=[EU_AI_ACT]}}"
+  ],
+  "bad-profile-registered-controls-not-boolean.json": [
+    "档案 eu-ai-act-high-risk 的 requires.registeredControls 须为布尔"
+  ],
+  "bad-profile-ruleid-not-boolean.json": [
+    "档案 eu-ai-act-high-risk 的 requires.ruleId 须为布尔"
+  ],
+  "bad-profile-unknown-framework.json": [
+    "档案 eu-ai-act-high-risk 引用未登记框架: NOPE"
+  ],
+  "bad-unknown-control.json": [
+    "条款 99(1) 引用未登记控制键: GDPR:ART99"
+  ]
+}
