@@ -1,0 +1,11 @@
+{
+  "name": "@aster-cloud/controls",
+  "version": "1.0.0",
+  "description": "Aster 控制注册表（ADR 0045）：@control 受控词表与法规对照条款，供编译器与证据导出共用。",
+  "license": "Apache-2.0",
+  "repository": { "type": "git", "url": "https://github.com/aster-cloud/aster-lang-locales.git", "directory": "controls" },
+  "publishConfig": { "access": "public" },
+  "main": "registry.json",
+  "files": ["registry.json"],
+  "scripts": { "prepack": "cd .. && ./gradlew exportControls" }
+}

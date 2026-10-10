@@ -1,0 +1,56 @@
+{
+  "version": "1.0.0",
+  "frameworks": [
+    {
+      "id": "EU_AI_ACT",
+      "title": {
+        "en": "EU AI Act",
+        "zh": "欧盟人工智能法",
+        "de": "EU-KI-Verordnung"
+      }
+    },
+    {
+      "id": "GDPR",
+      "title": {
+        "en": "General Data Protection Regulation",
+        "zh": "通用数据保护条例",
+        "de": "Datenschutz-Grundverordnung"
+      }
+    },
+    {
+      "id": "SOX",
+      "title": {
+        "en": "Sarbanes-Oxley Act",
+        "zh": "萨班斯-奥克斯利法案",
+        "de": "Sarbanes-Oxley Act"
+      }
+    }
+  ],
+  "controls": [
+    {
+      "key": "EU_AI_ACT:ART14",
+      "framework": "EU_AI_ACT",
+      "article": "14",
+      "title": {
+        "en": "Human oversight",
+        "zh": "人工监督",
+        "de": "Menschliche Aufsicht"
+      }
+    }
+  ],
+  "clauses": [
+    {
+      "control": "GDPR:ART99",
+      "clause": "99(1)",
+      "title": {
+        "en": "x",
+        "zh": "x",
+        "de": "x"
+      },
+      "evidenced": [
+        "control"
+      ],
+      "partial": []
+    }
+  ]
+}

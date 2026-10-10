@@ -216,3 +216,133 @@ exportUiMessages.configure { dependsOn(verifyUiMessagesParity) }
 subprojects {
     tasks.matching { it.name == "check" }.configureEach { dependsOn(verifyUiMessagesParity) }
 }
+
+// ── 控制注册表校验与导出（ADR 0045 §2）──────────────────────────────────
+// 输入可用 -PcontrolsSource 覆盖（负向测试用）。
+val controlsSource: java.io.File = (findProperty("controlsSource") as String?)
+    ?.let { rootProject.file(it) } ?: rootProject.file("controls/registry.json")
+
+val exportControls by tasks.registering {
+    group = "aster"
+    description = "校验并导出控制注册表（ADR 0045）"
+    inputs.file(controlsSource)
+    val outDir = layout.buildDirectory.dir("controls")
+    outputs.dir(outDir)
+    doLast {
+        @Suppress("UNCHECKED_CAST")
+        val reg = groovy.json.JsonSlurper().parse(controlsSource) as Map<String, Any?>
+        val problems = validateControlsRegistry(reg)
+        require(problems.isEmpty()) { "控制注册表不合法（${controlsSource}）：\n" + problems.joinToString("\n") }
+        val out = outDir.get().asFile
+        out.mkdirs()
+        controlsSource.copyTo(out.resolve("registry.json"), overwrite = true)
+        logger.lifecycle("controls registry ${reg["version"]} 已导出")
+    }
+}
+
+val CONTROL_KEY = Regex("^[A-Z0-9_]+:[A-Z0-9_().]+$")
+val PROFILE_ID = Regex("^[a-z][a-z0-9-]{0,63}$")
+val EVIDENCE_SOURCES = setOf(
+    "control", "outcome.pending", "outcome.requireApproval", "reviewers.any", "reviewers.guard.any",
+    "reviewers.guard.approved", "reviewers.guard.rejected", "reviewers.guard.two", "whatIf.comparable", "rule.reason",
+)
+val LOCALES = listOf("en", "zh", "de")
+
+/** 逐项检查注册表；返回问题列表（空 = 合法）。 */
+fun validateControlsRegistry(reg: Map<String, Any?>): List<String> {
+    val problems = mutableListOf<String>()
+    if ((reg["version"] as? String).isNullOrBlank()) problems += "缺 version"
+    @Suppress("UNCHECKED_CAST") val frameworks = reg["frameworks"] as? List<Map<String, Any?>> ?: emptyList()
+    @Suppress("UNCHECKED_CAST") val controls = reg["controls"] as? List<Map<String, Any?>> ?: emptyList()
+    @Suppress("UNCHECKED_CAST") val clauses = reg["clauses"] as? List<Map<String, Any?>> ?: emptyList()
+    // 框架 id 必须非空：缺 id 的框架不进集合，从而引用它（或缺 framework）的控制点必然报错
+    frameworks.filter { (it["id"] as? String).isNullOrBlank() }.forEach { problems += "框架缺 id: $it" }
+    val frameworkIds = frameworks.mapNotNull { (it["id"] as? String)?.takeIf(String::isNotBlank) }.toSet()
+    val keys = mutableSetOf<String>()
+    for (c in controls) {
+        val key = c["key"] as? String ?: "".also { problems += "控制点缺 key: $c" }
+        if (!CONTROL_KEY.matches(key) || key.length > 64) problems += "控制键形态非法: $key"
+        if (!keys.add(key)) problems += "控制键重复: $key"
+        if (c["framework"] !in frameworkIds) problems += "控制键 $key 的 framework 未登记: ${c["framework"]}"
+        problems += missingTitles("控制键 $key", c["title"])
+    }
+    // 同一控制点下条款 id 唯一（证据包与报告表以「控制点 + 条款」为行键）
+    val clauseIds = mutableSetOf<Pair<Any?, String>>()
+    for (cl in clauses) {
+        val label = "条款 ${cl["clause"]}"
+        val clauseId = cl["clause"] as? String
+        if (clauseId.isNullOrBlank()) problems += "条款缺 clause id: $cl"
+        else if (!clauseIds.add(cl["control"] to clauseId)) problems += "$label 在控制键 ${cl["control"]} 下重复"
+        if (cl["control"] !in keys) problems += "$label 引用未登记控制键: ${cl["control"]}"
+        problems += missingTitles(label, cl["title"])
+        for (field in listOf("evidenced", "partial")) {
+            @Suppress("UNCHECKED_CAST") val list = cl[field] as? List<String>
+            if (list == null) { problems += "$label 缺 $field 数组"; continue }
+            list.filter { it !in EVIDENCE_SOURCES }.forEach { problems += "$label 的 $field 含未知证据来源: $it" }
+        }
+    }
+    // 档案：id 形态与唯一、三语标题、requires 三个字段齐全、frameworks 只引用已登记框架
+    @Suppress("UNCHECKED_CAST") val profiles = reg["profiles"] as? List<Map<String, Any?>> ?: emptyList()
+    val profileIds = mutableSetOf<String>()
+    for (p in profiles) {
+        val id = p["id"] as? String ?: ""
+        profileIdProblem(p, profileIds)?.let { problems += it }
+        problems += missingTitles("档案 $id", p["title"])
+        problems += profileRequiresProblems(id, p["requires"], frameworkIds)
+    }
+    return problems
+}
+
+/** 档案 id 至多报一条问题：缺失、形态非法、重复三者互斥；合法且首次出现的 id 记入 seen。 */
+fun profileIdProblem(p: Map<String, Any?>, seen: MutableSet<String>): String? {
+    val id = p["id"] as? String ?: return "档案缺 id: $p"
+    if (!PROFILE_ID.matches(id)) return "档案 id 形态非法: $id"
+    return if (seen.add(id)) null else "档案 id 重复: $id"
+}
+
+/** 校验档案 requires：两个布尔开关齐全，frameworks 为数组且只引用已登记框架。 */
+fun profileRequiresProblems(id: String, requires: Any?, frameworkIds: Set<String>): List<String> {
+    @Suppress("UNCHECKED_CAST") val r = requires as? Map<String, Any?> ?: return listOf("档案 $id 缺 requires")
+    val out = mutableListOf<String>()
+    if (r["ruleId"] !is Boolean) out += "档案 $id 的 requires.ruleId 须为布尔"
+    if (r["registeredControls"] !is Boolean) out += "档案 $id 的 requires.registeredControls 须为布尔"
+    @Suppress("UNCHECKED_CAST") val fws = r["frameworks"] as? List<Any?>
+    if (fws == null) return out + "档案 $id 的 requires.frameworks 须为数组"
+    fws.filter { it !in frameworkIds }.forEach { out += "档案 $id 引用未登记框架: $it" }
+    return out
+}
+
+fun missingTitles(label: String, title: Any?): List<String> {
+    @Suppress("UNCHECKED_CAST") val t = title as? Map<String, Any?> ?: return listOf("$label 缺 title")
+    return LOCALES.filter { (t[it] as? String).isNullOrBlank() }.map { "$label 缺 $it 标题" }
+}
+
+// 负向夹具：每个 bad-*.json 的校验问题须与 expected-problems.json 逐条一致，夹具集合与期望清单也须相同
+val verifyControlsFixtures = tasks.register("verifyControlsFixtures") {
+    group = "verification"
+    description = "对全部负向控制注册表夹具运行校验并比对期望问题列表"
+    val fixturesDir = rootProject.file("controls/src/test-fixtures")
+    inputs.dir(fixturesDir)
+    doLast {
+        val slurper = groovy.json.JsonSlurper()
+        @Suppress("UNCHECKED_CAST")
+        val expected = slurper.parse(fixturesDir.resolve("expected-problems.json")) as Map<String, List<String>>
+        val fixtures = fixturesDir.listFiles()!!.map { it.name }
+            .filter { it.startsWith("bad-") && it.endsWith(".json") }.sorted()
+        val mismatches = mutableListOf<String>()
+        if (fixtures.toSet() != expected.keys) {
+            mismatches += "夹具与期望清单不一致：夹具 $fixtures，期望 ${expected.keys.sorted()}"
+        }
+        for (name in fixtures) {
+            @Suppress("UNCHECKED_CAST")
+            val actual = validateControlsRegistry(slurper.parse(fixturesDir.resolve(name)) as Map<String, Any?>)
+            if (actual != expected[name]) mismatches += "$name：期望 ${expected[name]}，实际 $actual"
+        }
+        if (mismatches.isNotEmpty()) throw GradleException("负向夹具校验结果不符：\n" + mismatches.joinToString("\n"))
+        logger.lifecycle("verifyControlsFixtures: ${fixtures.size} 个负向夹具的问题列表全部一致")
+    }
+}
+
+subprojects {
+    tasks.matching { it.name == "check" }.configureEach { dependsOn(exportControls, verifyControlsFixtures) }
+}
