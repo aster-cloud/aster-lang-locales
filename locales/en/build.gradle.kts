@@ -25,8 +25,7 @@ publishing {
  * projectDir（aster-lang-locales/locales/en）回到 workspace 根需上溯三层，
  * core backbone 的相对路径为 ../../../aster-lang-core（比旧的独立仓多两层）。
  *
- * 兼容性：为防不同 checkout 嵌套深度（本地 monorepo / sibling / nested）下
- * 静默 skip，按候选列表依次探测，命中第一个存在的为准。
+ * 路径优先级：显式 -PenLexiconBackbone 覆盖，其次 CI 的嵌套检出，最后本地 ../ sibling。
  *
  * 同步流程：改完一方后，cp <src> <dst>，commit 两份。
  */
@@ -35,24 +34,28 @@ tasks.register("verifyLexiconParity") {
     description = "Ensure locales/en en-US.json matches aster-lang-core/builtin/en-US.json byte-for-byte"
 
     val ours = file("src/main/resources/lexicons/en-US.json")
-    // CI sibling layout first (../../../), then fall back to other common
-    // nestings so the gate runs rather than silently skipping on a layout shift.
+    val override = providers.gradleProperty("enLexiconBackbone").orNull
     val coreCandidates = listOf(
-        "../../../aster-lang-core/src/main/resources/builtin/en-US.json",
-        "../../../../aster-lang-core/src/main/resources/builtin/en-US.json",
-        "../aster-lang-core/src/main/resources/builtin/en-US.json"
-    ).map { file(it) }
-    val coreCopy = coreCandidates.firstOrNull { it.exists() } ?: coreCandidates.first()
+        file("../../../aster-lang-core/src/main/resources/builtin/en-US.json"),
+        file("../aster-lang-core/src/main/resources/builtin/en-US.json")
+    )
+    val coreCopy = override?.let { file(it) }
+        ?: coreCandidates.firstOrNull { it.exists() }
+        ?: coreCandidates.first()
 
     inputs.file(ours)
+    // FileCollection 容忍文件缺失；缺失时由 doLast 按 CI 与否决定失败或跳过。
+    inputs.files(coreCopy)
 
     doLast {
         if (!coreCopy.exists()) {
-            logger.warn(
-                "verifyLexiconParity: aster-lang-core builtin/en-US.json not found at ${coreCopy.absolutePath}. " +
-                    "Skipping (sibling repo absent — likely non-monorepo CI). " +
-                    "Run from a workspace where both repos are checked out."
-            )
+            if (System.getenv("CI") != null) {
+                throw GradleException(
+                    "verifyLexiconParity: en-US backbone not found at ${coreCopy.absolutePath}; " +
+                        "check out aster-lang-core or pass -PenLexiconBackbone=<path>."
+                )
+            }
+            logger.warn("verifyLexiconParity: en-US backbone not found at ${coreCopy.absolutePath}; local run is skipping.")
             return@doLast
         }
         val oursBytes = ours.readBytes()
