@@ -71,9 +71,10 @@ cd ../aster-lang-locales && ./gradlew build publishToMavenLocal
 
 `:en` 模块的 `verifyLexiconParity` 任务会校验 `en-US.json` 与
 `aster-lang-core` 内嵌副本逐字节一致（`:zh`/`:de` 的
-`verifyLexiconKeywordParity` 同理校验关键字键集）。这些门禁按相对路径探测
-sibling checkout（`../aster-lang-core`，与 CI 布局一致），需在两个仓库并列
-checkout 的工作区运行；sibling 不存在时仅告警跳过。
+`verifyLexiconKeywordParity` 同理校验关键字键集）。这些门禁优先使用
+`-PenLexiconBackbone=<path>` 指定的 backbone 文件，否则依次查找仓库内的嵌套
+`aster-lang-core` checkout 与 `../aster-lang-core` sibling。CI（`CI` 环境变量存在）找不到
+backbone 时会抛出 `GradleException`；本地找不到时会告警并跳过。
 
 ## 插件加载机制不受合并影响
 

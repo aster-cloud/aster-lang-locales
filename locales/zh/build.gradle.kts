@@ -26,29 +26,35 @@ dependencies {
  *
  * 路径：合并后本模块位于 aster-lang-locales/locales/zh/，core backbone 在
  * CI sibling 布局下相对路径为 ../../../aster-lang-core（同 locales/en）。
- * 按候选列表探测以兼容不同 checkout 嵌套深度。
+ * 路径优先级：显式 -PenLexiconBackbone 覆盖，其次嵌套检出，最后 ../ sibling。
  */
 tasks.register("verifyLexiconKeywordParity") {
     group = "verification"
     description = "Ensure zh-CN.json keyword set matches en-US backbone"
 
     val ours = file("src/main/resources/lexicons/zh-CN.json")
+    val override = providers.gradleProperty("enLexiconBackbone").orNull
     val backboneCandidates = listOf(
-        "../../../aster-lang-core/src/main/resources/builtin/en-US.json",
-        "../../../../aster-lang-core/src/main/resources/builtin/en-US.json",
-        "../aster-lang-core/src/main/resources/builtin/en-US.json"
-    ).map { file(it) }
-    val backbone = backboneCandidates.firstOrNull { it.exists() } ?: backboneCandidates.first()
+        file("../../../aster-lang-core/src/main/resources/builtin/en-US.json"),
+        file("../aster-lang-core/src/main/resources/builtin/en-US.json")
+    )
+    val backbone = override?.let { file(it) }
+        ?: backboneCandidates.firstOrNull { it.exists() }
+        ?: backboneCandidates.first()
 
     inputs.file(ours)
-    inputs.files(backboneCandidates).optional()
+    // FileCollection 容忍文件缺失；缺失时由 doLast 按 CI 与否决定失败或跳过。
+    inputs.files(backbone)
 
     doLast {
         if (!backbone.exists()) {
-            logger.warn(
-                "verifyLexiconKeywordParity: en-US backbone not found (tried ${backboneCandidates.map { it.path }}). " +
-                    "Sibling aster-lang-core absent — likely non-monorepo CI. Skipping."
-            )
+            if (System.getenv("CI") != null) {
+                throw GradleException(
+                    "verifyLexiconKeywordParity: en-US backbone not found at ${backbone.absolutePath}; " +
+                        "check out aster-lang-core or pass -PenLexiconBackbone=<path>."
+                )
+            }
+            logger.warn("verifyLexiconKeywordParity: en-US backbone not found at ${backbone.absolutePath}; local run is skipping.")
             return@doLast
         }
         val parser = groovy.json.JsonSlurper()
