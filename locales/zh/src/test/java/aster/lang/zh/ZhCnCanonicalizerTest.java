@@ -2,10 +2,20 @@ package aster.lang.zh;
 
 import aster.core.canonicalizer.Canonicalizer;
 import aster.core.lexicon.LexiconRegistry;
+import aster.core.parser.AsterCustomLexer;
+import aster.core.parser.AsterParser;
+import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -345,6 +355,42 @@ class ZhCnCanonicalizerTest {
             assertFalse(result.contains("Rule 折扣("),
                     "不得产出函数名后直接跟括号的非法形式，实际结果: " + result);
         }
+
+        @Test
+        @DisplayName("★端到端：规则 折扣（甲 作为 整数，乙 作为 整数），产出 整数： 规范化后可被语法分析")
+        void testRuleFuncSugar_ParsesWithAsParams() {
+            // 只断言规范化文本会掩盖「重排结果语法不接受」：`甲: 整数` 形式重排后仍无法解析。
+            String result = zhCanonicalizer.canonicalize(
+                    "模块 测试。\n\n规则 折扣（甲 作为 整数，乙 作为 整数），产出 整数：\n  返回 甲。\n");
+            assertTrue(result.contains("Rule 折扣 given 甲 as Int,乙 as Int,produce Int:"),
+                    "应重排为 Rule … given … as …，实际结果: " + result);
+            assertEquals(List.of(), parseErrors(result), "重排结果必须能被语法分析，实际文本: " + result);
+        }
+
+        @Test
+        @DisplayName("端到端：无参数 规则 你好（）： 规范化后可被语法分析")
+        void testRuleFuncSugar_NoParamsParses() {
+            String result = zhCanonicalizer.canonicalize("模块 测试。\n\n规则 你好（）：\n  返回 1。\n");
+            assertEquals(List.of(), parseErrors(result), "实际文本: " + result);
+        }
+    }
+
+    /** 用 core 的 ANTLR 语法分析规范化文本，返回语法错误列表（空即通过）。 */
+    private static List<String> parseErrors(String canonical) {
+        List<String> errors = new ArrayList<>();
+        AsterCustomLexer lexer = new AsterCustomLexer(CharStreams.fromString(canonical));
+        lexer.removeErrorListeners();
+        AsterParser parser = new AsterParser(new CommonTokenStream(lexer));
+        parser.removeErrorListeners();
+        parser.addErrorListener(new BaseErrorListener() {
+            @Override
+            public void syntaxError(Recognizer<?, ?> recognizer, Object symbol, int line, int col,
+                                    String msg, RecognitionException e) {
+                errors.add(line + ":" + col + " " + msg);
+            }
+        });
+        parser.module();
+        return errors;
     }
 
     // ============================================================
