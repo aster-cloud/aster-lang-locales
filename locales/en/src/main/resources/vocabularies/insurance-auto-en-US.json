@@ -50,11 +50,11 @@
     { "canonical": "validateVehicle", "localized": "validateVehicle" }
   ],
   "enumValues": [
-    { "canonical": "Approved", "localized": "Approved" },
-    { "canonical": "Rejected", "localized": "Rejected", "aliases": ["Denied"] },
-    { "canonical": "Pending", "localized": "Pending" },
-    { "canonical": "HighRisk", "localized": "HighRisk" },
-    { "canonical": "MediumRisk", "localized": "MediumRisk" },
-    { "canonical": "LowRisk", "localized": "LowRisk" }
+    { "canonical": "Approved", "localized": "Approved", "parent": "QuoteStatus" },
+    { "canonical": "Rejected", "localized": "Rejected", "parent": "QuoteStatus", "aliases": ["Denied"] },
+    { "canonical": "Pending", "localized": "Pending", "parent": "QuoteStatus" },
+    { "canonical": "HighRisk", "localized": "HighRisk", "parent": "RiskLevel" },
+    { "canonical": "MediumRisk", "localized": "MediumRisk", "parent": "RiskLevel" },
+    { "canonical": "LowRisk", "localized": "LowRisk", "parent": "RiskLevel" }
   ]
 }

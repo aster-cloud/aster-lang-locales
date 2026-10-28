@@ -53,13 +53,13 @@
     { "canonical": "assessCollateral", "localized": "评估抵押物", "aliases": ["抵押物评估"] }
   ],
   "enumValues": [
-    { "canonical": "Excellent", "localized": "优秀", "aliases": ["优"] },
-    { "canonical": "Good", "localized": "良好", "aliases": ["良"] },
-    { "canonical": "Fair", "localized": "一般", "aliases": ["中"] },
-    { "canonical": "Poor", "localized": "较差", "aliases": ["差"] },
-    { "canonical": "Personal", "localized": "个人贷款", "aliases": ["消费贷"] },
-    { "canonical": "Mortgage", "localized": "房贷", "aliases": ["房屋贷款", "按揭贷款"] },
-    { "canonical": "Business", "localized": "经营贷款", "aliases": ["企业贷款", "商业贷款"] },
-    { "canonical": "Auto", "localized": "车贷", "aliases": ["汽车贷款"] }
+    { "canonical": "Excellent", "localized": "优秀", "parent": "CreditLevel", "aliases": ["优"] },
+    { "canonical": "Good", "localized": "良好", "parent": "CreditLevel", "aliases": ["良"] },
+    { "canonical": "Fair", "localized": "一般", "parent": "CreditLevel", "aliases": ["中"] },
+    { "canonical": "Poor", "localized": "较差", "parent": "CreditLevel", "aliases": ["差"] },
+    { "canonical": "Personal", "localized": "个人贷款", "parent": "LoanType", "aliases": ["消费贷"] },
+    { "canonical": "Mortgage", "localized": "房贷", "parent": "LoanType", "aliases": ["房屋贷款", "按揭贷款"] },
+    { "canonical": "Business", "localized": "经营贷款", "parent": "LoanType", "aliases": ["企业贷款", "商业贷款"] },
+    { "canonical": "Auto", "localized": "车贷", "parent": "LoanType", "aliases": ["汽车贷款"] }
   ]
 }

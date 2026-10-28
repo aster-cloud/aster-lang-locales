@@ -53,13 +53,13 @@
     { "canonical": "assessCollateral", "localized": "SicherheitBewerten", "aliases": ["Sicherheit bewerten"] }
   ],
   "enumValues": [
-    { "canonical": "Excellent", "localized": "Ausgezeichnet" },
-    { "canonical": "Good", "localized": "Gut" },
-    { "canonical": "Fair", "localized": "Befriedigend", "aliases": ["Ausreichend"] },
-    { "canonical": "Poor", "localized": "Mangelhaft", "aliases": ["Ungenuegend"] },
-    { "canonical": "Personal", "localized": "Privatkredit", "aliases": ["Konsumentenkredit"] },
-    { "canonical": "Mortgage", "localized": "Hypothek", "aliases": ["Baufinanzierung", "Immobilienkredit"] },
-    { "canonical": "Business", "localized": "Geschaeftskredit", "aliases": ["Firmenkredit", "Unternehmenskredit"] },
-    { "canonical": "Auto", "localized": "Autokredit", "aliases": ["Fahrzeugfinanzierung"] }
+    { "canonical": "Excellent", "localized": "Ausgezeichnet", "parent": "CreditLevel" },
+    { "canonical": "Good", "localized": "Gut", "parent": "CreditLevel" },
+    { "canonical": "Fair", "localized": "Befriedigend", "parent": "CreditLevel", "aliases": ["Ausreichend"] },
+    { "canonical": "Poor", "localized": "Mangelhaft", "parent": "CreditLevel", "aliases": ["Ungenuegend"] },
+    { "canonical": "Personal", "localized": "Privatkredit", "parent": "LoanType", "aliases": ["Konsumentenkredit"] },
+    { "canonical": "Mortgage", "localized": "Hypothek", "parent": "LoanType", "aliases": ["Baufinanzierung", "Immobilienkredit"] },
+    { "canonical": "Business", "localized": "Geschaeftskredit", "parent": "LoanType", "aliases": ["Firmenkredit", "Unternehmenskredit"] },
+    { "canonical": "Auto", "localized": "Autokredit", "parent": "LoanType", "aliases": ["Fahrzeugfinanzierung"] }
   ]
 }

@@ -50,11 +50,11 @@
     { "canonical": "validateVehicle", "localized": "FahrzeugPruefen", "aliases": ["Fahrzeug pruefen", "Fahrzeugpruefung"] }
   ],
   "enumValues": [
-    { "canonical": "Approved", "localized": "Genehmigt", "aliases": ["Bewilligt"] },
-    { "canonical": "Rejected", "localized": "Abgelehnt" },
-    { "canonical": "Pending", "localized": "Ausstehend", "aliases": ["In Bearbeitung"] },
-    { "canonical": "HighRisk", "localized": "HohesRisiko", "aliases": ["Hohes Risiko"] },
-    { "canonical": "MediumRisk", "localized": "MittleresRisiko", "aliases": ["Mittleres Risiko"] },
-    { "canonical": "LowRisk", "localized": "NiedrigesRisiko", "aliases": ["Niedriges Risiko"] }
+    { "canonical": "Approved", "localized": "Genehmigt", "parent": "QuoteStatus", "aliases": ["Bewilligt"] },
+    { "canonical": "Rejected", "localized": "Abgelehnt", "parent": "QuoteStatus" },
+    { "canonical": "Pending", "localized": "Ausstehend", "parent": "QuoteStatus", "aliases": ["In Bearbeitung"] },
+    { "canonical": "HighRisk", "localized": "HohesRisiko", "parent": "RiskLevel", "aliases": ["Hohes Risiko"] },
+    { "canonical": "MediumRisk", "localized": "MittleresRisiko", "parent": "RiskLevel", "aliases": ["Mittleres Risiko"] },
+    { "canonical": "LowRisk", "localized": "NiedrigesRisiko", "parent": "RiskLevel", "aliases": ["Niedriges Risiko"] }
   ]
 }
