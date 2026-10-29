@@ -53,13 +53,13 @@
     { "canonical": "assessCollateral", "localized": "assessCollateral", "aliases": ["evaluateCollateral"] }
   ],
   "enumValues": [
-    { "canonical": "Excellent", "localized": "Excellent" },
-    { "canonical": "Good", "localized": "Good" },
-    { "canonical": "Fair", "localized": "Fair" },
-    { "canonical": "Poor", "localized": "Poor" },
-    { "canonical": "Personal", "localized": "Personal", "aliases": ["PersonalLoan"] },
-    { "canonical": "Mortgage", "localized": "Mortgage", "aliases": ["HomeLoan"] },
-    { "canonical": "Business", "localized": "Business", "aliases": ["BusinessLoan"] },
-    { "canonical": "Auto", "localized": "Auto", "aliases": ["AutoLoan", "CarLoan"] }
+    { "canonical": "Excellent", "localized": "Excellent", "parent": "CreditLevel" },
+    { "canonical": "Good", "localized": "Good", "parent": "CreditLevel" },
+    { "canonical": "Fair", "localized": "Fair", "parent": "CreditLevel" },
+    { "canonical": "Poor", "localized": "Poor", "parent": "CreditLevel" },
+    { "canonical": "Personal", "localized": "Personal", "parent": "LoanType", "aliases": ["PersonalLoan"] },
+    { "canonical": "Mortgage", "localized": "Mortgage", "parent": "LoanType", "aliases": ["HomeLoan"] },
+    { "canonical": "Business", "localized": "Business", "parent": "LoanType", "aliases": ["BusinessLoan"] },
+    { "canonical": "Auto", "localized": "Auto", "parent": "LoanType", "aliases": ["AutoLoan", "CarLoan"] }
   ]
 }

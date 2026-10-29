@@ -13,9 +13,19 @@
     "E209": "函数 '{func}' 同时声明 @cpu 和 @io；由于需要 @io，@cpu 可移除。",
     "E210": "效应变量 {var} 未声明",
     "E211": "效应变量 {vars} 无法推断出具体效果",
+    "E800": "无法在 {role} 位置解析类型 '{written}'",
+    "E801": "无法在 {role} 位置解析字段 '{written}'",
+    "E802": "无法在 {role} 位置解析名称 '{written}'",
+    "E803": "无法在 {role} 位置解析模式 '{written}'",
+    "E804": "{role} 位置的名称 '{written}' 存在歧义，候选: {candidates}",
+    "E805": "{role} 位置的字段 '{written}' 存在歧义，候选: {candidates}",
+    "E806": "{role} 位置的模式 '{written}' 存在歧义，候选: {candidates}",
+    "E807": "在 {role} 位置重复声明 '{written}'",
     "W071": "检测到隐式 PII 等级提升: {source} -> {target}",
     "W074": "可能有 PII 数据流向 {sinkKind} 但缺少注解",
     "W105": "Workflow retry 配置可能不合理: {reason}",
-    "W106": "Workflow timeout 配置可能不合理: {reason}"
+    "W106": "Workflow timeout 配置可能不合理: {reason}",
+    "W800": "{role} 位置的声明 '{written}' 遮蔽了词汇表条目",
+    "W801": "在 {role} 位置解析 '{written}' 时接收者类型未知"
   }
 }

@@ -50,11 +50,11 @@
     { "canonical": "validateVehicle", "localized": "验证车辆", "aliases": ["车辆验证"] }
   ],
   "enumValues": [
-    { "canonical": "Approved", "localized": "批准", "aliases": ["通过"] },
-    { "canonical": "Rejected", "localized": "拒绝", "aliases": ["否决"] },
-    { "canonical": "Pending", "localized": "待审", "aliases": ["待处理"] },
-    { "canonical": "HighRisk", "localized": "高风险" },
-    { "canonical": "MediumRisk", "localized": "中等风险", "aliases": ["中风险"] },
-    { "canonical": "LowRisk", "localized": "低风险" }
+    { "canonical": "Approved", "localized": "批准", "parent": "QuoteStatus", "aliases": ["通过"] },
+    { "canonical": "Rejected", "localized": "拒绝", "parent": "QuoteStatus", "aliases": ["否决"] },
+    { "canonical": "Pending", "localized": "待审", "parent": "QuoteStatus", "aliases": ["待处理"] },
+    { "canonical": "HighRisk", "localized": "高风险", "parent": "RiskLevel" },
+    { "canonical": "MediumRisk", "localized": "中等风险", "parent": "RiskLevel", "aliases": ["中风险"] },
+    { "canonical": "LowRisk", "localized": "低风险", "parent": "RiskLevel" }
   ]
 }
