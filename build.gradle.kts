@@ -102,8 +102,9 @@ val exportUiMessages by tasks.registering {
     group = "aster"
     description = "聚合各 locale 的 ui-messages 为单一 manifest 制品（ADR 0018 Phase 1）"
 
-    // 输入：每个模块 resources 下的 ui-messages/*.json
-    val moduleMsgDirs = subprojects.map {
+    // 输入：每个语言包模块（locales/<id>）resources 下的 ui-messages/*.json；
+    // :test-support 等非语言包子项目没有界面文案，不参与聚合。
+    val moduleMsgDirs = subprojects.filter { it.projectDir.parentFile.name == "locales" }.map {
         it.projectDir.resolve("src/main/resources/ui-messages")
     }
     val outDir = layout.buildDirectory.dir("ui-messages")
