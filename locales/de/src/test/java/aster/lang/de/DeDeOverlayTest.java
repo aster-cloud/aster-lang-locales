@@ -25,8 +25,10 @@ class DeDeOverlayTest {
     void testOverlayResources() {
         DeDeLexiconPlugin plugin = new DeDeLexiconPlugin();
         Map<String, String> overlays = plugin.getOverlayResources();
-        assertThat(overlays).containsKeys("typeInferenceRules", "inputGenerationRules", "lspUiTexts");
-        assertThat(overlays).hasSize(3);
+        assertThat(overlays).containsKeys(
+                "typeInferenceRules", "inputGenerationRules", "lspUiTexts",
+                "diagnosticMessages", "diagnosticHelp");
+        assertThat(overlays).hasSize(5);
     }
 
     /**

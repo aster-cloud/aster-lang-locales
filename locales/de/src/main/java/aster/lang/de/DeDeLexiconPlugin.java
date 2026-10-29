@@ -54,7 +54,11 @@ public final class DeDeLexiconPlugin implements LexiconPlugin, VocabularyPlugin 
                 // ★磁盘上一直有 overlays/lsp-ui-texts.json（23 条完整德语 LSP 文案），
                 //   但从未在此注册 —— 德语 LSP UI 文案**永远不会被加载**。
                 //   对照 zh 插件一直是注册的。见 issue #80。
-                "lspUiTexts", "overlays/lsp-ui-texts.json"
+                "lspUiTexts", "overlays/lsp-ui-texts.json",
+                // 诊断文案（错误码 → 德语 message/help），覆盖英文码表全部错误码，
+                // 由 DeDeDiagnosticOverlayTest 校验覆盖面与占位符。
+                "diagnosticMessages", "overlays/diagnostic-messages.json",
+                "diagnosticHelp", "overlays/diagnostic-help.json"
         );
     }
 
