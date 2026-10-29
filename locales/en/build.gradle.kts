@@ -76,3 +76,8 @@ tasks.register("verifyLexiconParity") {
 tasks.named("check") {
     dependsOn("verifyLexiconParity")
 }
+
+dependencies {
+    // 共享测试夹具：内置词汇解析工具。
+    "testImplementation"(project(":test-support"))
+}

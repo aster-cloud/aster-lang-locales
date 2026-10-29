@@ -50,14 +50,19 @@ public final class EnUsPlugin implements LexiconPlugin, VocabularyPlugin {
         );
     }
 
+    /**
+     * overlay 资源放在 {@code overlays/en-US/} 下：各语言包 jar 常同处一个 classpath
+     * （core 的 exportLexicons、aster-api 的父类加载器），资源路径若相同，按路径查找只会
+     * 命中 classpath 上第一个 jar，其余语言的 overlay 被静默遮蔽。
+     */
     @Override
     public Map<String, String> getOverlayResources() {
         return Map.of(
-                "typeInferenceRules", "overlays/type-inference-rules.json",
+                "typeInferenceRules", "overlays/en-US/type-inference-rules.json",
                 // ★同类遗漏：磁盘上有 overlays/input-generation-rules.json 却未注册。
                 //   issue #80 只点了 de 的 lspUiTexts，这条是排查时一并发现的。
-                "inputGenerationRules", "overlays/input-generation-rules.json",
-                "lspUiTexts", "overlays/lsp-ui-texts.json"
+                "inputGenerationRules", "overlays/en-US/input-generation-rules.json",
+                "lspUiTexts", "overlays/en-US/lsp-ui-texts.json"
         );
     }
 

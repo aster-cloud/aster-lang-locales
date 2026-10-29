@@ -14,6 +14,8 @@ publishing {
 dependencies {
     // Canonicalizer 内部依赖 en-US 词法表作为翻译目标（同 zh）。
     "testRuntimeOnly"(project(":en"))
+    // 共享测试夹具：内置词汇解析工具与诊断 overlay 契约。
+    "testImplementation"(project(":test-support"))
 }
 
 /**

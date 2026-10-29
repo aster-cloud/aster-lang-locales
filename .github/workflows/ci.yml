@@ -13,6 +13,20 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # 大小写折叠数据（ADR 0051 §6.3）：生成物与生成器、Unicode 源文件逐字节一致，折叠语义符合测试向量。
+  # 只用 Node 内置测试运行器，不依赖跨仓检出与 token，故每次都跑。
+  casefold:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+      - name: Casefold generator tests
+        run: node --test 'casefold/*.test.mjs'
+
   build:
     runs-on: ubuntu-latest
     permissions:

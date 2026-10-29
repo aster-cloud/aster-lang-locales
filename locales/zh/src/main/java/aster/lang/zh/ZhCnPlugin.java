@@ -65,14 +65,19 @@ public final class ZhCnPlugin implements LexiconPlugin, VocabularyPlugin {
         );
     }
 
+    /**
+     * overlay 资源放在 {@code overlays/zh-CN/} 下：各语言包 jar 常同处一个 classpath
+     * （core 的 exportLexicons、aster-api 的父类加载器），资源路径若相同，按路径查找只会
+     * 命中 classpath 上第一个 jar，其余语言的 overlay 被静默遮蔽。
+     */
     @Override
     public Map<String, String> getOverlayResources() {
         return Map.of(
-                "typeInferenceRules", "overlays/type-inference-rules.json",
-                "inputGenerationRules", "overlays/input-generation-rules.json",
-                "diagnosticMessages", "overlays/diagnostic-messages.json",
-                "diagnosticHelp", "overlays/diagnostic-help.json",
-                "lspUiTexts", "overlays/lsp-ui-texts.json"
+                "typeInferenceRules", "overlays/zh-CN/type-inference-rules.json",
+                "inputGenerationRules", "overlays/zh-CN/input-generation-rules.json",
+                "diagnosticMessages", "overlays/zh-CN/diagnostic-messages.json",
+                "diagnosticHelp", "overlays/zh-CN/diagnostic-help.json",
+                "lspUiTexts", "overlays/zh-CN/lsp-ui-texts.json"
         );
     }
 

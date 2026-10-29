@@ -34,3 +34,7 @@ include(":en", ":zh", ":de")
 project(":en").projectDir = file("locales/en")
 project(":zh").projectDir = file("locales/zh")
 project(":de").projectDir = file("locales/de")
+
+// 仅供测试的共享夹具（内置词汇解析工具、诊断 overlay 契约、英文诊断码表副本）。
+// 不发布：release.yml 只发布 :en/:zh/:de，本模块也不声明 publication。
+include(":test-support")

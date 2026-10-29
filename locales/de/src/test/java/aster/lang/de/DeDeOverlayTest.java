@@ -1,11 +1,13 @@
 package aster.lang.de;
 
+import aster.lang.testsupport.OverlayResources;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -25,12 +27,14 @@ class DeDeOverlayTest {
     void testOverlayResources() {
         DeDeLexiconPlugin plugin = new DeDeLexiconPlugin();
         Map<String, String> overlays = plugin.getOverlayResources();
-        assertThat(overlays).containsKeys("typeInferenceRules", "inputGenerationRules", "lspUiTexts");
-        assertThat(overlays).hasSize(3);
+        assertThat(overlays).containsKeys(
+                "typeInferenceRules", "inputGenerationRules", "lspUiTexts",
+                "diagnosticMessages", "diagnosticHelp");
+        assertThat(overlays).hasSize(5);
     }
 
     /**
-     * ★守卫：resources/overlays/ 下的每个 .json 都必须在 getOverlayResources() 注册。
+     * ★守卫：resources/overlays/ 下（含子目录）的每个 .json 都必须在 getOverlayResources() 注册。
      *
      * <p>本 issue（#80）的根因不是"忘了写一行"，而是**没有任何机制发现忘了写**：
      * 德语包磁盘上一直躺着完整的 lsp-ui-texts.json（23 条文案），却从未注册，
@@ -42,23 +46,8 @@ class DeDeOverlayTest {
      */
     @Test
     @DisplayName("守卫：磁盘上每个 overlay 文件都必须被注册")
-    void everyOverlayFileOnDiskIsRegistered() throws Exception {
-        Map<String, String> overlays = new DeDeLexiconPlugin().getOverlayResources();
-        java.util.Set<String> registered = new java.util.HashSet<>(overlays.values());
-
-        java.nio.file.Path dir = java.nio.file.Path.of("src/main/resources/overlays");
-        assertThat(java.nio.file.Files.isDirectory(dir))
-                .withFailMessage("前置条件：overlays 目录应存在于 %s", dir.toAbsolutePath())
-                .isTrue();
-
-        java.util.List<String> unregistered = new java.util.ArrayList<>();
-        try (var files = java.nio.file.Files.list(dir)) {
-            files.filter(f -> f.toString().endsWith(".json"))
-                    .map(f -> "overlays/" + f.getFileName())
-                    .filter(rel -> !registered.contains(rel))
-                    .forEach(unregistered::add);
-        }
-
+    void everyOverlayFileOnDiskIsRegistered() {
+        List<String> unregistered = OverlayResources.unregisteredOnDisk(new DeDeLexiconPlugin());
         assertThat(unregistered)
                 .withFailMessage(
                         "以下 overlay 文件在磁盘上却未在 getOverlayResources() 注册，"
@@ -67,9 +56,15 @@ class DeDeOverlayTest {
     }
 
     @Test
+    @DisplayName("overlay 路径位于 overlays/de-DE/ 下且在 classpath 上只有一份（防多语言包同 classpath 时互相遮蔽）")
+    void overlayPathsAreNamespacedAndUnique() {
+        assertThat(OverlayResources.problems(new DeDeLexiconPlugin(), "de-DE")).isEmpty();
+    }
+
+    @Test
     @DisplayName("type-inference-rules.json 格式正确且正则可编译")
     void testTypeInferenceRulesJson() throws Exception {
-        JsonNode root = loadOverlay("overlays/type-inference-rules.json");
+        JsonNode root = loadOverlay("overlays/de-DE/type-inference-rules.json");
         assertThat(root.get("version").asInt()).isEqualTo(1);
         JsonNode rules = root.get("rules");
         assertThat(rules.isArray()).isTrue();
@@ -93,7 +88,7 @@ class DeDeOverlayTest {
     @Test
     @DisplayName("input-generation-rules.json 格式正确且正则可编译")
     void testInputGenerationRulesJson() throws Exception {
-        JsonNode root = loadOverlay("overlays/input-generation-rules.json");
+        JsonNode root = loadOverlay("overlays/de-DE/input-generation-rules.json");
         assertThat(root.get("version").asInt()).isEqualTo(1);
         JsonNode rules = root.get("rules");
         assertThat(rules.isArray()).isTrue();

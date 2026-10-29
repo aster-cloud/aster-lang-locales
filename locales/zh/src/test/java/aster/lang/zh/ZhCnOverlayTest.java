@@ -1,11 +1,13 @@
 package aster.lang.zh;
 
+import aster.lang.testsupport.OverlayResources;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -33,7 +35,7 @@ class ZhCnOverlayTest {
     }
 
     /**
-     * ★守卫：resources/overlays/ 下的每个 .json 都必须在 getOverlayResources() 注册。
+     * ★守卫：resources/overlays/ 下（含子目录）的每个 .json 都必须在 getOverlayResources() 注册。
      *
      * <p>issue #80 的根因不是"忘了写一行"，而是**没有任何机制发现忘了写**：
      * 文件躺在磁盘上却未注册，其内容永远不会被加载；而原测试的 {@code hasSize(N)}
@@ -44,23 +46,8 @@ class ZhCnOverlayTest {
      */
     @Test
     @DisplayName("守卫：磁盘上每个 overlay 文件都必须被注册")
-    void everyOverlayFileOnDiskIsRegistered() throws Exception {
-        Map<String, String> overlays = new ZhCnPlugin().getOverlayResources();
-        java.util.Set<String> registered = new java.util.HashSet<>(overlays.values());
-
-        java.nio.file.Path dir = java.nio.file.Path.of("src/main/resources/overlays");
-        assertThat(java.nio.file.Files.isDirectory(dir))
-                .withFailMessage("前置条件：overlays 目录应存在于 %s", dir.toAbsolutePath())
-                .isTrue();
-
-        java.util.List<String> unregistered = new java.util.ArrayList<>();
-        try (var files = java.nio.file.Files.list(dir)) {
-            files.filter(f -> f.toString().endsWith(".json"))
-                    .map(f -> "overlays/" + f.getFileName())
-                    .filter(rel -> !registered.contains(rel))
-                    .forEach(unregistered::add);
-        }
-
+    void everyOverlayFileOnDiskIsRegistered() {
+        List<String> unregistered = OverlayResources.unregisteredOnDisk(new ZhCnPlugin());
         assertThat(unregistered)
                 .withFailMessage(
                         "以下 overlay 文件在磁盘上却未在 getOverlayResources() 注册，"
@@ -69,9 +56,15 @@ class ZhCnOverlayTest {
     }
 
     @Test
+    @DisplayName("overlay 路径位于 overlays/zh-CN/ 下且在 classpath 上只有一份（防多语言包同 classpath 时互相遮蔽）")
+    void overlayPathsAreNamespacedAndUnique() {
+        assertThat(OverlayResources.problems(new ZhCnPlugin(), "zh-CN")).isEmpty();
+    }
+
+    @Test
     @DisplayName("type-inference-rules.json 格式正确且正则可编译")
     void testTypeInferenceRulesJson() throws Exception {
-        JsonNode root = loadOverlay("overlays/type-inference-rules.json");
+        JsonNode root = loadOverlay("overlays/zh-CN/type-inference-rules.json");
         assertThat(root.get("version").asInt()).isEqualTo(1);
         JsonNode rules = root.get("rules");
         assertThat(rules.isArray()).isTrue();
@@ -84,7 +77,7 @@ class ZhCnOverlayTest {
     @Test
     @DisplayName("input-generation-rules.json 格式正确且正则可编译")
     void testInputGenerationRulesJson() throws Exception {
-        JsonNode root = loadOverlay("overlays/input-generation-rules.json");
+        JsonNode root = loadOverlay("overlays/zh-CN/input-generation-rules.json");
         assertThat(root.get("version").asInt()).isEqualTo(1);
         JsonNode rules = root.get("rules");
         assertThat(rules.isArray()).isTrue();
@@ -105,7 +98,7 @@ class ZhCnOverlayTest {
     @Test
     @DisplayName("diagnostic-messages.json 格式正确")
     void testDiagnosticMessagesJson() throws Exception {
-        JsonNode root = loadOverlay("overlays/diagnostic-messages.json");
+        JsonNode root = loadOverlay("overlays/zh-CN/diagnostic-messages.json");
         assertThat(root.get("version").asInt()).isEqualTo(1);
         JsonNode messages = root.get("messages");
         assertThat(messages.isObject()).isTrue();
@@ -119,7 +112,7 @@ class ZhCnOverlayTest {
     @Test
     @DisplayName("diagnostic-help.json 格式正确")
     void testDiagnosticHelpJson() throws Exception {
-        JsonNode root = loadOverlay("overlays/diagnostic-help.json");
+        JsonNode root = loadOverlay("overlays/zh-CN/diagnostic-help.json");
         assertThat(root.get("version").asInt()).isEqualTo(1);
         JsonNode help = root.get("help");
         assertThat(help.isObject()).isTrue();
@@ -137,7 +130,7 @@ class ZhCnOverlayTest {
         // E102=MULTIPLE_ENTRY_RULES、E103=IMPORT_SYMBOL_CONFLICT、E104=DUPLICATE_SYMBOL。
         // 历史上 overlay 残留旧 E102=DUPLICATE_SYMBOL help，导致中文用户可见语义漂移。
         // 本用例钉死这三个码的中文 help 语义，防回滚旧语义。
-        JsonNode help = loadOverlay("overlays/diagnostic-help.json").get("help");
+        JsonNode help = loadOverlay("overlays/zh-CN/diagnostic-help.json").get("help");
 
         // E102 现为 MULTIPLE_ENTRY_RULES：语义应关于 @entry Rule，绝不能再是“重复声明/名称”。
         assertThat(help.has("E102")).as("E102 应存在").isTrue();
@@ -157,7 +150,7 @@ class ZhCnOverlayTest {
     @Test
     @DisplayName("lsp-ui-texts.json 格式正确且包含必需字段")
     void testLspUiTextsJson() throws Exception {
-        JsonNode root = loadOverlay("overlays/lsp-ui-texts.json");
+        JsonNode root = loadOverlay("overlays/zh-CN/lsp-ui-texts.json");
         assertThat(root.get("version").asInt()).isEqualTo(1);
         JsonNode texts = root.get("texts");
         assertThat(texts.isObject()).isTrue();

@@ -23,6 +23,7 @@ First-party Aster CNL 语言包的合并仓库。把原先各自独立的
 | `:en` | `cloud.aster-lang:aster-lang-locales-en` | 英文词法表 + en-US backbone 同步校验 |
 | `:zh` | `cloud.aster-lang:aster-lang-locales-zh` | 简体中文词法表 + 7 个语法变换器 + CJK v2 一致性 |
 | `:de` | `cloud.aster-lang:aster-lang-locales-de` | 德语词法表 |
+| `:test-support` | 不发布 | 语言包测试共享夹具（内置词汇解析、诊断 overlay 契约、英文码表副本） |
 
 **坐标已变更**：合并后每个模块发布新的 artifactId
 `aster-lang-locales-{en,zh,de}`（见 `locales/*/build.gradle.kts:9`），
@@ -75,6 +76,25 @@ cd ../aster-lang-locales && ./gradlew build publishToMavenLocal
 `-PenLexiconBackbone=<path>` 指定的 backbone 文件，否则依次查找仓库内的嵌套
 `aster-lang-core` checkout 与 `../aster-lang-core` sibling。CI（`CI` 环境变量存在）找不到
 backbone 时会抛出 `GradleException`；本地找不到时会告警并跳过。
+
+## 诊断文案 overlay
+
+错误码的英文文案以 `aster-lang-ts` 的 `shared/error_codes.json` 为唯一基准；各语言的 message/help
+译文以语言包内的 `overlays/<语言 id>/diagnostic-messages.json`、`overlays/<语言 id>/diagnostic-help.json`
+为唯一来源（zh、de 在本仓，hi 在 `aster-lang-hi`），由插件的 `getOverlayResources()` 注册。
+
+所有 overlay 都放在 `overlays/<语言 id>/` 下：各语言包 jar 常同处一个 classpath（core 的
+`exportLexicons`、aster-api 的父类加载器），资源路径相同时按路径查找只会命中第一个 jar，
+其余语言的 overlay 会被静默遮蔽。各语言包的 overlay 测试经 `OverlayResources` 校验路径前缀与唯一性。
+
+- 去向：core 的 `exportLexicons` 把 overlay 嵌入 `lexicons.json`，`aster-lang-ts` 从中生成诊断译文表
+  （编辑器与 cloud 都经由它显示本地化诊断）。
+- 覆盖面：`test-support` 模块的 `DiagnosticOverlayContract` 要求每个语言覆盖码表全部错误码，
+  占位符集合与英文一致，且 `LexiconExporter` 能原样导出。码表副本
+  `test-support/src/main/resources/diagnostics/error_codes.json` 由 `verifyErrorCodesBaseline`
+  与 ts/core 的码表逐字节比对。
+- 码表新增错误码时：先更新副本，再给每个语言补齐译文；发布顺序为本仓与 `aster-lang-hi` 先发版，
+  `aster-lang-ts` 再重新生成诊断译文表。
 
 ## 插件加载机制不受合并影响
 

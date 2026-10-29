@@ -1,8 +1,9 @@
 // 由 Unicode 15.1 CaseFolding.txt 生成简单大小写折叠表与测试向量（ADR 0051 §6.3）。
 // 仅取状态 C 与 S；F（全折叠）与 T（土耳其语）一律忽略。
 // 用法：node casefold/generate.mjs（输出确定，重复运行无差异）
+// 作为模块导入时只导出函数与常量、不写文件；写文件只发生在 generate() 或直接运行本脚本时。
 import { readFileSync, writeFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const dir = dirname(fileURLToPath(import.meta.url));
@@ -41,9 +42,24 @@ export const TEST_VECTORS = [
     distinct: [[0x4f60, 0x597d]] },
 ];
 
-const text = readFileSync(join(dir, 'CaseFolding-15.1.0.txt'), 'utf8');
-const entries = parseSimpleFolding(text);
-// 手工拼接以保证文件内键序为字典序：JS 对象会把纯数字键（如 "2126"）提前，不能用 JSON.stringify(object)。
-const body = entries.map(([k, v]) => `  ${JSON.stringify(k)}: ${JSON.stringify(v)}`).join(',\n');
-writeFileSync(join(dir, 'casefold-15.1.json'), `{\n "version": "15.1",\n "map": {\n${body}\n }\n}\n`);
-writeFileSync(join(dir, 'test-vectors.json'), JSON.stringify(TEST_VECTORS, null, 1) + '\n');
+// 折叠表文件内容。手工拼接以保证文件内键序为字典序：JS 对象会把纯数字键（如 "2126"）提前，
+// 不能用 JSON.stringify(object)。
+export function renderCaseFoldJson(text) {
+  const body = parseSimpleFolding(text).map(([k, v]) => `  ${JSON.stringify(k)}: ${JSON.stringify(v)}`).join(',\n');
+  return `{\n "version": "15.1",\n "map": {\n${body}\n }\n}\n`;
+}
+
+export function renderTestVectorsJson() {
+  return JSON.stringify(TEST_VECTORS, null, 1) + '\n';
+}
+
+// 读取本目录的 CaseFolding-15.1.0.txt，把折叠表与测试向量写入 outDir（默认本目录）。
+export function generate(outDir = dir) {
+  const text = readFileSync(join(dir, 'CaseFolding-15.1.0.txt'), 'utf8');
+  writeFileSync(join(outDir, 'casefold-15.1.json'), renderCaseFoldJson(text));
+  writeFileSync(join(outDir, 'test-vectors.json'), renderTestVectorsJson());
+}
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  generate();
+}
