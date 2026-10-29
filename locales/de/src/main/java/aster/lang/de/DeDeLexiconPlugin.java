@@ -46,19 +46,24 @@ public final class DeDeLexiconPlugin implements LexiconPlugin, VocabularyPlugin 
         );
     }
 
+    /**
+     * overlay 资源放在 {@code overlays/de-DE/} 下：各语言包 jar 常同处一个 classpath
+     * （core 的 exportLexicons、aster-api 的父类加载器），资源路径若相同，按路径查找只会
+     * 命中 classpath 上第一个 jar，其余语言的 overlay 被静默遮蔽。
+     */
     @Override
     public Map<String, String> getOverlayResources() {
         return Map.of(
-                "typeInferenceRules", "overlays/type-inference-rules.json",
-                "inputGenerationRules", "overlays/input-generation-rules.json",
+                "typeInferenceRules", "overlays/de-DE/type-inference-rules.json",
+                "inputGenerationRules", "overlays/de-DE/input-generation-rules.json",
                 // ★磁盘上一直有 overlays/lsp-ui-texts.json（23 条完整德语 LSP 文案），
                 //   但从未在此注册 —— 德语 LSP UI 文案**永远不会被加载**。
                 //   对照 zh 插件一直是注册的。见 issue #80。
-                "lspUiTexts", "overlays/lsp-ui-texts.json",
+                "lspUiTexts", "overlays/de-DE/lsp-ui-texts.json",
                 // 诊断文案（错误码 → 德语 message/help），覆盖英文码表全部错误码，
                 // 由 DeDeDiagnosticOverlayTest 校验覆盖面与占位符。
-                "diagnosticMessages", "overlays/diagnostic-messages.json",
-                "diagnosticHelp", "overlays/diagnostic-help.json"
+                "diagnosticMessages", "overlays/de-DE/diagnostic-messages.json",
+                "diagnosticHelp", "overlays/de-DE/diagnostic-help.json"
         );
     }
 

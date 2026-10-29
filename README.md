@@ -80,8 +80,12 @@ backbone 时会抛出 `GradleException`；本地找不到时会告警并跳过�
 ## 诊断文案 overlay
 
 错误码的英文文案以 `aster-lang-ts` 的 `shared/error_codes.json` 为唯一基准；各语言的 message/help
-译文以语言包内的 `overlays/diagnostic-messages.json`、`overlays/diagnostic-help.json` 为唯一来源
-（zh、de 在本仓，hi 在 `aster-lang-hi`），由插件的 `getOverlayResources()` 注册。
+译文以语言包内的 `overlays/<语言 id>/diagnostic-messages.json`、`overlays/<语言 id>/diagnostic-help.json`
+为唯一来源（zh、de 在本仓，hi 在 `aster-lang-hi`），由插件的 `getOverlayResources()` 注册。
+
+所有 overlay 都放在 `overlays/<语言 id>/` 下：各语言包 jar 常同处一个 classpath（core 的
+`exportLexicons`、aster-api 的父类加载器），资源路径相同时按路径查找只会命中第一个 jar，
+其余语言的 overlay 会被静默遮蔽。各语言包的 overlay 测试经 `OverlayResources` 校验路径前缀与唯一性。
 
 - 去向：core 的 `exportLexicons` 把 overlay 嵌入 `lexicons.json`，`aster-lang-ts` 从中生成诊断译文表
   （编辑器与 cloud 都经由它显示本地化诊断）。
