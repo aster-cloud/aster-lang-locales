@@ -16,6 +16,8 @@ dependencies {
     // testRuntimeOnly("cloud.aster-lang:aster-lang-en")；现在直接用
     // 兄弟模块，避免依赖 Maven Local 中可能过期的 en 工件。
     "testRuntimeOnly"(project(":en"))
+    // 共享测试夹具：内置词汇解析工具。
+    "testImplementation"(project(":test-support"))
 }
 
 /**
