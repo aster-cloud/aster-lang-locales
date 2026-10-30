@@ -24,6 +24,15 @@ class DeDeCanonicalizerTest {
         deCanonicalizer = new Canonicalizer(LexiconRegistry.getInstance().getOrThrow("de-DE"));
     }
 
+    /** ADR 0052：赋值语句保留为 Set（写回外层 Let），不再改写成 Let 声明。 */
+    @Test
+    @DisplayName("setze X auf Y → Set X to Y（不改写成 Let）")
+    void setStaysAssignment() {
+        String result = deCanonicalizer.canonicalize("  setze summe auf summe plus 1.");
+        assertTrue(result.toLowerCase(java.util.Locale.ROOT).contains("set summe to summe"), "'setze X auf Y' 应翻译为 Set X to Y，实际结果: " + result);
+        assertFalse(result.contains("Let"), "赋值不得改写成 Let 声明，实际结果: " + result);
+    }
+
     @Test
     @DisplayName("customRules 执行：ASCII umlaut → Unicode umlaut")
     void customRules_UmlautNormalization() {

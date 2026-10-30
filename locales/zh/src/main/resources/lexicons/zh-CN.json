@@ -135,8 +135,6 @@
     ],
     "postTranslationTransformers": [
       "result-is",
-      "set-to",
-      "chinese-set-to",
       "chinese-result-is"
     ]
   },

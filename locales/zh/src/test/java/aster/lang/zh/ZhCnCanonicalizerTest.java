@@ -42,6 +42,14 @@ class ZhCnCanonicalizerTest {
     @DisplayName("关键词翻译")
     class KeywordTranslationTests {
 
+        /** ADR 0052：赋值语句保留为 Set（写回外层 Let），不再改写成 Let 声明。 */
+        @Test
+        void testChineseSetStaysAssignment() {
+            String result = zhCanonicalizer.canonicalize("  将 总额 设为 总额 加 1。");
+            assertTrue(result.toLowerCase(java.util.Locale.ROOT).contains("set 总额 to 总额"), "「将 X 设为 Y」应翻译为 Set X to Y，实际结果: " + result);
+            assertFalse(result.contains("Let"), "赋值不得改写成 Let 声明，实际结果: " + result);
+        }
+
         @Test
         void testChineseKeywordTranslation_ControlFlow() {
             String input = "如果 条件";

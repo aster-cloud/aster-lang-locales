@@ -17,7 +17,7 @@ import java.util.Map;
  * 英文语言包插件 (en-US)。
  * <p>
  * 从 JSON 配置加载英文词法表，通过 SPI 注册到 {@link aster.core.lexicon.LexiconRegistry}。
- * 英文变换器（english-possessive, result-is, set-to）属于 IR 规范化基础能力，
+ * 英文变换器（english-possessive, result-is）属于 IR 规范化基础能力，
  * 保留在 aster-lang-core 的 {@link aster.core.canonicalizer.TransformerRegistry} 中。
  * <p>
  * 同时实现 {@link VocabularyPlugin}，提供英文领域词汇表（汽车保险、贷款金融）。

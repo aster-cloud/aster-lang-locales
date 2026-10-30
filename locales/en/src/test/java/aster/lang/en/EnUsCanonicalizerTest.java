@@ -271,31 +271,6 @@ class EnUsCanonicalizerTest {
     }
 
     // ============================================================
-    // "Set X to Y" -> "Let X be Y" 重写测试
-    // ============================================================
-
-    @Nested
-    @DisplayName("Set To 重写")
-    class SetToTests {
-
-        @Test
-        void testSetTo_Basic() {
-            String input = "Set x to 42.";
-            String result = canonicalizer.canonicalize(input);
-            assertTrue(result.contains("Let x be 42."),
-                    "Set x to 42 应重写为 Let x be 42，实际结果: " + result);
-        }
-
-        @Test
-        void testSetTo_WithExpression() {
-            String input = "  Set basePremium to calculateBase with driver, vehicle.";
-            String result = canonicalizer.canonicalize(input);
-            assertTrue(result.contains("Let basePremium be calculateBase with driver, vehicle."),
-                    "'Set X to Y' 应重写为 'Let X be Y'，实际结果: " + result);
-        }
-    }
-
-    // ============================================================
     // 比较运算同义词测试
     // ============================================================
 
