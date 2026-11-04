@@ -80,6 +80,7 @@ subprojects {
 // 产物（build/ui-messages/）：
 //   - <locale-id>.json            每个 locale 的完整 messages（原样拷贝）
 //   - ui-messages-manifest.json   envelope：版本 + 各 locale 的 sha256 + 字节数
+//   - syntax-diagnostics/<locale-id>.json  语法错误文案目录（仓根 syntax-diagnostics/，aster-api#423）
 //
 // manifest 的 sha256 既是完整性校验，也是 aster-api → Workers KV 的版本化缓存
 // key 来源（messages:<locale>:v<sha 前 8 位>），后端文案一变 sha 变 → KV key
@@ -110,6 +111,10 @@ val exportUiMessages by tasks.registering {
     val outDir = layout.buildDirectory.dir("ui-messages")
 
     moduleMsgDirs.forEach { inputs.dir(it).optional() }
+    // 语法错误文案目录（aster-api#423）：跨语言共用的单一目录，原样拷到产物的 syntax-diagnostics/ 下，
+    // 供 aster-cloud 编辑器按 `@aster-cloud/ui-messages/syntax-diagnostics/<locale-id>.json` 引入。
+    val syntaxDiagnosticsDir = rootProject.file("syntax-diagnostics")
+    inputs.dir(syntaxDiagnosticsDir)
     // version 来自 package.json → 声明为 input，bump 版本时才会重新导出（否则 up-to-date 留旧 manifest version）。
     inputs.file(uiMessagesPackageJson)
     outputs.dir(outDir)
@@ -154,6 +159,13 @@ $entriesJson
 }
 """
         out.resolve("ui-messages-manifest.json").writeText(manifest)
+
+        val syntaxOut = out.resolve("syntax-diagnostics")
+        syntaxOut.deleteRecursively()
+        syntaxOut.mkdirs()
+        val syntaxFiles = syntaxDiagnosticsDir.listFiles { f -> f.extension == "json" }?.sortedBy { it.name } ?: emptyList()
+        require(syntaxFiles.isNotEmpty()) { "syntax-diagnostics/ 下没有文案文件：${syntaxDiagnosticsDir}" }
+        syntaxFiles.forEach { it.copyTo(syntaxOut.resolve(it.name), overwrite = true) }
         logger.lifecycle("exportUiMessages → ${out.absolutePath} (${entries.size} locales)")
     }
 }

@@ -39,4 +39,13 @@ class DeDeUiMessagesTest {
     void noBrokenSeparableVerb() throws Exception {
         assertThat(load().toString()).doesNotContain("rollen zurück");
     }
+
+    @Test
+    @DisplayName("快照 diff 面板的软删除提示用 Sie 形式（Ihrer），加载文案与站内「… wird geladen…」一致（#114）")
+    void snapshotDiffUsesSieFormAndConsistentLoading() throws Exception {
+        JsonNode diff = load().at("/domainVocabularies/snapshotsView/diff");
+        assertThat(diff.path("removedNotice").asText()).isEqualTo(
+            "{n} Ihrer aktuellen Begriffe würden beim Rollback soft-gelöscht. Innerhalb von 90 Tagen wiederherstellbar.");
+        assertThat(diff.path("loading").asText()).isEqualTo("Snapshot wird geladen…");
+    }
 }
