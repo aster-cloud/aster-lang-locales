@@ -11,6 +11,18 @@ publishing {
     }
 }
 
+// 语法错误文案目录（aster-api#423）：仓根 syntax-diagnostics/<locale-id>.json 是 en/zh/de/hi 四种语言的
+// 唯一真相源，aster-api（ANTLR 解析错误）与 aster-cloud 编辑器（aster-lang-ts 解析错误）共用。
+// Maven 通道随本 jar 分发到 classpath 的 syntax-diagnostics/ 下：en 包是 aster-api 恒在的 backbone，
+// 而 hi 的 lexicon 在独立的 aster-lang-hi 仓，按语言拆进各 jar 会让 hi 缺席，故四种语言一起放这里。
+// npm 通道见根 build 的 exportUiMessages（随 @aster-cloud/ui-messages 发布）。
+tasks.named<ProcessResources>("processResources") {
+    from(rootProject.file("syntax-diagnostics")) {
+        include("*.json")
+        into("syntax-diagnostics")
+    }
+}
+
 /**
  * verifyLexiconParity: 校验本模块的 en-US.json 与 aster-lang-core
  * 内嵌副本（resources/builtin/en-US.json）逐字节一致。

@@ -25,6 +25,27 @@
   `sha256` 既是完整性校验，也是 `aster-api` → Workers KV 的**版本化缓存 key 来源**
   （`messages:<locale>:v<sha 前 8 位>`）：文案一变 sha 变 → KV key 自然换 → 边缘自然刷新。
 
+- `syntax-diagnostics/<locale-id>.json` — 语法错误文案目录（en-US / zh-CN / de-DE / hi-IN，见下节）
+
+## 语法错误文案目录（syntax-diagnostics）
+
+解析错误没有错误码，进不了按错误码组织的 diagnostic overlay，因此单独成一个目录（aster-api#423）。
+真相源是仓根 `syntax-diagnostics/<locale-id>.json`，两条通道分发同一份文件：
+
+- **Maven**：打进 `cloud.aster-lang:aster-lang-locales-en` jar 的 `syntax-diagnostics/`，
+  aster-api 的 `SyntaxMessages` 从 classpath 读取（ANTLR 解析错误）。四种语言都放在 en 包里，
+  因为 hi 的 lexicon 在独立的 aster-lang-hi 仓，而 en 包是 aster-api 恒在的 backbone。
+- **npm**：本包的 `syntax-diagnostics/`，aster-cloud 编辑器的 `parse-diagnostic-l10n.ts`
+  按 key 取文案（aster-lang-ts 解析错误）。
+
+约定：
+
+- 占位符写作 `{name}`；每个 locale 的 key 集与每条模板的占位符集必须与 `en-US` 一致
+  （`SyntaxDiagnosticsCatalogTest`，接入 `check`）。
+- `en-US` 里编辑器用到的句子与名词（`unknownStatement`、`token.returnType` 等）**就是** aster-lang-ts
+  解析器的英文原文，编辑器按 en 值反查 key。改 en 值等于改匹配规则，须同步 aster-lang-ts。
+- `style.spaceQuotesAfterHan` 为 `"true"` 时，汉字与引号片段相邻处补一个空格（zh）。
+
 ## 真相源（system of record）
 
 文案的唯一真相源是 `locales/<lang>/src/main/resources/ui-messages/<id>.json`。
