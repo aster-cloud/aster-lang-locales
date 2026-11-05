@@ -52,10 +52,19 @@ class DeDeUiMessagesTest {
         assertThat(diff.path("loading").asText()).isEqualTo("Snapshot wird geladen…");
     }
 
-    /** 非正式 du 形式：代词/物主代词，以及站内曾出现过的 du 祈使句动词开头。 */
+    /**
+     * 非正式 du 形式：代词/物主代词，以及 du 祈使句动词开头。
+     *
+     * <p>第一版（#116）只认一张封闭的动词白名单，且只在整条文案开头匹配，所以「Wechsle zu Pro …」
+     * 这类白名单外的祈使句漏网（#119 因此没改 needsUpgrade.description / bulk.tooManySync）。
+     * 现在改为：句首（文案开头或 . ! ? — 之后）出现「词干 + e」且后面不跟 Sie 的已知 du 祈使句，
+     * 白名单扩到站内出现过的全部动词（名词性的「Upgrade auf Pro, um …」不算祈使句）；另外单独锁住 Sie 祈使句的正确写法（见下方用例）。
+     */
     private static final Pattern INFORMAL = Pattern.compile(
         "\\b(?:[Dd]u|[Dd]ein(?:e|em|en|er|es)?|[Dd]ich|[Dd]ir|[Ee]uch|[Ee]ure?)\\b"
-            + "|^(?:Wähle|Lade|Binde|Verwalte|Verwende|Füge|Gib|Klicke|Prüfe|Erstelle|Lösche|Speichere|Öffne) ");
+            + "|(?:^|[.!?—]\\s+)(?:Wähle|Wechsle|Lade|Binde|Verwalte|Verwende|Füge|Gib|Klicke|Prüfe|Erstelle"
+            + "|Lösche|Speichere|Öffne|Bitte (?!Sie\\b)(?=Ihren|Ihre|Ihr\\b)|Kontaktiere|Wende|Melde|Aktualisiere"
+            + "|Versuche|Starte|sieh)\\b");
 
     private static void collectInformal(String path, JsonNode node, List<String> hits) {
         if (node.isTextual()) {
@@ -76,5 +85,16 @@ class DeDeUiMessagesTest {
         List<String> hits = new ArrayList<>();
         collectInformal("", load(), hits);
         assertThat(hits).as("以下 de-DE 文案仍是非正式 du 形式").isEmpty();
+    }
+
+    @Test
+    @DisplayName("needsUpgrade 与批量导入的祈使句用 Sie 形式（与 cloud 补充层一致，后者可删除）")
+    void needsUpgradeAndBulkUseSieImperative() throws Exception {
+        JsonNode dv = load().at("/domainVocabularies");
+        assertThat(dv.at("/needsUpgrade/description").asText()).isEqualTo(
+            "Wechseln Sie zu Pro, um eigene Structs / Felder / Funktionen / Enum-Werte zu verwalten.");
+        assertThat(dv.at("/needsUpgrade/contactAdmin").asText()).isEqualTo(
+            "Bitten Sie Ihren Administrator um ein Plan-Upgrade");
+        assertThat(dv.at("/bulk/tooManySync").asText()).startsWith("Wechseln Sie zu Async");
     }
 }
