@@ -6,6 +6,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -47,5 +50,31 @@ class DeDeUiMessagesTest {
         assertThat(diff.path("removedNotice").asText()).isEqualTo(
             "{n} Ihrer aktuellen Begriffe würden beim Rollback soft-gelöscht. Innerhalb von 90 Tagen wiederherstellbar.");
         assertThat(diff.path("loading").asText()).isEqualTo("Snapshot wird geladen…");
+    }
+
+    /** 非正式 du 形式：代词/物主代词，以及站内曾出现过的 du 祈使句动词开头。 */
+    private static final Pattern INFORMAL = Pattern.compile(
+        "\\b(?:[Dd]u|[Dd]ein(?:e|em|en|er|es)?|[Dd]ich|[Dd]ir|[Ee]uch|[Ee]ure?)\\b"
+            + "|^(?:Wähle|Lade|Binde|Verwalte|Verwende|Füge|Gib|Klicke|Prüfe|Erstelle|Lösche|Speichere|Öffne) ");
+
+    private static void collectInformal(String path, JsonNode node, List<String> hits) {
+        if (node.isTextual()) {
+            if (INFORMAL.matcher(node.asText()).find()) {
+                hits.add(path + " = " + node.asText());
+            }
+            return;
+        }
+        node.fields().forEachRemaining(e -> collectInformal(path + "/" + e.getKey(), e.getValue(), hits));
+        for (int i = 0; i < node.size() && node.isArray(); i++) {
+            collectInformal(path + "/" + i, node.get(i), hits);
+        }
+    }
+
+    @Test
+    @DisplayName("全站统一 Sie 形式：任何文案都不得出现 du/dein/dich/dir 或 du 祈使句（#116）")
+    void noInformalDuForms() throws Exception {
+        List<String> hits = new ArrayList<>();
+        collectInformal("", load(), hits);
+        assertThat(hits).as("以下 de-DE 文案仍是非正式 du 形式").isEmpty();
     }
 }
