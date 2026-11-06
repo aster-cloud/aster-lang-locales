@@ -51,7 +51,7 @@
     "E065": "{construct} muss {position} stehen",
     "E066": "{block} muss mindestens ein Element vom Typ {item} enthalten",
     "E067": "Ungültiger Wert für {construct}: {value}; erlaubt: {allowed}",
-    "E068": "{callee} erwartet genau {expected} Argument(e), erhalten {actual}",
+    "E068": "{callee} erwartet genau {expected} Argument(e), {actual} erhalten",
     "E069": "Unbekannt ({kind}): {name}",
     "E070": "PII-Daten dürfen keinem Ziel mit niedrigerer Stufe zugewiesen werden: {source} -> {target}",
     "E072": "PII-Daten der Stufe {level} werden ohne Bereinigung an {sinkKind} ausgegeben",

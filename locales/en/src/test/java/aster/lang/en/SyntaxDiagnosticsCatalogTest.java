@@ -145,6 +145,18 @@ class SyntaxDiagnosticsCatalogTest {
             "token.timeoutUnit", "token.typeAliasName", "token.variantName", "token.whenCondition");
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"en-US", "zh-CN", "de-DE", "hi-IN"})
+    @DisplayName("按码映射的句型占位符集合与共享码表英文模板一致（overlay 同样对齐码表，故两份文案互相对齐）")
+    void codeTemplatePlaceholdersMatchErrorCodes(String locale) throws Exception {
+        Map<String, String> own = load(locale);
+        Map<String, aster.lang.testsupport.DiagnosticOverlays.English> baseline =
+            aster.lang.testsupport.DiagnosticOverlays.baseline();
+        aster.lang.testsupport.DiagnosticOverlayContract.SYNTAX_CATALOG_CODES.forEach((key, code) ->
+            assertThat(placeholders(own.get(key))).as("%s %s/%s", locale, key, code)
+                .isEqualTo(placeholders(baseline.get(code).message())));
+    }
+
     /**
      * 编辑器按 en-US 的值反查 key（aster-cloud {@code parse-diagnostic-l10n.ts} 的 NOUN_KEYS / FIXED_KEYS）：
      * 这些值必须逐字等于 aster-lang-ts 解析器输出的英文短语。改了其中任何一个，服务端照常显示，
