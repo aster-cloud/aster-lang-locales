@@ -3,5 +3,15 @@
   "entryAmbiguous.detail": "No entry function specified and the candidate functions are ambiguous",
   "agent.REQUIRED": "{field} is required",
   "agent.TOO_LONG": "{field} exceeds {max} characters",
-  "agent.CONTROL_CHAR": "{field} contains control characters"
+  "agent.CONTROL_CHAR": "{field} contains control characters",
+  "module.VERSION_REQUIRED": "Import version is required",
+  "module.EMPTY_PATH": "Imported module path is empty",
+  "module.VERSION_NOT_FOUND": "Imported module version was not found",
+  "module.TENANT_REQUIRED": "Module imports require a tenant context",
+  "module.NOT_VISIBLE": "Imported module is not visible",
+  "module.ALIASES_UNSUPPORTED": "Imported module uses user-defined keyword aliases; cross-module resolution with aliases is not yet supported",
+  "module.PARSE_FAILED": "Imported module could not be parsed",
+  "module.RESOLVER_UNAVAILABLE": "Module resolver is unavailable",
+  "module.IMPORT_CYCLE": "Module import cycle detected: {cycle}",
+  "module.LINK_FAILED": "Imported modules could not be linked: {detail}"
 }

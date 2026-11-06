@@ -3,5 +3,15 @@
   "entryAmbiguous.detail": "Keine Einstiegsfunktion angegeben und die Kandidatenfunktionen sind nicht eindeutig",
   "agent.REQUIRED": "{field} ist erforderlich",
   "agent.TOO_LONG": "{field} überschreitet {max} Zeichen",
-  "agent.CONTROL_CHAR": "{field} enthält Steuerzeichen"
+  "agent.CONTROL_CHAR": "{field} enthält Steuerzeichen",
+  "module.VERSION_REQUIRED": "Für den Import ist eine Version erforderlich",
+  "module.EMPTY_PATH": "Der Pfad des importierten Moduls ist leer",
+  "module.VERSION_NOT_FOUND": "Die importierte Modulversion wurde nicht gefunden",
+  "module.TENANT_REQUIRED": "Modulimporte erfordern einen Mandantenkontext",
+  "module.NOT_VISIBLE": "Das importierte Modul ist nicht sichtbar",
+  "module.ALIASES_UNSUPPORTED": "Das importierte Modul verwendet benutzerdefinierte Schlüsselwort-Aliasse; modulübergreifende Auflösung mit Aliassen wird noch nicht unterstützt",
+  "module.PARSE_FAILED": "Das importierte Modul konnte nicht geparst werden",
+  "module.RESOLVER_UNAVAILABLE": "Der Modul-Resolver ist nicht verfügbar",
+  "module.IMPORT_CYCLE": "Zyklischer Modulimport erkannt: {cycle}",
+  "module.LINK_FAILED": "Die importierten Module konnten nicht verknüpft werden: {detail}"
 }

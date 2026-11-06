@@ -3,5 +3,15 @@
   "entryAmbiguous.detail": "未指定入口函数，候选函数不唯一",
   "agent.REQUIRED": "{field} 必填",
   "agent.TOO_LONG": "{field} 超过 {max} 字符",
-  "agent.CONTROL_CHAR": "{field} 含控制字符"
+  "agent.CONTROL_CHAR": "{field} 含控制字符",
+  "module.VERSION_REQUIRED": "导入必须指定版本",
+  "module.EMPTY_PATH": "导入的模块路径为空",
+  "module.VERSION_NOT_FOUND": "未找到导入的模块版本",
+  "module.TENANT_REQUIRED": "模块导入需要租户上下文",
+  "module.NOT_VISIBLE": "导入的模块不可见",
+  "module.ALIASES_UNSUPPORTED": "导入的模块使用了自定义关键词别名；暂不支持带别名的跨模块解析",
+  "module.PARSE_FAILED": "无法解析导入的模块",
+  "module.RESOLVER_UNAVAILABLE": "模块解析服务不可用",
+  "module.IMPORT_CYCLE": "检测到模块循环导入：{cycle}",
+  "module.LINK_FAILED": "无法链接导入的模块：{detail}"
 }

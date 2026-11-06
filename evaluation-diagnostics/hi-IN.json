@@ -3,5 +3,15 @@
   "entryAmbiguous.detail": "कोई प्रवेश फ़ंक्शन निर्दिष्ट नहीं है और उम्मीदवार फ़ंक्शन अस्पष्ट हैं",
   "agent.REQUIRED": "{field} आवश्यक है",
   "agent.TOO_LONG": "{field} {max} वर्णों से अधिक है",
-  "agent.CONTROL_CHAR": "{field} में नियंत्रण वर्ण हैं"
+  "agent.CONTROL_CHAR": "{field} में नियंत्रण वर्ण हैं",
+  "module.VERSION_REQUIRED": "आयात के लिए संस्करण आवश्यक है",
+  "module.EMPTY_PATH": "आयातित मॉड्यूल का पथ खाली है",
+  "module.VERSION_NOT_FOUND": "आयातित मॉड्यूल संस्करण नहीं मिला",
+  "module.TENANT_REQUIRED": "मॉड्यूल आयात के लिए टेनेंट संदर्भ आवश्यक है",
+  "module.NOT_VISIBLE": "आयातित मॉड्यूल दृश्यमान नहीं है",
+  "module.ALIASES_UNSUPPORTED": "आयातित मॉड्यूल उपयोगकर्ता-परिभाषित कीवर्ड उपनामों का उपयोग करता है; उपनामों के साथ क्रॉस-मॉड्यूल समाधान अभी समर्थित नहीं है",
+  "module.PARSE_FAILED": "आयातित मॉड्यूल पार्स नहीं किया जा सका",
+  "module.RESOLVER_UNAVAILABLE": "मॉड्यूल रिज़ॉल्वर उपलब्ध नहीं है",
+  "module.IMPORT_CYCLE": "मॉड्यूल आयात चक्र मिला: {cycle}",
+  "module.LINK_FAILED": "आयातित मॉड्यूल लिंक नहीं किए जा सके: {detail}"
 }
