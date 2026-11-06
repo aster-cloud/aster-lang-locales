@@ -116,6 +116,47 @@ class SyntaxDiagnosticsCatalogTest {
             "token.prefixOperatorCall");
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"en-US", "zh-CN", "de-DE", "hi-IN"})
+    @DisplayName("E050–E069 每个码都有句型模板（aster-cloud 编辑器按码 + params 渲染，aster-lang-ts#302）")
+    void codeTemplatesPresent(String locale) throws Exception {
+        // 句型 key 与 aster-lang-ts parse-issue.ts 的 Issue.* 构造名一致；模板措辞与 overlays diagnostic-messages 同码译文一致
+        assertThat(load(locale)).containsKeys(
+            "unrecognizedCharacter", "unterminatedString", "indentation", "literalOutOfRange", "nestingTooDeep",
+            "expected", "expectedAfter", "expectedIn", "expectedAfterIn", "expectedAtEndOfStatement", "expectedBefore",
+            "unexpected", "unexpectedExpecting", "noViable", "misplaced", "emptyBlock", "invalidValue", "callArity",
+            "unknownName");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"en-US", "zh-CN", "de-DE", "hi-IN"})
+    @DisplayName("aster-lang-ts 解析器以 tokenName() 传出的 token.* 名词都在（aster-lang-ts 1.3.0）")
+    void editorTokenParamsPresent(String locale) throws Exception {
+        assertThat(load(locale)).containsKeys(
+            "token.annotatedFunctionParameterType", "token.annotationArguments", "token.annotationName",
+            "token.assignment", "token.atLeastOrAtMost", "token.binding", "token.blockEndWord", "token.capabilityList",
+            "token.capabilityName", "token.commaOrCloseBracket", "token.declarationAnnotations", "token.dependencyList",
+            "token.dependencyName", "token.dotOrColon", "token.effectClause", "token.effectParameterList",
+            "token.effectTypeParameter", "token.fieldName", "token.functionName", "token.functionParameterTypes",
+            "token.hasOrOneOf", "token.lambda", "token.listLiteral", "token.mapType", "token.matchCase",
+            "token.matchCases", "token.matchExpression", "token.moduleHeader", "token.name", "token.onceAtFileStart",
+            "token.pattern", "token.piiCategory", "token.piiLevel", "token.prefixOperator", "token.rangeMinimum",
+            "token.regexString", "token.retryDirective", "token.returnOrIf", "token.stepName", "token.timeoutInteger",
+            "token.timeoutUnit", "token.typeAliasName", "token.variantName", "token.whenCondition");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"en-US", "zh-CN", "de-DE", "hi-IN"})
+    @DisplayName("按码映射的句型占位符集合与共享码表英文模板一致（overlay 同样对齐码表，故两份文案互相对齐）")
+    void codeTemplatePlaceholdersMatchErrorCodes(String locale) throws Exception {
+        Map<String, String> own = load(locale);
+        Map<String, aster.lang.testsupport.DiagnosticOverlays.English> baseline =
+            aster.lang.testsupport.DiagnosticOverlays.baseline();
+        aster.lang.testsupport.DiagnosticOverlayContract.SYNTAX_CATALOG_CODES.forEach((key, code) ->
+            assertThat(placeholders(own.get(key))).as("%s %s/%s", locale, key, code)
+                .isEqualTo(placeholders(baseline.get(code).message())));
+    }
+
     /**
      * 编辑器按 en-US 的值反查 key（aster-cloud {@code parse-diagnostic-l10n.ts} 的 NOUN_KEYS / FIXED_KEYS）：
      * 这些值必须逐字等于 aster-lang-ts 解析器输出的英文短语。改了其中任何一个，服务端照常显示，
