@@ -86,5 +86,21 @@ class EvaluationDiagnosticsCatalogTest {
         assertThat(load(locale)).containsKeys(
             "entryAmbiguous.error", "entryAmbiguous.detail",
             "agent.REQUIRED", "agent.TOO_LONG", "agent.CONTROL_CHAR");
+        // module.* 后缀对应 aster-api ModuleResolutionException.Reason 的枚举名（aster-api#452）
+        assertThat(load(locale)).containsKeys(
+            "module.VERSION_REQUIRED", "module.EMPTY_PATH", "module.VERSION_NOT_FOUND", "module.TENANT_REQUIRED",
+            "module.NOT_VISIBLE", "module.ALIASES_UNSUPPORTED", "module.PARSE_FAILED", "module.RESOLVER_UNAVAILABLE",
+            "module.IMPORT_CYCLE", "module.LINK_FAILED");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"en-US", "zh-CN", "de-DE", "hi-IN"})
+    @DisplayName("模块不可见类文案不带任何占位符（ADR 0015：不得泄露模块名 / 版本）")
+    void notVisibleMessagesCarryNoPlaceholders(String locale) throws Exception {
+        Map<String, String> own = load(locale);
+        for (String key : new String[] {"module.NOT_VISIBLE", "module.TENANT_REQUIRED", "module.ALIASES_UNSUPPORTED",
+                "module.PARSE_FAILED", "module.RESOLVER_UNAVAILABLE", "module.VERSION_NOT_FOUND"}) {
+            assertThat(placeholders(own.get(key))).as("%s %s", locale, key).isEmpty();
+        }
     }
 }

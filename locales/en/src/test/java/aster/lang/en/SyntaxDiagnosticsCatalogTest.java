@@ -100,6 +100,22 @@ class SyntaxDiagnosticsCatalogTest {
             "unexpectedAtTopLevel", "unexpectedExpression", "token.expression", "token.returnType");
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"en-US", "zh-CN", "de-DE", "hi-IN"})
+    @DisplayName("core 语法诊断参数用到的 token.* 名词都在（ADR 0051 §16 R56，aster-lang-core 1.0.41）")
+    void coreTokenParamsPresent(String locale) throws Exception {
+        // aster-lang-core SyntaxErrorCollector / AstBuilder 以 token.<name> 传给 E050–E069 的参数；
+        // aster-api 按这些 key 取名词，缺 key 时只能退回把驼峰名拆成英文词
+        assertThat(load(locale)).containsKeys(
+            "token.unknown", "token.number", "token.boolean", "token.integer", "token.string", "token.eof",
+            "token.identifier", "token.typeName", "token.newline", "token.indent", "token.dedent",
+            "token.construction", "token.profile", "token.profileId", "token.onceAfterModuleHeader",
+            "token.lastInBlock", "token.topLevelToken", "token.verdictOutcome", "token.whenOrOtherwise",
+            "token.positiveInteger", "token.nonNegativeInteger", "token.timeoutRange", "token.exponentialOrLinear",
+            "token.invalidEscape", "token.memberAccessOnExpression", "token.positionalConstruction",
+            "token.prefixOperatorCall");
+    }
+
     /**
      * 编辑器按 en-US 的值反查 key（aster-cloud {@code parse-diagnostic-l10n.ts} 的 NOUN_KEYS / FIXED_KEYS）：
      * 这些值必须逐字等于 aster-lang-ts 解析器输出的英文短语。改了其中任何一个，服务端照常显示，
