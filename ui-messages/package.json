@@ -14,9 +14,10 @@
   "files": [
     "ui-messages-manifest.json",
     "*.json",
-    "syntax-diagnostics/*.json"
+    "syntax-diagnostics/*.json",
+    "evaluation-diagnostics/*.json"
   ],
   "scripts": {
-    "prepack": "cd .. && ./gradlew exportUiMessages && cp build/ui-messages/*.json ui-messages/ && rm -rf ui-messages/syntax-diagnostics && cp -R build/ui-messages/syntax-diagnostics ui-messages/syntax-diagnostics"
+    "prepack": "cd .. && ./gradlew exportUiMessages && cp build/ui-messages/*.json ui-messages/ && rm -rf ui-messages/syntax-diagnostics && cp -R build/ui-messages/syntax-diagnostics ui-messages/syntax-diagnostics && rm -rf ui-messages/evaluation-diagnostics && cp -R build/ui-messages/evaluation-diagnostics ui-messages/evaluation-diagnostics"
   }
 }

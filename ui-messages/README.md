@@ -26,6 +26,7 @@
   （`messages:<locale>:v<sha 前 8 位>`）：文案一变 sha 变 → KV key 自然换 → 边缘自然刷新。
 
 - `syntax-diagnostics/<locale-id>.json` — 语法错误文案目录（en-US / zh-CN / de-DE / hi-IN，见下节）
+- `evaluation-diagnostics/<locale-id>.json` — 评估 400 诊断文案目录（en-US / zh-CN / de-DE / hi-IN，见下节）
 
 ## 语法错误文案目录（syntax-diagnostics）
 
@@ -45,6 +46,15 @@
 - `en-US` 里编辑器用到的句子与名词（`unknownStatement`、`token.returnType` 等）**就是** aster-lang-ts
   解析器的英文原文，编辑器按 en 值反查 key。改 en 值等于改匹配规则，须同步 aster-lang-ts。
 - `style.spaceQuotesAfterHan` 为 `"true"` 时，汉字与引号片段相邻处补一个空格（zh）。
+
+## 评估诊断文案目录（evaluation-diagnostics）
+
+aster-api evaluate 系列 400 诊断（`ENTRY_AMBIGUOUS` 入口歧义、`invalid_agent` 非法 agent，aster-api#445）的展示文案。
+code 是稳定契约，message 按请求语言取本目录。位置、分发通道与约定都与 syntax-diagnostics 相同：
+真相源是仓根 `evaluation-diagnostics/<locale-id>.json`，Maven 打进 `aster-lang-locales-en` jar 的
+`evaluation-diagnostics/`（aster-api `EvaluationDiagnostics` 从 classpath 读取），npm 随本包分发；
+key 集与占位符集须与 `en-US` 一致（`EvaluationDiagnosticsCatalogTest`，接入 `check`）。
+`agent.<REASON>` 的后缀是 aster-api `AgentIdentity.InvalidAgentException.Reason` 的枚举名。
 
 ## 真相源（system of record）
 

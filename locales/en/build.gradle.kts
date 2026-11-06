@@ -16,10 +16,14 @@ publishing {
 // Maven 通道随本 jar 分发到 classpath 的 syntax-diagnostics/ 下：en 包是 aster-api 恒在的 backbone，
 // 而 hi 的 lexicon 在独立的 aster-lang-hi 仓，按语言拆进各 jar 会让 hi 缺席，故四种语言一起放这里。
 // npm 通道见根 build 的 exportUiMessages（随 @aster-cloud/ui-messages 发布）。
+// 评估诊断文案目录（aster-api#445 / #449）：evaluate 系列 400 诊断（入口歧义、非法 agent）的 message，
+// 与 syntax-diagnostics 同一位置约定、同一分发通道（四种语言都在本 jar，原因同上）。
 tasks.named<ProcessResources>("processResources") {
-    from(rootProject.file("syntax-diagnostics")) {
-        include("*.json")
-        into("syntax-diagnostics")
+    listOf("syntax-diagnostics", "evaluation-diagnostics").forEach { dir ->
+        from(rootProject.file(dir)) {
+            include("*.json")
+            into(dir)
+        }
     }
 }
 
