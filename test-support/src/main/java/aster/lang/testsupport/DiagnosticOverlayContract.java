@@ -8,8 +8,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -71,6 +73,59 @@ public abstract class DiagnosticOverlayContract {
         JsonNode overlays = MAPPER.readTree(out.toString()).path("lexicons").path(lexicon.getId()).path("overlays");
         assertThat(overlays.get("diagnosticMessages")).isEqualTo(overlay("diagnosticMessages"));
         assertThat(overlays.get("diagnosticHelp")).isEqualTo(overlay("diagnosticHelp"));
+    }
+
+    /**
+     * 语法目录句型 key → 共享码表错误码：同一个语法错误在服务端（overlay，按码）与编辑器（syntax-diagnostics，按 key）
+     * 走两份文案，二者必须对齐，否则同一诊断在两个入口显示不同文字。
+     * E050 不在表内：目录的 unrecognizedCharacter 是不带 {char} 的整句，编辑器对 E050 改用 unexpected 句型代入字符。
+     */
+    public static final Map<String, String> SYNTAX_CATALOG_CODES = Map.ofEntries(
+            Map.entry("unterminatedString", "E051"),
+            Map.entry("indentation", "E052"), Map.entry("literalOutOfRange", "E053"),
+            Map.entry("nestingTooDeep", "E054"), Map.entry("expected", "E055"),
+            Map.entry("expectedAfter", "E056"), Map.entry("expectedIn", "E057"),
+            Map.entry("expectedAfterIn", "E058"), Map.entry("expectedAtEndOfStatement", "E059"),
+            Map.entry("expectedBefore", "E060"), Map.entry("unexpected", "E061"),
+            Map.entry("unexpectedExpecting", "E062"), Map.entry("noViable", "E063"),
+            Map.entry("misplaced", "E065"), Map.entry("emptyBlock", "E066"),
+            Map.entry("invalidValue", "E067"), Map.entry("callArity", "E068"),
+            Map.entry("unknownName", "E069"));
+
+    /** 文案逐字取自 overlay 的句型（aster-lang-locales#126 新增；早先的句型因排版空格差异只校占位符）。 */
+    public static final List<String> SYNTAX_CATALOG_VERBATIM = List.of(
+            "unterminatedString", "literalOutOfRange", "nestingTooDeep", "misplaced",
+            "emptyBlock", "invalidValue", "callArity", "unknownName");
+
+    /**
+     * 语法目录（仓根 syntax-diagnostics/<id>.json，随 :en jar 进测试 classpath）与本语言包 overlay 的同码译文对齐：
+     * 全部映射句型的占位符集合一致；#126 新增的 8 条逐字一致。
+     */
+    @Test
+    @DisplayName("syntax-diagnostics 句型与 diagnostic-messages 同码译文对齐（占位符集合；新增句型逐字）")
+    void syntaxCatalogMatchesOverlay() throws Exception {
+        String id = plugin().createLexicon().getId();
+        JsonNode messages = overlay("diagnosticMessages").get("messages");
+        JsonNode catalog;
+        try (InputStream in = DiagnosticOverlayContract.class.getResourceAsStream("/syntax-diagnostics/" + id + ".json")) {
+            assertThat(in).as("测试 classpath 上应有 syntax-diagnostics/%s.json", id).isNotNull();
+            catalog = MAPPER.readTree(in);
+        }
+        List<String> problems = new ArrayList<>();
+        SYNTAX_CATALOG_CODES.forEach((key, code) -> {
+            String sentence = catalog.path(key).asText(null);
+            String translated = messages.path(code).asText(null);
+            if (sentence == null || translated == null) {
+                problems.add(key + "/" + code + ": 缺少文案");
+                return;
+            }
+            if (!DiagnosticOverlays.placeholders(sentence).equals(DiagnosticOverlays.placeholders(translated))) {
+                problems.add(key + "/" + code + ": 占位符不一致 目录=" + sentence + " overlay=" + translated);
+            } else if (SYNTAX_CATALOG_VERBATIM.contains(key) && !sentence.equals(translated)) {
+                problems.add(key + "/" + code + ": 文案不一致 目录=" + sentence + " overlay=" + translated);
+            }
+        });
+        assertThat(problems).as("%s syntax-diagnostics 与 overlay 漂移", id).isEmpty();
     }
 
     /** 读取本模块磁盘上的 overlay 源文件（测试以模块目录为工作目录运行）。 */
