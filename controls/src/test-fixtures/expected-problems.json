@@ -27,6 +27,9 @@
   "bad-profile-unknown-framework.json": [
     "档案 eu-ai-act-high-risk 引用未登记框架: NOPE"
   ],
+  "bad-profile-verified-inputs-not-bool.json": [
+    "档案 eu-ai-act-high-risk 的 requires.verifiedInputs 须为布尔"
+  ],
   "bad-unknown-control.json": [
     "条款 99(1) 引用未登记控制键: GDPR:ART99"
   ]
