@@ -108,6 +108,7 @@
     "E705": "使用 aster-lang-locales controls/registry.json 中定义的档案，例如 governed 或 eu-ai-act-high-risk。",
     "E706": "满足档案要求，或删除 Profile 声明。",
     "E707": "请稍后重试；这是服务故障，不是策略违规。",
+    "E708": "请按字面路径读取输入字段（例如 req.context.amount），或把动态访问移出本规则，使其输入引用在编译期可知。",
     "E720": "可导出的规则需要 @id、一个带守卫请求字段（principal_id、principal_type、principal_roles、action、resource_type、resource_id、context、agent_model）的参数，以及 Verdict 结果。",
     "E721": "使用比较、and/or/not、对 principal_roles 的 List.contains 以及与字面量的整数运算，或让该规则只在 Aster 中使用。",
     "E722": "每个上下文键只使用一种类型（数字、文本或布尔）。",

@@ -108,6 +108,7 @@
     "E705": "Verwenden Sie ein in controls/registry.json von aster-lang-locales definiertes Profil, etwa governed oder eu-ai-act-high-risk.",
     "E706": "Erfüllen Sie die Profilanforderung oder entfernen Sie die Profile-Deklaration.",
     "E707": "Versuchen Sie es später erneut; dies ist ein Dienstfehler, kein Richtlinienverstoß.",
+    "E708": "Lesen Sie Eingabefelder über einen literalen Pfad (zum Beispiel req.context.amount) oder verlagern Sie den dynamischen Zugriff aus dieser Regel, damit ihre Eingabereferenzen zur Kompilierzeit bekannt sind.",
     "E720": "Exportierbare Regeln benötigen @id, einen Parameter mit den Guard-Anfragefeldern (principal_id, principal_type, principal_roles, action, resource_type, resource_id, context, agent_model) und ein Verdict-Ergebnis.",
     "E721": "Verwenden Sie Vergleiche, and/or/not, List.contains auf principal_roles und Ganzzahlarithmetik mit Literalen oder belassen Sie diese Regel nur in Aster.",
     "E722": "Verwenden Sie jeden Kontextschlüssel mit nur einem Typ (Zahl, Text oder Boolean).",

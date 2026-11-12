@@ -317,12 +317,16 @@ fun profileIdProblem(p: Map<String, Any?>, seen: MutableSet<String>): String? {
     return if (seen.add(id)) null else "档案 id 重复: $id"
 }
 
-/** 校验档案 requires：两个布尔开关齐全，frameworks 为数组且只引用已登记框架。 */
+/**
+ * 校验档案 requires：两个布尔开关齐全，frameworks 为数组且只引用已登记框架。
+ * verifiedInputs（ADR 0046 §11 D1，registry 1.2.0 起）可缺省（缺省即 false，兼容旧形态注册表），出现时须为布尔。
+ */
 fun profileRequiresProblems(id: String, requires: Any?, frameworkIds: Set<String>): List<String> {
     @Suppress("UNCHECKED_CAST") val r = requires as? Map<String, Any?> ?: return listOf("档案 $id 缺 requires")
     val out = mutableListOf<String>()
     if (r["ruleId"] !is Boolean) out += "档案 $id 的 requires.ruleId 须为布尔"
     if (r["registeredControls"] !is Boolean) out += "档案 $id 的 requires.registeredControls 须为布尔"
+    if (r.containsKey("verifiedInputs") && r["verifiedInputs"] !is Boolean) out += "档案 $id 的 requires.verifiedInputs 须为布尔"
     @Suppress("UNCHECKED_CAST") val fws = r["frameworks"] as? List<Any?>
     if (fws == null) return out + "档案 $id 的 requires.frameworks 须为数组"
     fws.filter { it !in frameworkIds }.forEach { out += "档案 $id 引用未登记框架: $it" }
