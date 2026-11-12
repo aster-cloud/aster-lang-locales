@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "frameworks": [
     { "id": "EU_AI_ACT", "title": { "en": "EU AI Act", "zh": "欧盟人工智能法", "de": "EU-KI-Verordnung" } },
     { "id": "GDPR", "title": { "en": "General Data Protection Regulation", "zh": "通用数据保护条例", "de": "Datenschutz-Grundverordnung" } },
