@@ -46,6 +46,7 @@
 - `en-US` 里编辑器用到的句子与名词（`unknownStatement`、`token.returnType` 等）**就是** aster-lang-ts
   解析器的英文原文，编辑器按 en 值反查 key。改 en 值等于改匹配规则，须同步 aster-lang-ts。
 - `style.spaceQuotesAfterHan` 为 `"true"` 时，汉字与引号片段相邻处补一个空格（zh）。
+- 同一错误码按参数分出的整句变体单列 key，由使用方按参数选取、key 缺失时退回按码模板：E063 的 `hint` 取 `isBeforeSymbol` / `unknownOperator`；E054 的 `reason=time-budget`（aster-api 语法分析超出时间预算）取 `parseTimeBudget`（占位符 `{budgetMs}`，aster-lang-core#259）。
 
 ## 评估诊断文案目录（evaluation-diagnostics）
 

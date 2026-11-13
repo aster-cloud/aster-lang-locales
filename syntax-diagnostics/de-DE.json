@@ -26,6 +26,7 @@
   "unterminatedString": "Nicht abgeschlossenes Zeichenkettenliteral",
   "literalOutOfRange": "{kind}-Literal {literal} liegt außerhalb des gültigen Bereichs",
   "nestingTooDeep": "Verschachtelung zu tief (Grenze {limit})",
+  "parseTimeBudget": "Die Syntaxanalyse hat zu lange gedauert (Zeitbudget {budgetMs} ms); vereinfachen Sie die Richtlinie",
   "misplaced": "{construct} muss {position} stehen",
   "emptyBlock": "{block} muss mindestens ein Element vom Typ {item} enthalten",
   "invalidValue": "Ungültiger Wert für {construct}: {value}; erlaubt: {allowed}",

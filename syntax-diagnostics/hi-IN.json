@@ -26,6 +26,7 @@
   "unterminatedString": "स्ट्रिंग लिटरल बंद नहीं किया गया",
   "literalOutOfRange": "{kind} लिटरल {literal} सीमा से बाहर है",
   "nestingTooDeep": "नेस्टिंग बहुत गहरी है (सीमा {limit})",
+  "parseTimeBudget": "पार्सिंग में बहुत अधिक समय लगा (समय-बजट {budgetMs} ms); नीति को सरल बनाएँ",
   "misplaced": "{construct} को {position} आना चाहिए",
   "emptyBlock": "{block} में कम से कम एक {item} होना चाहिए",
   "invalidValue": "अमान्य {construct} {value}; अनुमत: {allowed}",
