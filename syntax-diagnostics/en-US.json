@@ -32,6 +32,7 @@
   "invalidValue": "Invalid {construct} {value}; expected {allowed}",
   "callArity": "{callee} takes exactly {expected} argument(s), got {actual}",
   "unknownName": "Unknown {kind} {name}",
+  "duplicateAnnotationArg": "Annotation @{annotation} repeats the argument {name}",
   "or": " or ",
   "more": ", …",
   "token.indent": "indent",

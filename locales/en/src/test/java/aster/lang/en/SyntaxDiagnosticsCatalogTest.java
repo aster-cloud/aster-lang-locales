@@ -118,14 +118,16 @@ class SyntaxDiagnosticsCatalogTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"en-US", "zh-CN", "de-DE", "hi-IN"})
-    @DisplayName("E050–E069 每个码都有句型模板（aster-cloud 编辑器按码 + params 渲染，aster-lang-ts#302）")
+    @DisplayName("E050–E069 与 E900 每个码都有句型模板（aster-cloud 编辑器按码 + params 渲染，aster-lang-ts#302）")
     void codeTemplatesPresent(String locale) throws Exception {
         // 句型 key 与 aster-lang-ts parse-issue.ts 的 Issue.* 构造名一致；模板措辞与 overlays diagnostic-messages 同码译文一致
         assertThat(load(locale)).containsKeys(
             "unrecognizedCharacter", "unterminatedString", "indentation", "literalOutOfRange", "nestingTooDeep",
             "expected", "expectedAfter", "expectedIn", "expectedAfterIn", "expectedAtEndOfStatement", "expectedBefore",
             "unexpected", "unexpectedExpecting", "noViable", "misplaced", "emptyBlock", "invalidValue", "callArity",
-            "unknownName");
+            "unknownName",
+            // E900（ADR 0055 #3：注解参数重名，解析期报错）
+            "duplicateAnnotationArg");
     }
 
     @ParameterizedTest

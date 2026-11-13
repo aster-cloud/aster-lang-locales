@@ -1,0 +1,558 @@
+{
+  "kind": "Module",
+  "schemaVersion": 2,
+  "name": "demo.loan",
+  "profile": null,
+  "decls": [
+    {
+      "kind": "Import",
+      "path": "aster.http",
+      "alias": "Http",
+      "version": null,
+      "origin": {
+        "file": null,
+        "start": {
+          "line": 3,
+          "col": 1
+        },
+        "end": {
+          "line": 3,
+          "col": 10
+        },
+        "written": null,
+        "role": null
+      }
+    },
+    {
+      "kind": "Data",
+      "name": "Applicant",
+      "fields": [
+        {
+          "name": "age",
+          "type": {
+            "kind": "TypeName",
+            "name": "Int",
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 5,
+                "col": 5
+              },
+              "end": {
+                "line": 5,
+                "col": 12
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          "annotations": [],
+          "constraints": [
+            {
+              "kind": "Required"
+            },
+            {
+              "kind": "Range",
+              "min": "0",
+              "max": "120"
+            }
+          ],
+          "typeInferred": false
+        },
+        {
+          "name": "name",
+          "type": {
+            "kind": "TypeName",
+            "name": "Text",
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 6,
+                "col": 5
+              },
+              "end": {
+                "line": 6,
+                "col": 12
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          "annotations": [
+            {
+              "name": "pii",
+              "args": [
+                {
+                  "name": "$0",
+                  "value": "L2"
+                },
+                {
+                  "name": "category",
+                  "value": "name"
+                }
+              ]
+            }
+          ],
+          "constraints": [
+            {
+              "kind": "Pattern",
+              "regexp": "^[A-Z]"
+            }
+          ],
+          "typeInferred": false
+        }
+      ],
+      "origin": {
+        "file": null,
+        "start": {
+          "line": 5,
+          "col": 1
+        },
+        "end": {
+          "line": 6,
+          "col": 30
+        },
+        "written": null,
+        "role": null
+      }
+    },
+    {
+      "kind": "Enum",
+      "name": "Decision",
+      "variants": [
+        "Approve",
+        "Reject"
+      ],
+      "origin": {
+        "file": null,
+        "start": {
+          "line": 8,
+          "col": 1
+        },
+        "end": {
+          "line": 8,
+          "col": 10
+        },
+        "written": null,
+        "role": null
+      }
+    },
+    {
+      "kind": "Func",
+      "name": "decide",
+      "typeParams": [],
+      "params": [
+        {
+          "name": "decision",
+          "type": {
+            "kind": "TypeName",
+            "name": "Decision",
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 10,
+                "col": 5
+              },
+              "end": {
+                "line": 10,
+                "col": 12
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          "annotations": [],
+          "constraints": [],
+          "typeInferred": false
+        }
+      ],
+      "ret": {
+        "kind": "TypeName",
+        "name": "Decision",
+        "origin": {
+          "file": null,
+          "start": {
+            "line": 10,
+            "col": 5
+          },
+          "end": {
+            "line": 10,
+            "col": 12
+          },
+          "written": null,
+          "role": null
+        }
+      },
+      "retTypeInferred": false,
+      "annotations": [
+        {
+          "name": "id",
+          "args": [
+            {
+              "name": "$0",
+              "value": "R-1"
+            }
+          ]
+        },
+        {
+          "name": "control",
+          "args": [
+            {
+              "name": "$0",
+              "value": "EU_AI_ACT:ART14"
+            }
+          ]
+        }
+      ],
+      "retAnnotations": [],
+      "effects": [
+        "io"
+      ],
+      "effectParams": [],
+      "effectCaps": [
+        "Http"
+      ],
+      "effectCapsExplicit": true,
+      "inputRefs": null,
+      "body": {
+        "kind": "Block",
+        "statements": [
+          {
+            "kind": "Let",
+            "name": "score",
+            "expr": {
+              "kind": "Double",
+              "value": "-0",
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 11,
+                  "col": 15
+                },
+                "end": {
+                  "line": 11,
+                  "col": 18
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 11,
+                "col": 3
+              },
+              "end": {
+                "line": 11,
+                "col": 19
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          {
+            "kind": "Let",
+            "name": "limit",
+            "expr": {
+              "kind": "Int",
+              "value": 42,
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 12,
+                  "col": 15
+                },
+                "end": {
+                  "line": 12,
+                  "col": 17
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 12,
+                "col": 3
+              },
+              "end": {
+                "line": 12,
+                "col": 18
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          {
+            "kind": "Match",
+            "expr": {
+              "kind": "Name",
+              "name": "decision",
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 13,
+                  "col": 10
+                },
+                "end": {
+                  "line": 13,
+                  "col": 20
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "cases": [
+              {
+                "kind": "Case",
+                "pattern": {
+                  "kind": "PatCtor",
+                  "typeName": "Approve",
+                  "args": [],
+                  "origin": {
+                    "file": null,
+                    "start": {
+                      "line": 14,
+                      "col": 10
+                    },
+                    "end": {
+                      "line": 14,
+                      "col": 17
+                    },
+                    "written": null,
+                    "role": null
+                  }
+                },
+                "body": {
+                  "kind": "Return",
+                  "expr": {
+                    "kind": "Name",
+                    "name": "decision",
+                    "origin": {
+                      "file": null,
+                      "start": {
+                        "line": 14,
+                        "col": 10
+                      },
+                      "end": {
+                        "line": 14,
+                        "col": 20
+                      },
+                      "written": null,
+                      "role": null
+                    }
+                  },
+                  "origin": {
+                    "file": null,
+                    "start": {
+                      "line": 14,
+                      "col": 22
+                    },
+                    "end": {
+                      "line": 14,
+                      "col": 40
+                    },
+                    "written": null,
+                    "role": null
+                  }
+                },
+                "origin": {
+                  "file": null,
+                  "start": {
+                    "line": 14,
+                    "col": 5
+                  },
+                  "end": {
+                    "line": 14,
+                    "col": 40
+                  },
+                  "written": null,
+                  "role": null
+                }
+              }
+            ],
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 13,
+                "col": 3
+              },
+              "end": {
+                "line": 14,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          }
+        ],
+        "origin": {
+          "file": null,
+          "start": {
+            "line": 11,
+            "col": 3
+          },
+          "end": {
+            "line": 14,
+            "col": 1
+          },
+          "written": null,
+          "role": null
+        }
+      },
+      "origin": {
+        "file": null,
+        "start": {
+          "line": 10,
+          "col": 1
+        },
+        "end": {
+          "line": 18,
+          "col": 1
+        },
+        "written": null,
+        "role": null
+      }
+    },
+    {
+      "kind": "Func",
+      "name": "identity",
+      "typeParams": [
+        "T"
+      ],
+      "params": [
+        {
+          "name": "x",
+          "type": {
+            "kind": "TypeVar",
+            "name": "T",
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 20,
+                "col": 20
+              },
+              "end": {
+                "line": 20,
+                "col": 21
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          "annotations": [],
+          "constraints": [],
+          "typeInferred": false
+        }
+      ],
+      "ret": {
+        "kind": "TypeVar",
+        "name": "T",
+        "origin": {
+          "file": null,
+          "start": {
+            "line": 20,
+            "col": 30
+          },
+          "end": {
+            "line": 20,
+            "col": 31
+          },
+          "written": null,
+          "role": null
+        }
+      },
+      "retTypeInferred": false,
+      "annotations": [],
+      "retAnnotations": [],
+      "effects": [
+        "E"
+      ],
+      "effectParams": [
+        "E"
+      ],
+      "effectCaps": [],
+      "effectCapsExplicit": false,
+      "inputRefs": null,
+      "body": {
+        "kind": "Block",
+        "statements": [
+          {
+            "kind": "Return",
+            "expr": {
+              "kind": "Name",
+              "name": "x",
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 21,
+                  "col": 10
+                },
+                "end": {
+                  "line": 21,
+                  "col": 20
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 21,
+                "col": 3
+              },
+              "end": {
+                "line": 21,
+                "col": 12
+              },
+              "written": null,
+              "role": null
+            }
+          }
+        ],
+        "origin": {
+          "file": null,
+          "start": {
+            "line": 21,
+            "col": 3
+          },
+          "end": {
+            "line": 22,
+            "col": 1
+          },
+          "written": null,
+          "role": null
+        }
+      },
+      "origin": {
+        "file": null,
+        "start": {
+          "line": 20,
+          "col": 1
+        },
+        "end": {
+          "line": 28,
+          "col": 1
+        },
+        "written": null,
+        "role": null
+      }
+    }
+  ],
+  "origin": {
+    "file": null,
+    "start": {
+      "line": 1,
+      "col": 1
+    },
+    "end": {
+      "line": 22,
+      "col": 1
+    },
+    "written": null,
+    "role": null
+  }
+}

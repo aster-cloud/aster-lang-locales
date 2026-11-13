@@ -11,6 +11,22 @@
 // 返回 422，旧坐标无法在本仓复用，且已冻结在 1.0.2 线不再更新
 // （详见 settings.gradle.kts 与 README「消费者注意」）。
 
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.networknt.schema.SchemaLocation
+import com.networknt.schema.SchemaRegistry
+import com.networknt.schema.SpecificationVersion
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        // Core IR v2 schema 的元 schema 校验与夹具校验（ADR 0055 §3，见文件末尾 verifyCoreIrSchema）
+        classpath("com.networknt:json-schema-validator:2.0.1")
+    }
+}
+
 // 共享版本目录句柄（aster-lang-platform，ADR 0012）。subprojects {} 块里
 // 无法用 root 生成的 asterLibs.* type-safe 访问器，故通过
 // VersionCatalogsExtension 显式查表，效果等价。
@@ -366,4 +382,257 @@ val verifyControlsFixtures = tasks.register("verifyControlsFixtures") {
 
 subprojects {
     tasks.matching { it.name == "check" }.configureEach { dependsOn(exportControls, verifyControlsFixtures) }
+}
+
+// ── Core IR v2 schema 校验（ADR 0055 §3）────────────────────────────────────
+// core-ir/core-ir.v2.schema.json 是两引擎 Core IR 的唯一真相源；core 与 aster-lang-ts 各持逐字节副本。
+// verifyCoreIrSchema 依次检查：schema 符合 2020-12 元 schema、内部 $ref 全部可解析；test-fixtures 中
+// 期望 code 为 schema 的负例被拒收且拒收位置落在登记的 path 上，其余夹具通过 schema 且不变式问题与
+// expected-problems.json 逐条一致；正例合起来覆盖 schema 中的每一种 kind；double-literals.json 的
+// 对照与 BigDecimal 规范化结果一致；FIELDS.md 与 schema 同步。不变式的参考实现在下方，
+// 与 core / ts 的 validateCoreIrInvariants 语义相同（README「不变式」）。
+val coreIrDir = rootProject.file("core-ir")
+val coreIrSchemaFile = coreIrDir.resolve("core-ir.v2.schema.json")
+val coreIrFixturesDir = coreIrDir.resolve("test-fixtures")
+val coreIrFieldsFile = coreIrDir.resolve("FIELDS.md")
+val coreIrJson = ObjectMapper()
+
+data class CoreIrProblem(val path: String, val code: String)
+
+val VERDICT_CALLS = setOf("Verdict.allow", "Verdict.deny", "Verdict.require_approval", "Verdict.escalate")
+
+/** 按 ASCII 大小写不敏感比较所用的小写化（内建效应名都是 ASCII）。 */
+fun asciiLower(s: String): String = buildString { s.forEach { append(if (it in 'A'..'Z') it + 32 else it) } }
+
+/** 与 core GovernanceChecker.returnsVerdict 同义：声明返回 Verdict，或任一可达 Return 直接调用 Verdict.*。 */
+fun coreIrReturnsVerdict(func: JsonNode): Boolean {
+    val ret = func.path("ret")
+    if (ret.path("kind").asText() == "TypeName" && ret.path("name").asText() == "Verdict") return true
+    return coreIrAnyReturnIsVerdictCall(func.path("body"))
+}
+
+fun coreIrAnyReturnIsVerdictCall(stmt: JsonNode): Boolean = when (stmt.path("kind").asText()) {
+    "Return" -> stmt.path("expr").let {
+        it.path("kind").asText() == "Call" && it.path("target").path("kind").asText() == "Name" &&
+            it.path("target").path("name").asText() in VERDICT_CALLS
+    }
+    "Block", "Scope" -> stmt.path("statements").any { coreIrAnyReturnIsVerdictCall(it) }
+    "If" -> coreIrAnyReturnIsVerdictCall(stmt.path("thenBlock")) || coreIrAnyReturnIsVerdictCall(stmt.path("elseBlock"))
+    "Match" -> stmt.path("cases").any { coreIrAnyReturnIsVerdictCall(it.path("body")) }
+    else -> false
+}
+
+/** 同一注解内参数名重复：报后出现的那个参数（树中任何位置的 annotations / retAnnotations）。 */
+fun coreIrDuplicateArgs(node: JsonNode, path: String, out: MutableList<CoreIrProblem>) {
+    if (node.isArray) node.forEachIndexed { i, child -> coreIrDuplicateArgs(child, "$path/$i", out) }
+    if (!node.isObject) return
+    node.fields().forEach { (key, child) ->
+        if ((key == "annotations" || key == "retAnnotations") && child.isArray) {
+            child.forEachIndexed { j, ann ->
+                val seen = mutableSetOf<String>()
+                ann.path("args").forEachIndexed { k, arg ->
+                    if (!seen.add(arg.path("name").asText())) out += CoreIrProblem("$path/$key/$j/args/$k", "dup-annotation-arg")
+                }
+            }
+        }
+        coreIrDuplicateArgs(child, "$path/$key", out)
+    }
+}
+
+fun coreIrFuncProblems(func: JsonNode, path: String, hasProfile: Boolean, builtins: Set<String>): List<CoreIrProblem> {
+    val out = mutableListOf<CoreIrProblem>()
+    val effectParams = func.path("effectParams").map { it.asText() }
+    effectParams.forEachIndexed { k, p ->
+        if (asciiLower(p) in builtins) out += CoreIrProblem("$path/effectParams/$k", "effect-param-shadows-builtin")
+    }
+    func.path("effects").forEachIndexed { k, e ->
+        if (e.asText() !in effectParams && e.asText() !in builtins) out += CoreIrProblem("$path/effects/$k", "undeclared-effect-var")
+    }
+    // ADR 0055 #12：档案模块中返回 Verdict 的规则必须是数组，其余函数必须为 null
+    if (func.path("inputRefs").isArray != (hasProfile && coreIrReturnsVerdict(func))) {
+        out += CoreIrProblem("$path/inputRefs", "input-refs-state")
+    }
+    return out
+}
+
+/** validateCoreIrInvariants 的参考实现：输入须已通过 schema；结果按 (path, code) 排序。 */
+fun coreIrInvariantProblems(module: JsonNode, builtins: Set<String>): List<CoreIrProblem> {
+    val out = mutableListOf<CoreIrProblem>()
+    coreIrDuplicateArgs(module, "", out)
+    val hasProfile = !module.path("profile").isNull
+    module.path("decls").forEachIndexed { i, decl ->
+        if (decl.path("kind").asText() == "Func") out += coreIrFuncProblems(decl, "/decls/$i", hasProfile, builtins)
+    }
+    return out.sortedWith(compareBy({ it.path }, { it.code }))
+}
+
+/** 指针 a 与 b 在同一条祖先链上（a 是 b 的祖先、后代或相同）。 */
+fun onPointerLine(a: String, b: String): Boolean = a == b || b.startsWith("$a/") || a.startsWith("$b/")
+
+// ---------- FIELDS.md 渲染 ----------
+/** 表格单元格内的竖线须转义（GFM 表格在代码段内同样识别 \\|）。 */
+fun mdEscape(s: String): String = s.replace("|", "\\|")
+
+fun coreIrRenderType(s: JsonNode): String {
+    s.get("\$ref")?.let { return "`" + it.asText().substringAfterLast('/') + "`" }
+    s.get("const")?.let { return "const `" + it.toString() + "`" }
+    s.get("enum")?.let { e -> return e.joinToString(" | ") { "`" + it.toString() + "`" } }
+    (s.get("oneOf") ?: s.get("anyOf"))?.let { alts -> return alts.joinToString(" | ") { coreIrRenderType(it) } }
+    s.get("allOf")?.let { arms -> return arms.joinToString(" | ") { coreIrRenderType(it.path("then")) } }
+    val types = s.path("type").let { t -> if (t.isArray) t.map { it.asText() } else listOf(t.asText()) }
+    return types.joinToString(" | ") { t ->
+        when (t) {
+            "array" -> coreIrRenderType(s.path("items")) + "[]"
+            "integer" -> if (s.has("minimum")) "integer [${s["minimum"]}, ${s["maximum"]}]" else "integer"
+            "string" -> if (s.has("pattern")) "string，pattern `" + s["pattern"].asText() + "`" else "string"
+            else -> t
+        }
+    }
+}
+
+fun coreIrNullable(s: JsonNode): Boolean =
+    s.path("type").let { t -> t.isArray && t.any { it.asText() == "null" } } ||
+        (s.get("oneOf") ?: s.get("anyOf"))?.any { it.path("type").asText() == "null" } == true ||
+        s.get("enum")?.any { it.isNull } == true
+
+fun coreIrEmptyValue(s: JsonNode): String = when {
+    coreIrNullable(s) -> "`null`"
+    s.path("type").asText() == "array" -> "`[]`"
+    s.path("type").asText() == "boolean" -> "`false`"
+    else -> "—"
+}
+
+fun renderCoreIrFields(schema: JsonNode): String = buildString {
+    append("# Core IR v2 字段清单\n\n")
+    append("> 由 `./gradlew generateCoreIrFields` 从 `core-ir.v2.schema.json` 生成，请勿手改；")
+    append("`verifyCoreIrSchema` 检查本文件与 schema 同步。\n\n")
+    append("对象类节点的每个属性都在 `required` 中，且 `additionalProperties: false`。")
+    append("「无值时」是该字段没有值时恒输出的内容（ADR 0055 #19），「—」表示该字段总有值。\n")
+    schema.path("\$defs").fields().forEach { (name, def) ->
+        append("\n## ").append(name).append("\n\n")
+        def.get("description")?.let { append(it.asText()).append("\n\n") }
+        val props = def.get("properties")
+        if (def.path("type").asText() == "object" && props != null && !def.has("allOf")) {
+            append("| 属性 | 类型 | 可空 | 无值时 |\n|---|---|---|---|\n")
+            props.fields().forEach { (p, ps) ->
+                append("| `").append(p).append("` | ").append(mdEscape(coreIrRenderType(ps))).append(" | ")
+                append(if (coreIrNullable(ps)) "是" else "否").append(" | ").append(coreIrEmptyValue(ps)).append(" |\n")
+            }
+        } else {
+            append("定义：").append(coreIrRenderType(def)).append("\n")
+        }
+    }
+}
+
+fun loadCoreIrSchema(): Pair<JsonNode, com.networknt.schema.Schema> {
+    if (!coreIrSchemaFile.isFile) throw GradleException("缺少 Core IR schema：$coreIrSchemaFile")
+    val node = coreIrJson.readTree(coreIrSchemaFile)
+    val registry = SchemaRegistry.withDefaultDialect(SpecificationVersion.DRAFT_2020_12)
+    val metaErrors = registry.getSchema(SchemaLocation.of("https://json-schema.org/draft/2020-12/schema")).validate(node)
+    if (metaErrors.isNotEmpty()) {
+        throw GradleException("core-ir schema 不符合 JSON Schema 2020-12 元 schema：\n" + metaErrors.joinToString("\n"))
+    }
+    val defs = node.path("\$defs")
+    val dangling = mutableListOf<String>()
+    fun walk(n: JsonNode) {
+        if (n.isObject) n.fields().forEach { (k, v) ->
+            if (k == "\$ref" && !defs.has(v.asText().removePrefix("#/\$defs/"))) dangling += v.asText()
+            walk(v)
+        }
+        if (n.isArray) n.forEach { walk(it) }
+    }
+    walk(node)
+    if (dangling.isNotEmpty()) throw GradleException("core-ir schema 中有无法解析的 \$ref：$dangling")
+    return node to registry.getSchema(SchemaLocation.of(node.path("\$id").asText()), node)
+}
+
+fun collectKinds(n: JsonNode, out: MutableSet<String>) {
+    if (n.isObject) {
+        n.get("kind")?.takeIf { it.isTextual }?.let { out += it.asText() }
+        n.forEach { collectKinds(it, out) }
+    }
+    if (n.isArray) n.forEach { collectKinds(it, out) }
+}
+
+val generateCoreIrFields = tasks.register("generateCoreIrFields") {
+    group = "aster"
+    description = "由 Core IR v2 schema 生成 core-ir/FIELDS.md（ADR 0055 §3）"
+    inputs.file(coreIrSchemaFile)
+    outputs.file(coreIrFieldsFile)
+    doLast {
+        coreIrFieldsFile.writeText(renderCoreIrFields(coreIrJson.readTree(coreIrSchemaFile)))
+        logger.lifecycle("已生成 $coreIrFieldsFile")
+    }
+}
+
+val verifyCoreIrSchema = tasks.register("verifyCoreIrSchema") {
+    group = "verification"
+    description = "校验 Core IR v2 schema、负向 / 正向夹具、浮点字面量对照与 FIELDS.md（ADR 0055 §3）"
+    inputs.dir(coreIrDir)
+    doLast {
+        val (schemaNode, schema) = loadCoreIrSchema()
+        val builtins = schemaNode.path("\$defs").path("BuiltinEffect").path("enum").map { it.asText() }.toSet()
+        val mismatches = mutableListOf<String>()
+        val expected = coreIrJson.readTree(coreIrFixturesDir.resolve("expected-problems.json"))
+        val listed = expected.map { it.path("file").asText() }
+        val onDisk = coreIrFixturesDir.listFiles()!!.map { it.name }
+            .filter { (it.startsWith("bad-") || it.startsWith("ok-")) && it.endsWith(".json") }.sorted()
+        if (listed.sorted() != onDisk) mismatches += "夹具与期望清单不一致：夹具 $onDisk，期望 ${listed.sorted()}"
+        val seenKinds = mutableSetOf<String>()
+        var negatives = 0
+        var positives = 0
+        for (entry in expected) {
+            val name = entry.path("file").asText()
+            val file = coreIrFixturesDir.resolve(name)
+            if (!file.isFile) continue
+            val doc = coreIrJson.readTree(file)
+            val want = entry.path("problems").map { CoreIrProblem(it.path("path").asText(), it.path("code").asText()) }
+            val errors = schema.validate(doc)
+                .map { e -> e.instanceLocation.toString() + (e.property?.let { "/$it" } ?: "") to e.toString() }
+            if (name.startsWith("ok-")) positives++ else negatives++
+            if (name.startsWith("ok-") != want.isEmpty()) mismatches += "$name：ok- 夹具必须无问题，bad- 夹具必须至少登记一个问题"
+            if (want.any { it.code == "schema" }) {
+                if (want.size != 1) { mismatches += "$name：schema 类夹具只能登记一个问题"; continue }
+                val at = want.single().path
+                when {
+                    errors.isEmpty() -> mismatches += "$name：期望被 schema 拒收，实际通过"
+                    errors.none { (loc, _) -> loc == at || loc.startsWith("$at/") } ->
+                        mismatches += "$name：没有落在 $at 上的拒收，实际 ${errors.map { it.second }}"
+                    errors.any { (loc, _) -> !onPointerLine(loc, at) } ->
+                        mismatches += "$name：存在与 $at 无关的拒收（夹具不止一处违规）：${errors.map { it.second }}"
+                }
+                continue
+            }
+            if (errors.isNotEmpty()) { mismatches += "$name：期望通过 schema，实际 ${errors.map { it.second }}"; continue }
+            if (name.startsWith("ok-")) collectKinds(doc, seenKinds)
+            val actual = coreIrInvariantProblems(doc, builtins)
+            val wanted = want.sortedWith(compareBy({ it.path }, { it.code }))
+            if (actual != wanted) mismatches += "$name：期望 $wanted，实际 $actual"
+        }
+        val schemaKinds = schemaNode.path("\$defs").mapNotNull { it.path("properties").path("kind").get("const")?.asText() }
+        val uncovered = schemaKinds.filter { it !in seenKinds }
+        if (uncovered.isNotEmpty()) mismatches += "正例没有覆盖这些 kind：$uncovered"
+        // 浮点字面量对照：canonical 须匹配规范十进制语法，且等于 BigDecimal 精确求值、去尾随零后的无指数形式
+        val decimal = Regex(schemaNode.path("\$defs").path("CanonicalDecimal").path("pattern").asText())
+        val literals = coreIrJson.readTree(coreIrFixturesDir.resolve("double-literals.json"))
+        for (row in literals) {
+            val source = row.path("source").asText()
+            val canonical = row.path("canonical").asText()
+            val computed = java.math.BigDecimal(source).stripTrailingZeros().toPlainString()
+            if (!decimal.matches(canonical)) mismatches += "double-literals：$canonical 不符合规范十进制语法"
+            if (computed != canonical) mismatches += "double-literals：$source 应为 $computed，登记为 $canonical"
+        }
+        if (!coreIrFieldsFile.isFile || coreIrFieldsFile.readText() != renderCoreIrFields(schemaNode)) {
+            mismatches += "core-ir/FIELDS.md 与 schema 不同步，运行 ./gradlew generateCoreIrFields 后提交"
+        }
+        if (mismatches.isNotEmpty()) throw GradleException("Core IR schema 校验失败：\n" + mismatches.joinToString("\n"))
+        logger.lifecycle(
+            "verifyCoreIrSchema: $negatives 个负向夹具的问题列表全部一致，$positives 个正例通过，" +
+                "${literals.size()} 条浮点字面量对照一致，FIELDS.md 已同步"
+        )
+    }
+}
+
+subprojects {
+    tasks.matching { it.name == "check" }.configureEach { dependsOn(verifyCoreIrSchema) }
 }

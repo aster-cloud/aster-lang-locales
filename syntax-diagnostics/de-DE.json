@@ -32,6 +32,7 @@
   "invalidValue": "Ungültiger Wert für {construct}: {value}; erlaubt: {allowed}",
   "callArity": "{callee} erwartet genau {expected} Argument(e), {actual} erhalten",
   "unknownName": "Unbekannt ({kind}): {name}",
+  "duplicateAnnotationArg": "Annotation @{annotation} wiederholt das Argument {name}",
   "or": " oder ",
   "more": " usw.",
   "token.indent": "Einrückung",

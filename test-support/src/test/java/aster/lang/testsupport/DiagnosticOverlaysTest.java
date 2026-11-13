@@ -27,11 +27,11 @@ class DiagnosticOverlaysTest {
     }
 
     @Test
-    @DisplayName("英文码表副本含 123 个错误码，且包含 ADR 0051 的 E800–E807 / W800–W801、§16 的 E050–E069、lowering 的 E600–E606 与档案输入引用的 E708")
+    @DisplayName("英文码表副本含 125 个错误码，且包含 ADR 0051 的 E800–E807 / W800–W801、§16 的 E050–E069、lowering 的 E600–E606、档案输入引用的 E708 与 ADR 0055 的 E213 / E900")
     void baselineHasAllCodes() {
         Map<String, DiagnosticOverlays.English> baseline = DiagnosticOverlays.baseline();
-        assertThat(baseline).hasSize(123);
-        assertThat(baseline).containsKeys("E050", "E069", "E600", "E606", "E708", "E800", "E801", "E802", "E803", "E804", "E805", "E806", "E807", "W800", "W801");
+        assertThat(baseline).hasSize(125);
+        assertThat(baseline).containsKeys("E050", "E069", "E213", "E600", "E606", "E708", "E800", "E801", "E802", "E803", "E804", "E805", "E806", "E807", "E900", "W800", "W801");
     }
 
     @Test

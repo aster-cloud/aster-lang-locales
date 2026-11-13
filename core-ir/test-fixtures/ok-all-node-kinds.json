@@ -1,0 +1,2527 @@
+{
+  "kind": "Module",
+  "schemaVersion": 2,
+  "name": "demo.loan",
+  "profile": "eu-ai-act-high-risk",
+  "decls": [
+    {
+      "kind": "Import",
+      "path": "aster.http",
+      "alias": "Http",
+      "version": 3,
+      "origin": {
+        "file": null,
+        "start": {
+          "line": 3,
+          "col": 1
+        },
+        "end": {
+          "line": 3,
+          "col": 10
+        },
+        "written": null,
+        "role": null
+      }
+    },
+    {
+      "kind": "Data",
+      "name": "Applicant",
+      "fields": [
+        {
+          "name": "age",
+          "type": {
+            "kind": "TypeName",
+            "name": "Int",
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 5,
+                "col": 5
+              },
+              "end": {
+                "line": 5,
+                "col": 12
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          "annotations": [],
+          "constraints": [
+            {
+              "kind": "Required"
+            },
+            {
+              "kind": "Range",
+              "min": "0",
+              "max": "120"
+            }
+          ],
+          "typeInferred": false
+        },
+        {
+          "name": "name",
+          "type": {
+            "kind": "TypeName",
+            "name": "Text",
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 6,
+                "col": 5
+              },
+              "end": {
+                "line": 6,
+                "col": 12
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          "annotations": [
+            {
+              "name": "pii",
+              "args": [
+                {
+                  "name": "$0",
+                  "value": "L2"
+                },
+                {
+                  "name": "category",
+                  "value": "name"
+                }
+              ]
+            }
+          ],
+          "constraints": [
+            {
+              "kind": "Pattern",
+              "regexp": "^[A-Z]"
+            }
+          ],
+          "typeInferred": false
+        }
+      ],
+      "origin": {
+        "file": null,
+        "start": {
+          "line": 5,
+          "col": 1
+        },
+        "end": {
+          "line": 6,
+          "col": 30
+        },
+        "written": null,
+        "role": null
+      }
+    },
+    {
+      "kind": "Enum",
+      "name": "Decision",
+      "variants": [
+        "Approve",
+        "Reject"
+      ],
+      "origin": {
+        "file": null,
+        "start": {
+          "line": 8,
+          "col": 1
+        },
+        "end": {
+          "line": 8,
+          "col": 10
+        },
+        "written": null,
+        "role": null
+      }
+    },
+    {
+      "kind": "Func",
+      "name": "decide",
+      "typeParams": [],
+      "params": [
+        {
+          "name": "decision",
+          "type": {
+            "kind": "TypeName",
+            "name": "Decision",
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 10,
+                "col": 5
+              },
+              "end": {
+                "line": 10,
+                "col": 12
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          "annotations": [],
+          "constraints": [],
+          "typeInferred": false
+        }
+      ],
+      "ret": {
+        "kind": "TypeName",
+        "name": "Verdict",
+        "origin": {
+          "file": null,
+          "start": {
+            "line": 10,
+            "col": 5
+          },
+          "end": {
+            "line": 10,
+            "col": 12
+          },
+          "written": null,
+          "role": null
+        }
+      },
+      "retTypeInferred": false,
+      "annotations": [
+        {
+          "name": "id",
+          "args": [
+            {
+              "name": "$0",
+              "value": "R-1"
+            }
+          ]
+        },
+        {
+          "name": "control",
+          "args": [
+            {
+              "name": "$0",
+              "value": "EU_AI_ACT:ART14"
+            }
+          ]
+        },
+        {
+          "name": "audit",
+          "args": [
+            {
+              "name": "$0",
+              "value": true
+            },
+            {
+              "name": "retention",
+              "value": 30
+            }
+          ]
+        }
+      ],
+      "retAnnotations": [
+        {
+          "name": "pii",
+          "args": [
+            {
+              "name": "$0",
+              "value": "L1"
+            }
+          ]
+        }
+      ],
+      "effects": [
+        "io"
+      ],
+      "effectParams": [],
+      "effectCaps": [
+        "Http"
+      ],
+      "effectCapsExplicit": true,
+      "inputRefs": [
+        "applicant.age",
+        "applicant.name"
+      ],
+      "body": {
+        "kind": "Block",
+        "statements": [
+          {
+            "kind": "Let",
+            "name": "score",
+            "expr": {
+              "kind": "Double",
+              "value": "1.5",
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 11,
+                  "col": 15
+                },
+                "end": {
+                  "line": 11,
+                  "col": 18
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 11,
+                "col": 3
+              },
+              "end": {
+                "line": 11,
+                "col": 19
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          {
+            "kind": "Let",
+            "name": "limit",
+            "expr": {
+              "kind": "Int",
+              "value": 42,
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 12,
+                  "col": 15
+                },
+                "end": {
+                  "line": 12,
+                  "col": 17
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 12,
+                "col": 3
+              },
+              "end": {
+                "line": 12,
+                "col": 18
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          {
+            "kind": "Match",
+            "expr": {
+              "kind": "Name",
+              "name": "decision",
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 13,
+                  "col": 10
+                },
+                "end": {
+                  "line": 13,
+                  "col": 20
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "cases": [
+              {
+                "kind": "Case",
+                "pattern": {
+                  "kind": "PatCtor",
+                  "typeName": "Approve",
+                  "args": [],
+                  "origin": {
+                    "file": null,
+                    "start": {
+                      "line": 14,
+                      "col": 10
+                    },
+                    "end": {
+                      "line": 14,
+                      "col": 17
+                    },
+                    "written": null,
+                    "role": null
+                  }
+                },
+                "body": {
+                  "kind": "Return",
+                  "expr": {
+                    "kind": "Name",
+                    "name": "decision",
+                    "origin": {
+                      "file": null,
+                      "start": {
+                        "line": 14,
+                        "col": 10
+                      },
+                      "end": {
+                        "line": 14,
+                        "col": 20
+                      },
+                      "written": null,
+                      "role": null
+                    }
+                  },
+                  "origin": {
+                    "file": null,
+                    "start": {
+                      "line": 14,
+                      "col": 22
+                    },
+                    "end": {
+                      "line": 14,
+                      "col": 40
+                    },
+                    "written": null,
+                    "role": null
+                  }
+                },
+                "origin": {
+                  "file": null,
+                  "start": {
+                    "line": 14,
+                    "col": 5
+                  },
+                  "end": {
+                    "line": 14,
+                    "col": 40
+                  },
+                  "written": null,
+                  "role": null
+                }
+              }
+            ],
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 13,
+                "col": 3
+              },
+              "end": {
+                "line": 14,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          }
+        ],
+        "origin": {
+          "file": null,
+          "start": {
+            "line": 11,
+            "col": 3
+          },
+          "end": {
+            "line": 14,
+            "col": 1
+          },
+          "written": null,
+          "role": null
+        }
+      },
+      "origin": {
+        "file": "demo/loan.aster",
+        "start": {
+          "line": 10,
+          "col": 1
+        },
+        "end": {
+          "line": 18,
+          "col": 1
+        },
+        "written": "entscheiden",
+        "role": "FUNC_DECL"
+      }
+    },
+    {
+      "kind": "Func",
+      "name": "identity",
+      "typeParams": [
+        "T"
+      ],
+      "params": [
+        {
+          "name": "x",
+          "type": {
+            "kind": "TypeVar",
+            "name": "T",
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 20,
+                "col": 20
+              },
+              "end": {
+                "line": 20,
+                "col": 21
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          "annotations": [],
+          "constraints": [],
+          "typeInferred": false
+        }
+      ],
+      "ret": {
+        "kind": "TypeVar",
+        "name": "T",
+        "origin": {
+          "file": null,
+          "start": {
+            "line": 20,
+            "col": 30
+          },
+          "end": {
+            "line": 20,
+            "col": 31
+          },
+          "written": null,
+          "role": null
+        }
+      },
+      "retTypeInferred": false,
+      "annotations": [],
+      "retAnnotations": [],
+      "effects": [
+        "E"
+      ],
+      "effectParams": [
+        "E"
+      ],
+      "effectCaps": [],
+      "effectCapsExplicit": false,
+      "inputRefs": null,
+      "body": {
+        "kind": "Block",
+        "statements": [
+          {
+            "kind": "Return",
+            "expr": {
+              "kind": "Name",
+              "name": "x",
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 21,
+                  "col": 10
+                },
+                "end": {
+                  "line": 21,
+                  "col": 20
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 21,
+                "col": 3
+              },
+              "end": {
+                "line": 21,
+                "col": 12
+              },
+              "written": null,
+              "role": null
+            }
+          }
+        ],
+        "origin": {
+          "file": null,
+          "start": {
+            "line": 21,
+            "col": 3
+          },
+          "end": {
+            "line": 22,
+            "col": 1
+          },
+          "written": null,
+          "role": null
+        }
+      },
+      "origin": {
+        "file": null,
+        "start": {
+          "line": 20,
+          "col": 1
+        },
+        "end": {
+          "line": 28,
+          "col": 1
+        },
+        "written": null,
+        "role": null
+      }
+    },
+    {
+      "kind": "Func",
+      "name": "kitchenSink",
+      "typeParams": [],
+      "params": [
+        {
+          "name": "p0",
+          "type": {
+            "kind": "TypeApp",
+            "base": "List",
+            "args": [
+              {
+                "kind": "TypeName",
+                "name": "Int",
+                "origin": {
+                  "file": null,
+                  "start": {
+                    "line": 30,
+                    "col": 5
+                  },
+                  "end": {
+                    "line": 30,
+                    "col": 12
+                  },
+                  "written": null,
+                  "role": null
+                }
+              }
+            ],
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 30,
+                "col": 5
+              },
+              "end": {
+                "line": 30,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          "annotations": [],
+          "constraints": [],
+          "typeInferred": false
+        },
+        {
+          "name": "p1",
+          "type": {
+            "kind": "Result",
+            "ok": {
+              "kind": "TypeName",
+              "name": "Int",
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 30,
+                  "col": 5
+                },
+                "end": {
+                  "line": 30,
+                  "col": 12
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "err": {
+              "kind": "TypeName",
+              "name": "Text",
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 30,
+                  "col": 5
+                },
+                "end": {
+                  "line": 30,
+                  "col": 12
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 30,
+                "col": 5
+              },
+              "end": {
+                "line": 30,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          "annotations": [],
+          "constraints": [],
+          "typeInferred": false
+        },
+        {
+          "name": "p2",
+          "type": {
+            "kind": "Maybe",
+            "type": {
+              "kind": "TypeName",
+              "name": "Int",
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 30,
+                  "col": 5
+                },
+                "end": {
+                  "line": 30,
+                  "col": 12
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 30,
+                "col": 5
+              },
+              "end": {
+                "line": 30,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          "annotations": [],
+          "constraints": [],
+          "typeInferred": false
+        },
+        {
+          "name": "p3",
+          "type": {
+            "kind": "Option",
+            "type": {
+              "kind": "TypeName",
+              "name": "Int",
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 30,
+                  "col": 5
+                },
+                "end": {
+                  "line": 30,
+                  "col": 12
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 30,
+                "col": 5
+              },
+              "end": {
+                "line": 30,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          "annotations": [],
+          "constraints": [],
+          "typeInferred": false
+        },
+        {
+          "name": "p4",
+          "type": {
+            "kind": "List",
+            "type": {
+              "kind": "TypeName",
+              "name": "Int",
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 30,
+                  "col": 5
+                },
+                "end": {
+                  "line": 30,
+                  "col": 12
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 30,
+                "col": 5
+              },
+              "end": {
+                "line": 30,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          "annotations": [],
+          "constraints": [],
+          "typeInferred": false
+        },
+        {
+          "name": "p5",
+          "type": {
+            "kind": "Map",
+            "key": {
+              "kind": "TypeName",
+              "name": "Text",
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 30,
+                  "col": 5
+                },
+                "end": {
+                  "line": 30,
+                  "col": 12
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "val": {
+              "kind": "TypeName",
+              "name": "Int",
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 30,
+                  "col": 5
+                },
+                "end": {
+                  "line": 30,
+                  "col": 12
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 30,
+                "col": 5
+              },
+              "end": {
+                "line": 30,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          "annotations": [],
+          "constraints": [],
+          "typeInferred": false
+        },
+        {
+          "name": "p6",
+          "type": {
+            "kind": "FuncType",
+            "params": [
+              {
+                "kind": "TypeName",
+                "name": "Int",
+                "origin": {
+                  "file": null,
+                  "start": {
+                    "line": 30,
+                    "col": 5
+                  },
+                  "end": {
+                    "line": 30,
+                    "col": 12
+                  },
+                  "written": null,
+                  "role": null
+                }
+              }
+            ],
+            "ret": {
+              "kind": "TypeName",
+              "name": "Bool",
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 30,
+                  "col": 5
+                },
+                "end": {
+                  "line": 30,
+                  "col": 12
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 30,
+                "col": 5
+              },
+              "end": {
+                "line": 30,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          "annotations": [],
+          "constraints": [],
+          "typeInferred": false
+        },
+        {
+          "name": "p7",
+          "type": {
+            "kind": "PiiType",
+            "baseType": {
+              "kind": "TypeName",
+              "name": "Text",
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 30,
+                  "col": 5
+                },
+                "end": {
+                  "line": 30,
+                  "col": 12
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "sensitivity": "L2",
+            "category": "email",
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 30,
+                "col": 5
+              },
+              "end": {
+                "line": 30,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          "annotations": [],
+          "constraints": [],
+          "typeInferred": false
+        },
+        {
+          "name": "guess",
+          "type": {
+            "kind": "TypeName",
+            "name": "Text",
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 30,
+                "col": 5
+              },
+              "end": {
+                "line": 30,
+                "col": 12
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          "annotations": [],
+          "constraints": [
+            {
+              "kind": "Range",
+              "min": "-1.5",
+              "max": null
+            },
+            {
+              "kind": "Range",
+              "min": null,
+              "max": "123456789012345678901.5"
+            }
+          ],
+          "typeInferred": true
+        }
+      ],
+      "ret": {
+        "kind": "TypeName",
+        "name": "Unknown",
+        "origin": {
+          "file": null,
+          "start": {
+            "line": 30,
+            "col": 5
+          },
+          "end": {
+            "line": 30,
+            "col": 12
+          },
+          "written": null,
+          "role": null
+        }
+      },
+      "retTypeInferred": true,
+      "annotations": [],
+      "retAnnotations": [],
+      "effects": [],
+      "effectParams": [],
+      "effectCaps": [],
+      "effectCapsExplicit": false,
+      "inputRefs": null,
+      "body": {
+        "kind": "Block",
+        "statements": [
+          {
+            "kind": "Let",
+            "name": "v0",
+            "expr": {
+              "kind": "Bool",
+              "value": true,
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 40,
+                  "col": 5
+                },
+                "end": {
+                  "line": 40,
+                  "col": 40
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 50,
+                "col": 3
+              },
+              "end": {
+                "line": 50,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          {
+            "kind": "Let",
+            "name": "v1",
+            "expr": {
+              "kind": "Int",
+              "value": -2147483648,
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 40,
+                  "col": 5
+                },
+                "end": {
+                  "line": 40,
+                  "col": 40
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 50,
+                "col": 3
+              },
+              "end": {
+                "line": 50,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          {
+            "kind": "Let",
+            "name": "v2",
+            "expr": {
+              "kind": "Long",
+              "value": "9007199254740993",
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 40,
+                  "col": 5
+                },
+                "end": {
+                  "line": 40,
+                  "col": 40
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 50,
+                "col": 3
+              },
+              "end": {
+                "line": 50,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          {
+            "kind": "Let",
+            "name": "v3",
+            "expr": {
+              "kind": "Double",
+              "value": "0.0000001",
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 40,
+                  "col": 5
+                },
+                "end": {
+                  "line": 40,
+                  "col": 40
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 50,
+                "col": 3
+              },
+              "end": {
+                "line": 50,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          {
+            "kind": "Let",
+            "name": "v4",
+            "expr": {
+              "kind": "Decimal",
+              "value": "1.08",
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 40,
+                  "col": 5
+                },
+                "end": {
+                  "line": 40,
+                  "col": 40
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 50,
+                "col": 3
+              },
+              "end": {
+                "line": 50,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          {
+            "kind": "Let",
+            "name": "v5",
+            "expr": {
+              "kind": "String",
+              "value": "hi",
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 40,
+                  "col": 5
+                },
+                "end": {
+                  "line": 40,
+                  "col": 40
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 50,
+                "col": 3
+              },
+              "end": {
+                "line": 50,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          {
+            "kind": "Let",
+            "name": "v6",
+            "expr": {
+              "kind": "Null",
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 40,
+                  "col": 5
+                },
+                "end": {
+                  "line": 40,
+                  "col": 40
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 50,
+                "col": 3
+              },
+              "end": {
+                "line": 50,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          {
+            "kind": "Let",
+            "name": "v7",
+            "expr": {
+              "kind": "Ok",
+              "expr": {
+                "kind": "Int",
+                "value": 1,
+                "origin": {
+                  "file": null,
+                  "start": {
+                    "line": 40,
+                    "col": 5
+                  },
+                  "end": {
+                    "line": 40,
+                    "col": 40
+                  },
+                  "written": null,
+                  "role": null
+                }
+              },
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 40,
+                  "col": 5
+                },
+                "end": {
+                  "line": 40,
+                  "col": 40
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 50,
+                "col": 3
+              },
+              "end": {
+                "line": 50,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          {
+            "kind": "Let",
+            "name": "v8",
+            "expr": {
+              "kind": "Err",
+              "expr": {
+                "kind": "String",
+                "value": "no",
+                "origin": {
+                  "file": null,
+                  "start": {
+                    "line": 40,
+                    "col": 5
+                  },
+                  "end": {
+                    "line": 40,
+                    "col": 40
+                  },
+                  "written": null,
+                  "role": null
+                }
+              },
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 40,
+                  "col": 5
+                },
+                "end": {
+                  "line": 40,
+                  "col": 40
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 50,
+                "col": 3
+              },
+              "end": {
+                "line": 50,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          {
+            "kind": "Let",
+            "name": "v9",
+            "expr": {
+              "kind": "Some",
+              "expr": {
+                "kind": "Int",
+                "value": 2,
+                "origin": {
+                  "file": null,
+                  "start": {
+                    "line": 40,
+                    "col": 5
+                  },
+                  "end": {
+                    "line": 40,
+                    "col": 40
+                  },
+                  "written": null,
+                  "role": null
+                }
+              },
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 40,
+                  "col": 5
+                },
+                "end": {
+                  "line": 40,
+                  "col": 40
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 50,
+                "col": 3
+              },
+              "end": {
+                "line": 50,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          {
+            "kind": "Let",
+            "name": "v10",
+            "expr": {
+              "kind": "None",
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 40,
+                  "col": 5
+                },
+                "end": {
+                  "line": 40,
+                  "col": 40
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 50,
+                "col": 3
+              },
+              "end": {
+                "line": 50,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          {
+            "kind": "Let",
+            "name": "v11",
+            "expr": {
+              "kind": "Construct",
+              "typeName": "Applicant",
+              "fields": [
+                {
+                  "name": "age",
+                  "expr": {
+                    "kind": "Int",
+                    "value": 30,
+                    "origin": {
+                      "file": null,
+                      "start": {
+                        "line": 40,
+                        "col": 5
+                      },
+                      "end": {
+                        "line": 40,
+                        "col": 40
+                      },
+                      "written": null,
+                      "role": null
+                    }
+                  }
+                }
+              ],
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 40,
+                  "col": 5
+                },
+                "end": {
+                  "line": 40,
+                  "col": 40
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 50,
+                "col": 3
+              },
+              "end": {
+                "line": 50,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          {
+            "kind": "Let",
+            "name": "v12",
+            "expr": {
+              "kind": "Call",
+              "target": {
+                "kind": "Name",
+                "name": "Text.length",
+                "origin": {
+                  "file": null,
+                  "start": {
+                    "line": 40,
+                    "col": 10
+                  },
+                  "end": {
+                    "line": 40,
+                    "col": 20
+                  },
+                  "written": null,
+                  "role": null
+                }
+              },
+              "args": [
+                {
+                  "kind": "String",
+                  "value": "abc",
+                  "origin": {
+                    "file": null,
+                    "start": {
+                      "line": 40,
+                      "col": 5
+                    },
+                    "end": {
+                      "line": 40,
+                      "col": 40
+                    },
+                    "written": null,
+                    "role": null
+                  }
+                }
+              ],
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 40,
+                  "col": 5
+                },
+                "end": {
+                  "line": 40,
+                  "col": 40
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 50,
+                "col": 3
+              },
+              "end": {
+                "line": 50,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          {
+            "kind": "Let",
+            "name": "v13",
+            "expr": {
+              "kind": "Lambda",
+              "params": [
+                {
+                  "name": "y",
+                  "type": {
+                    "kind": "TypeName",
+                    "name": "Int",
+                    "origin": {
+                      "file": null,
+                      "start": {
+                        "line": 40,
+                        "col": 5
+                      },
+                      "end": {
+                        "line": 40,
+                        "col": 12
+                      },
+                      "written": null,
+                      "role": null
+                    }
+                  },
+                  "annotations": [],
+                  "constraints": [],
+                  "typeInferred": false
+                }
+              ],
+              "ret": {
+                "kind": "TypeName",
+                "name": "Int",
+                "origin": {
+                  "file": null,
+                  "start": {
+                    "line": 40,
+                    "col": 5
+                  },
+                  "end": {
+                    "line": 40,
+                    "col": 12
+                  },
+                  "written": null,
+                  "role": null
+                }
+              },
+              "body": {
+                "kind": "Block",
+                "statements": [
+                  {
+                    "kind": "Return",
+                    "expr": {
+                      "kind": "Name",
+                      "name": "y",
+                      "origin": {
+                        "file": null,
+                        "start": {
+                          "line": 41,
+                          "col": 10
+                        },
+                        "end": {
+                          "line": 41,
+                          "col": 20
+                        },
+                        "written": null,
+                        "role": null
+                      }
+                    },
+                    "origin": {
+                      "file": null,
+                      "start": {
+                        "line": 41,
+                        "col": 1
+                      },
+                      "end": {
+                        "line": 41,
+                        "col": 10
+                      },
+                      "written": null,
+                      "role": null
+                    }
+                  }
+                ],
+                "origin": {
+                  "file": null,
+                  "start": {
+                    "line": 41,
+                    "col": 3
+                  },
+                  "end": {
+                    "line": 42,
+                    "col": 1
+                  },
+                  "written": null,
+                  "role": null
+                }
+              },
+              "captures": [
+                "limit"
+              ],
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 40,
+                  "col": 5
+                },
+                "end": {
+                  "line": 40,
+                  "col": 40
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 50,
+                "col": 3
+              },
+              "end": {
+                "line": 50,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          {
+            "kind": "Let",
+            "name": "v14",
+            "expr": {
+              "kind": "Await",
+              "expr": {
+                "kind": "Name",
+                "name": "task",
+                "origin": {
+                  "file": null,
+                  "start": {
+                    "line": 40,
+                    "col": 10
+                  },
+                  "end": {
+                    "line": 40,
+                    "col": 20
+                  },
+                  "written": null,
+                  "role": null
+                }
+              },
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 40,
+                  "col": 5
+                },
+                "end": {
+                  "line": 40,
+                  "col": 40
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 50,
+                "col": 3
+              },
+              "end": {
+                "line": 50,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          {
+            "kind": "Let",
+            "name": "v15",
+            "expr": {
+              "kind": "IfExpr",
+              "cond": {
+                "kind": "Bool",
+                "value": false,
+                "origin": {
+                  "file": null,
+                  "start": {
+                    "line": 40,
+                    "col": 5
+                  },
+                  "end": {
+                    "line": 40,
+                    "col": 40
+                  },
+                  "written": null,
+                  "role": null
+                }
+              },
+              "thenE": {
+                "kind": "Int",
+                "value": 1,
+                "origin": {
+                  "file": null,
+                  "start": {
+                    "line": 40,
+                    "col": 5
+                  },
+                  "end": {
+                    "line": 40,
+                    "col": 40
+                  },
+                  "written": null,
+                  "role": null
+                }
+              },
+              "elseE": {
+                "kind": "Int",
+                "value": 0,
+                "origin": {
+                  "file": null,
+                  "start": {
+                    "line": 40,
+                    "col": 5
+                  },
+                  "end": {
+                    "line": 40,
+                    "col": 40
+                  },
+                  "written": null,
+                  "role": null
+                }
+              },
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 40,
+                  "col": 5
+                },
+                "end": {
+                  "line": 40,
+                  "col": 40
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 50,
+                "col": 3
+              },
+              "end": {
+                "line": 50,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          {
+            "kind": "Let",
+            "name": "v16",
+            "expr": {
+              "kind": "ListLit",
+              "elements": [
+                {
+                  "kind": "Int",
+                  "value": 1,
+                  "origin": {
+                    "file": null,
+                    "start": {
+                      "line": 40,
+                      "col": 5
+                    },
+                    "end": {
+                      "line": 40,
+                      "col": 40
+                    },
+                    "written": null,
+                    "role": null
+                  }
+                },
+                {
+                  "kind": "Int",
+                  "value": 2,
+                  "origin": {
+                    "file": null,
+                    "start": {
+                      "line": 40,
+                      "col": 5
+                    },
+                    "end": {
+                      "line": 40,
+                      "col": 40
+                    },
+                    "written": null,
+                    "role": null
+                  }
+                }
+              ],
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 40,
+                  "col": 5
+                },
+                "end": {
+                  "line": 40,
+                  "col": 40
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 50,
+                "col": 3
+              },
+              "end": {
+                "line": 50,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          {
+            "kind": "Set",
+            "name": "v0",
+            "expr": {
+              "kind": "Bool",
+              "value": false,
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 40,
+                  "col": 5
+                },
+                "end": {
+                  "line": 40,
+                  "col": 40
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 50,
+                "col": 3
+              },
+              "end": {
+                "line": 50,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          {
+            "kind": "Scope",
+            "statements": [
+              {
+                "kind": "Let",
+                "name": "inner",
+                "expr": {
+                  "kind": "Int",
+                  "value": 7,
+                  "origin": {
+                    "file": null,
+                    "start": {
+                      "line": 40,
+                      "col": 5
+                    },
+                    "end": {
+                      "line": 40,
+                      "col": 40
+                    },
+                    "written": null,
+                    "role": null
+                  }
+                },
+                "origin": {
+                  "file": null,
+                  "start": {
+                    "line": 50,
+                    "col": 3
+                  },
+                  "end": {
+                    "line": 50,
+                    "col": 40
+                  },
+                  "written": null,
+                  "role": null
+                }
+              }
+            ],
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 50,
+                "col": 3
+              },
+              "end": {
+                "line": 50,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          {
+            "kind": "If",
+            "cond": {
+              "kind": "Bool",
+              "value": true,
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 40,
+                  "col": 5
+                },
+                "end": {
+                  "line": 40,
+                  "col": 40
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "thenBlock": {
+              "kind": "Block",
+              "statements": [],
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 51,
+                  "col": 3
+                },
+                "end": {
+                  "line": 51,
+                  "col": 1
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "elseBlock": {
+              "kind": "Block",
+              "statements": [],
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 52,
+                  "col": 3
+                },
+                "end": {
+                  "line": 52,
+                  "col": 1
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 50,
+                "col": 3
+              },
+              "end": {
+                "line": 50,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          {
+            "kind": "Start",
+            "name": "task",
+            "expr": {
+              "kind": "Call",
+              "target": {
+                "kind": "Name",
+                "name": "Http.get",
+                "origin": {
+                  "file": null,
+                  "start": {
+                    "line": 53,
+                    "col": 10
+                  },
+                  "end": {
+                    "line": 53,
+                    "col": 20
+                  },
+                  "written": null,
+                  "role": null
+                }
+              },
+              "args": [],
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 40,
+                  "col": 5
+                },
+                "end": {
+                  "line": 40,
+                  "col": 40
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 50,
+                "col": 3
+              },
+              "end": {
+                "line": 50,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          {
+            "kind": "Wait",
+            "names": [
+              "task"
+            ],
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 50,
+                "col": 3
+              },
+              "end": {
+                "line": 50,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          {
+            "kind": "Match",
+            "expr": {
+              "kind": "Name",
+              "name": "limit",
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 54,
+                  "col": 10
+                },
+                "end": {
+                  "line": 54,
+                  "col": 20
+                },
+                "written": null,
+                "role": null
+              }
+            },
+            "cases": [
+              {
+                "kind": "Case",
+                "pattern": {
+                  "kind": "PatInt",
+                  "value": 2147483647,
+                  "origin": {
+                    "file": null,
+                    "start": {
+                      "line": 55,
+                      "col": 1
+                    },
+                    "end": {
+                      "line": 55,
+                      "col": 10
+                    },
+                    "written": null,
+                    "role": null
+                  }
+                },
+                "body": {
+                  "kind": "Block",
+                  "statements": [],
+                  "origin": {
+                    "file": null,
+                    "start": {
+                      "line": 55,
+                      "col": 3
+                    },
+                    "end": {
+                      "line": 55,
+                      "col": 1
+                    },
+                    "written": null,
+                    "role": null
+                  }
+                },
+                "origin": {
+                  "file": null,
+                  "start": {
+                    "line": 55,
+                    "col": 1
+                  },
+                  "end": {
+                    "line": 55,
+                    "col": 10
+                  },
+                  "written": null,
+                  "role": null
+                }
+              },
+              {
+                "kind": "Case",
+                "pattern": {
+                  "kind": "PatNull",
+                  "origin": {
+                    "file": null,
+                    "start": {
+                      "line": 56,
+                      "col": 1
+                    },
+                    "end": {
+                      "line": 56,
+                      "col": 10
+                    },
+                    "written": null,
+                    "role": null
+                  }
+                },
+                "body": {
+                  "kind": "Return",
+                  "expr": {
+                    "kind": "Int",
+                    "value": 0,
+                    "origin": {
+                      "file": null,
+                      "start": {
+                        "line": 40,
+                        "col": 5
+                      },
+                      "end": {
+                        "line": 40,
+                        "col": 40
+                      },
+                      "written": null,
+                      "role": null
+                    }
+                  },
+                  "origin": {
+                    "file": null,
+                    "start": {
+                      "line": 56,
+                      "col": 1
+                    },
+                    "end": {
+                      "line": 56,
+                      "col": 10
+                    },
+                    "written": null,
+                    "role": null
+                  }
+                },
+                "origin": {
+                  "file": null,
+                  "start": {
+                    "line": 56,
+                    "col": 1
+                  },
+                  "end": {
+                    "line": 56,
+                    "col": 10
+                  },
+                  "written": null,
+                  "role": null
+                }
+              },
+              {
+                "kind": "Case",
+                "pattern": {
+                  "kind": "PatCtor",
+                  "typeName": "Pair",
+                  "args": [
+                    {
+                      "kind": "PatName",
+                      "name": "a",
+                      "origin": {
+                        "file": null,
+                        "start": {
+                          "line": 57,
+                          "col": 1
+                        },
+                        "end": {
+                          "line": 57,
+                          "col": 10
+                        },
+                        "written": null,
+                        "role": null
+                      }
+                    },
+                    {
+                      "kind": "PatCtor",
+                      "typeName": "Reject",
+                      "args": [],
+                      "origin": {
+                        "file": null,
+                        "start": {
+                          "line": 57,
+                          "col": 1
+                        },
+                        "end": {
+                          "line": 57,
+                          "col": 10
+                        },
+                        "written": null,
+                        "role": null
+                      }
+                    }
+                  ],
+                  "origin": {
+                    "file": null,
+                    "start": {
+                      "line": 57,
+                      "col": 1
+                    },
+                    "end": {
+                      "line": 57,
+                      "col": 10
+                    },
+                    "written": null,
+                    "role": null
+                  }
+                },
+                "body": {
+                  "kind": "Block",
+                  "statements": [],
+                  "origin": {
+                    "file": null,
+                    "start": {
+                      "line": 57,
+                      "col": 3
+                    },
+                    "end": {
+                      "line": 57,
+                      "col": 1
+                    },
+                    "written": null,
+                    "role": null
+                  }
+                },
+                "origin": {
+                  "file": null,
+                  "start": {
+                    "line": 57,
+                    "col": 1
+                  },
+                  "end": {
+                    "line": 57,
+                    "col": 10
+                  },
+                  "written": null,
+                  "role": null
+                }
+              }
+            ],
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 50,
+                "col": 3
+              },
+              "end": {
+                "line": 50,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          {
+            "kind": "workflow",
+            "steps": [
+              {
+                "kind": "step",
+                "name": "fetch",
+                "body": {
+                  "kind": "Block",
+                  "statements": [],
+                  "origin": {
+                    "file": null,
+                    "start": {
+                      "line": 60,
+                      "col": 3
+                    },
+                    "end": {
+                      "line": 60,
+                      "col": 1
+                    },
+                    "written": null,
+                    "role": null
+                  }
+                },
+                "compensate": {
+                  "kind": "Block",
+                  "statements": [],
+                  "origin": {
+                    "file": null,
+                    "start": {
+                      "line": 61,
+                      "col": 3
+                    },
+                    "end": {
+                      "line": 61,
+                      "col": 1
+                    },
+                    "written": null,
+                    "role": null
+                  }
+                },
+                "dependencies": [],
+                "effectCaps": [
+                  "Http"
+                ],
+                "origin": {
+                  "file": null,
+                  "start": {
+                    "line": 60,
+                    "col": 1
+                  },
+                  "end": {
+                    "line": 60,
+                    "col": 10
+                  },
+                  "written": null,
+                  "role": null
+                }
+              },
+              {
+                "kind": "step",
+                "name": "store",
+                "body": {
+                  "kind": "Block",
+                  "statements": [],
+                  "origin": {
+                    "file": null,
+                    "start": {
+                      "line": 62,
+                      "col": 3
+                    },
+                    "end": {
+                      "line": 62,
+                      "col": 1
+                    },
+                    "written": null,
+                    "role": null
+                  }
+                },
+                "compensate": null,
+                "dependencies": [
+                  "fetch"
+                ],
+                "effectCaps": [],
+                "origin": {
+                  "file": null,
+                  "start": {
+                    "line": 62,
+                    "col": 1
+                  },
+                  "end": {
+                    "line": 62,
+                    "col": 10
+                  },
+                  "written": null,
+                  "role": null
+                }
+              }
+            ],
+            "effectCaps": [
+              "Http"
+            ],
+            "retry": {
+              "maxAttempts": 3,
+              "backoff": "exponential"
+            },
+            "timeout": {
+              "milliseconds": 9007199254740991
+            },
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 50,
+                "col": 3
+              },
+              "end": {
+                "line": 50,
+                "col": 40
+              },
+              "written": null,
+              "role": null
+            }
+          },
+          {
+            "kind": "Block",
+            "statements": [],
+            "origin": {
+              "file": null,
+              "start": {
+                "line": 63,
+                "col": 3
+              },
+              "end": {
+                "line": 63,
+                "col": 1
+              },
+              "written": null,
+              "role": null
+            }
+          }
+        ],
+        "origin": {
+          "file": null,
+          "start": {
+            "line": 40,
+            "col": 3
+          },
+          "end": {
+            "line": 65,
+            "col": 1
+          },
+          "written": null,
+          "role": null
+        }
+      },
+      "origin": {
+        "file": null,
+        "start": {
+          "line": 30,
+          "col": 1
+        },
+        "end": {
+          "line": 38,
+          "col": 1
+        },
+        "written": null,
+        "role": null
+      }
+    }
+  ],
+  "origin": {
+    "file": null,
+    "start": {
+      "line": 1,
+      "col": 1
+    },
+    "end": {
+      "line": 22,
+      "col": 1
+    },
+    "written": null,
+    "role": null
+  }
+}

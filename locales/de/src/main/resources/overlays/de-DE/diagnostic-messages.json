@@ -74,6 +74,7 @@
     "E210": "Effektvariable {var} ist nicht deklariert",
     "E211": "Effektvariable {vars} konnte nicht in konkrete Effekte aufgelöst werden",
     "E212": "Der Effekt der eingebauten Funktion '{builtin}', aufgerufen von '{func}', ist unbekannt; sie wird NICHT als rein angenommen",
+    "E213": "Effektparameter {name} von '{func}' hat denselben Namen wie ein eingebauter Effekt",
     "E300": "Funktion '{func}' benötigt die Fähigkeit {cap}, aber das Manifest für Modul '{module}' verweigert sie.",
     "E301": "Funktion '{func}' nutzt die Fähigkeit {cap}, aber der Kopf deklariert [{declared}].",
     "E302": "Funktion '{func}' deklariert die Fähigkeit {cap}, nutzt sie aber nicht.",
@@ -123,6 +124,7 @@
     "E806": "Muster '{written}' an Position {role} ist mehrdeutig zwischen: {candidates}",
     "E807": "Doppelte Deklaration von '{written}' an Position {role}",
     "W800": "Deklaration '{written}' an Position {role} verdeckt einen Vokabulareintrag",
-    "W801": "'{written}' an Position {role} wurde ohne bekannten Empfängertyp aufgelöst"
+    "W801": "'{written}' an Position {role} wurde ohne bekannten Empfängertyp aufgelöst",
+    "E900": "Annotation @{annotation} wiederholt das Argument {name}"
   }
 }
