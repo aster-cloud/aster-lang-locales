@@ -26,6 +26,7 @@
   "unterminatedString": "Unterminated string literal",
   "literalOutOfRange": "{kind} literal {literal} is out of range",
   "nestingTooDeep": "Nesting is too deep (limit {limit})",
+  "parseTimeBudget": "Parsing took too long (budget {budgetMs} ms); simplify the policy",
   "misplaced": "{construct} must appear {position}",
   "emptyBlock": "{block} must contain at least one {item}",
   "invalidValue": "Invalid {construct} {value}; expected {allowed}",

@@ -92,7 +92,7 @@ class SyntaxDiagnosticsCatalogTest {
         assertThat(load(locale)).containsKeys(
             // 服务端（aster-api CnlErrorListener）
             "summary", "located", "moreErrors.one", "moreErrors.other", "unexpectedExpecting", "expectedBefore",
-            "extraneous", "noViable",
+            "extraneous", "noViable", "parseTimeBudget",
             // 两端共用
             "expectedAtEndOfStatement", "unexpected", "or", "token.identifier", "token.newline",
             // 编辑器（aster-cloud parse-diagnostic-l10n）
@@ -155,6 +155,16 @@ class SyntaxDiagnosticsCatalogTest {
         aster.lang.testsupport.DiagnosticOverlayContract.SYNTAX_CATALOG_CODES.forEach((key, code) ->
             assertThat(placeholders(own.get(key))).as("%s %s/%s", locale, key, code)
                 .isEqualTo(placeholders(baseline.get(code).message())));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"en-US", "zh-CN", "de-DE", "hi-IN"})
+    @DisplayName("E054 时间预算变体只引用 {budgetMs}（aster-api 按 reason=time-budget 选它，只填这一个参数；aster-lang-core#259）")
+    void parseTimeBudgetUsesOnlyBudgetMs(String locale) throws Exception {
+        Map<String, String> own = load(locale);
+        assertThat(placeholders(own.get("parseTimeBudget"))).as(locale).containsExactly("budgetMs");
+        assertThat(own.get("parseTimeBudget")).as("%s 不得沿用嵌套过深的句子", locale)
+            .isNotEqualTo(own.get("nestingTooDeep"));
     }
 
     /**

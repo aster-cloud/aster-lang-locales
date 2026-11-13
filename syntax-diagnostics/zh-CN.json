@@ -26,6 +26,7 @@
   "unterminatedString": "字符串字面量未闭合",
   "literalOutOfRange": "{kind} 字面量 {literal} 超出范围",
   "nestingTooDeep": "嵌套层级过深（上限 {limit}）",
+  "parseTimeBudget": "语法分析耗时过长（预算 {budgetMs} 毫秒）；请简化策略",
   "misplaced": "{construct} 必须出现在{position}",
   "emptyBlock": "{block} 必须至少包含一个 {item}",
   "invalidValue": "无效的{construct} {value}；允许的取值：{allowed}",
