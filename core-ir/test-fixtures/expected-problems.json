@@ -135,6 +135,15 @@
     ]
   },
   {
+    "file": "bad-missing-origin-on-constraint.json",
+    "problems": [
+      {
+        "path": "/decls/1/fields/0/constraints/0/origin",
+        "code": "schema"
+      }
+    ]
+  },
+  {
     "file": "bad-missing-origin-on-typename.json",
     "problems": [
       {

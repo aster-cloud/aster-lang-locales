@@ -49,12 +49,38 @@
           "annotations": [],
           "constraints": [
             {
-              "kind": "Required"
+              "kind": "Required",
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 5,
+                  "col": 12
+                },
+                "end": {
+                  "line": 5,
+                  "col": 20
+                },
+                "written": null,
+                "role": null
+              }
             },
             {
               "kind": "Range",
               "min": null,
-              "max": null
+              "max": null,
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 5,
+                  "col": 21
+                },
+                "end": {
+                  "line": 5,
+                  "col": 40
+                },
+                "written": null,
+                "role": null
+              }
             }
           ],
           "typeInferred": false
@@ -96,7 +122,20 @@
           "constraints": [
             {
               "kind": "Pattern",
-              "regexp": "^[A-Z]"
+              "regexp": "^[A-Z]",
+              "origin": {
+                "file": null,
+                "start": {
+                  "line": 6,
+                  "col": 12
+                },
+                "end": {
+                  "line": 6,
+                  "col": 30
+                },
+                "written": null,
+                "role": null
+              }
             }
           ],
           "typeInferred": false

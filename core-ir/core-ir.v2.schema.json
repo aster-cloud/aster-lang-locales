@@ -48,7 +48,7 @@
       "additionalProperties": false
     },
     "Origin": {
-      "description": "源码范围（ADR 0055 #17）：每个带 kind 的节点都必带且非 null（约束元素除外）。written / role 是 ADR 0051 的原写法与解析角色，未改写时为 null。",
+      "description": "源码范围（ADR 0055 #17）：每个带 kind 的节点都必带且非 null（含约束元素）。written / role 是 ADR 0051 的原写法与解析角色，未改写时为 null。",
       "type": "object",
       "properties": {
         "file": {
@@ -529,7 +529,7 @@
       "additionalProperties": false
     },
     "Constraint": {
-      "description": "字段 / 形参约束（ADR 0055 #4）。约束元素不带 origin。",
+      "description": "字段 / 形参约束（ADR 0055 #4）。与其它带 kind 的节点一样必带 origin（#17）。",
       "type": "object",
       "required": [
         "kind"
@@ -597,10 +597,14 @@
       "properties": {
         "kind": {
           "const": "Required"
+        },
+        "origin": {
+          "$ref": "#/$defs/Origin"
         }
       },
       "required": [
-        "kind"
+        "kind",
+        "origin"
       ],
       "additionalProperties": false
     },
@@ -630,12 +634,16 @@
               "type": "null"
             }
           ]
+        },
+        "origin": {
+          "$ref": "#/$defs/Origin"
         }
       },
       "required": [
         "kind",
         "min",
-        "max"
+        "max",
+        "origin"
       ],
       "additionalProperties": false,
       "not": {
@@ -658,11 +666,15 @@
         },
         "regexp": {
           "type": "string"
+        },
+        "origin": {
+          "$ref": "#/$defs/Origin"
         }
       },
       "required": [
         "kind",
-        "regexp"
+        "regexp",
+        "origin"
       ],
       "additionalProperties": false
     },

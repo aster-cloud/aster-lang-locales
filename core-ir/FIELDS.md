@@ -39,7 +39,7 @@
 
 ## Origin
 
-源码范围（ADR 0055 #17）：每个带 kind 的节点都必带且非 null（约束元素除外）。written / role 是 ADR 0051 的原写法与解析角色，未改写时为 null。
+源码范围（ADR 0055 #17）：每个带 kind 的节点都必带且非 null（含约束元素）。written / role 是 ADR 0051 的原写法与解析角色，未改写时为 null。
 
 | 属性 | 类型 | 可空 | 无值时 |
 |---|---|---|---|
@@ -168,7 +168,7 @@ Data 字段。constraints 是源码约束（ADR 0055 #4）；typeInferred 为 tr
 
 ## Constraint
 
-字段 / 形参约束（ADR 0055 #4）。约束元素不带 origin。
+字段 / 形参约束（ADR 0055 #4）。与其它带 kind 的节点一样必带 origin（#17）。
 
 定义：`Required` | `Range` | `Pattern`
 
@@ -179,6 +179,7 @@ Data 字段。constraints 是源码约束（ADR 0055 #4）；typeInferred 为 tr
 | 属性 | 类型 | 可空 | 无值时 |
 |---|---|---|---|
 | `kind` | const `"Required"` | 否 | — |
+| `origin` | `Origin` | 否 | — |
 
 ## Range
 
@@ -189,6 +190,7 @@ Data 字段。constraints 是源码约束（ADR 0055 #4）；typeInferred 为 tr
 | `kind` | const `"Range"` | 否 | — |
 | `min` | `CanonicalDecimal` \| null | 是 | `null` |
 | `max` | `CanonicalDecimal` \| null | 是 | `null` |
+| `origin` | `Origin` | 否 | — |
 
 ## Pattern
 
@@ -198,6 +200,7 @@ Data 字段。constraints 是源码约束（ADR 0055 #4）；typeInferred 为 tr
 |---|---|---|---|
 | `kind` | const `"Pattern"` | 否 | — |
 | `regexp` | string | 否 | — |
+| `origin` | `Origin` | 否 | — |
 
 ## Type
 

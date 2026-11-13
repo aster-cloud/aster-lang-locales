@@ -23,7 +23,7 @@ Core IR v2 的唯一真相源（ADR 0055 §3）。`core-ir.v2.schema.json` 是 J
 - 可空只出现在下列位置：`Module.name`（无模块头）、`Module.profile`、`Import.alias`、`Import.version`、`Origin.file` / `written` / `role`、`Range.min` / `max`（至少一个非 null）、`If.elseBlock`、`Workflow.retry` / `timeout`、`Step.compensate`，以及唯一可空的列表 `Func.inputRefs`。其余标量与对象都不可为 null，列表不可为 null。
 - 所有 JSON 整数引用 `$defs/Int32`；只有 `Timeout.milliseconds` 用 `$defs/SafeInt`。
 - `Double.value`、`Range.min` / `max` 引用 `$defs/CanonicalDecimal`，其 pattern 与 ADR 0055 §5 逐字相同。`Long.value`、`Decimal.value` 沿用 v1 的字符串，schema 不约束其格式。
-- 每个带 `kind` 的节点都有非 null 的 `origin`（ADR 0055 #17），约束元素 `Required` / `Range` / `Pattern` 除外：ADR #4 给出的约束形状不带 `origin`。`Field`、`Param`、`Annotation`、`AnnotationArg`、`FieldInit`、`RetryPolicy`、`Timeout` 没有 `kind`，也不带 `origin`，与 Java `CoreModel` 现状一致。
+- 每个带 `kind` 的节点都有非 null 的 `origin`（ADR 0055 #17、§6），约束元素 `Required` / `Range` / `Pattern` 也不例外：ADR #4 只列出约束的语义字段，origin 按 #17 统一补上。`Field`、`Param`、`Annotation`、`AnnotationArg`、`FieldInit`、`RetryPolicy`、`Timeout` 没有 `kind`，也不带 `origin`，与 Java `CoreModel` 现状一致。
 - `AnnotationArg.name` 以 `$` 开头时只能是 `$0`、`$1`…，具名参数不能以 `$` 开头。
 - `Origin.role` 取 ADR 0051 的十个角色名之一，或者为 null。
 
