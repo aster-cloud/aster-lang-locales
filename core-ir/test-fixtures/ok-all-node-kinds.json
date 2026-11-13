@@ -1062,7 +1062,10 @@
       "retTypeInferred": true,
       "annotations": [],
       "retAnnotations": [],
-      "effects": [],
+      "effects": [
+        "cpu",
+        "io"
+      ],
       "effectParams": [],
       "effectCaps": [],
       "effectCapsExplicit": false,

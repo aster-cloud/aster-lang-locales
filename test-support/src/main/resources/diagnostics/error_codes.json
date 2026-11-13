@@ -515,7 +515,7 @@
     "category": "type",
     "severity": "error",
     "message": "Effect parameter {name} of '{func}' has the same name as a built-in effect",
-    "help": "Rename the effect parameter; built-in effect names (io, cpu, pure) are reserved in any letter case."
+    "help": "Rename the effect parameter; the effect names io, cpu, pure and async are reserved in any letter case."
   },
   "CAPABILITY_NOT_ALLOWED": {
     "code": "E300",

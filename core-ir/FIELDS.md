@@ -24,9 +24,21 @@
 
 ## BuiltinEffect
 
-内建效应名（小写）。schema 不直接引用它：Func.effects 中不在 effectParams 里的条目必须属于此集合，效应参数名按 ASCII 大小写不敏感比较也不得落入此集合，两条都由 validateCoreIrInvariants 检查（README「不变式」）。
+授权型具体效应名（小写）。pure、async 与未知名都不授权任何效应，lowering 不把它们写入 effects。
 
-定义：`"io"` | `"cpu"` | `"pure"`
+定义：`"io"` | `"cpu"`
+
+## ReservedEffectName
+
+保留的效应名：内建效应 io、cpu，以及不授权的 pure、async（core EffectChecker 中 async 是 pure 的废弃别名）。效应参数名按 ASCII 大小写不敏感比较不得落入此集合，由 validateCoreIrInvariants 检查（effect-param-shadows-builtin）；EffectVarName 的 pattern 与此集合同步。
+
+定义：`"io"` | `"cpu"` | `"pure"` | `"async"`
+
+## EffectVarName
+
+Func.effects 中的效应变量名：任意大小写下都不是保留效应名。它是否已在 effectParams 中声明由不变式检查（undeclared-effect-var）。
+
+定义：string，pattern `^(?!(?:[Ii][Oo]|[Cc][Pp][Uu]|[Pp][Uu][Rr][Ee]|[Aa][Ss][Yy][Nn][Cc])$).+$`
 
 ## Position
 
@@ -116,7 +128,7 @@ Data 字段。constraints 是源码约束（ADR 0055 #4）；typeInferred 为 tr
 
 ## Func
 
-函数 / 规则。typeParams 只列源码声明的类型参数（#10）；effects 按源码顺序，具体效应名小写，与 effectParams 中某名相等的条目是效应变量（#5、#6）；inputRefs 是 v2 唯一可空的列表，null 表示未计算、[] 表示已计算且不读任何输入，合法状态由不变式检查（#12）。没有 piiLevel / piiCategories（#8）。
+函数 / 规则。typeParams 只列源码声明的类型参数（#10）；effects 只含授权型具体效应 io / cpu（小写）与已声明的效应变量，按首次声明顺序、不重复；pure、async 与未知名不写入（#5、#6）；inputRefs 是 v2 唯一可空的列表，null 表示未计算、[] 表示已计算且不读任何输入，合法状态由不变式检查（#12）。没有 piiLevel / piiCategories（#8）。
 
 | 属性 | 类型 | 可空 | 无值时 |
 |---|---|---|---|
@@ -128,7 +140,7 @@ Data 字段。constraints 是源码约束（ADR 0055 #4）；typeInferred 为 tr
 | `retTypeInferred` | boolean | 否 | `false` |
 | `annotations` | `Annotation`[] | 否 | `[]` |
 | `retAnnotations` | `Annotation`[] | 否 | `[]` |
-| `effects` | string[] | 否 | `[]` |
+| `effects` | `BuiltinEffect` \| `EffectVarName`[] | 否 | `[]` |
 | `effectParams` | string[] | 否 | `[]` |
 | `effectCaps` | string[] | 否 | `[]` |
 | `effectCapsExplicit` | boolean | 否 | `false` |

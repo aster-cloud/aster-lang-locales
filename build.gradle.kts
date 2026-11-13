@@ -439,14 +439,21 @@ fun coreIrDuplicateArgs(node: JsonNode, path: String, out: MutableList<CoreIrPro
     }
 }
 
-fun coreIrFuncProblems(func: JsonNode, path: String, hasProfile: Boolean, builtins: Set<String>): List<CoreIrProblem> {
+/** 效应名集合：builtins 为授权型具体效应（io、cpu），reserved 另含不授权的 pure、async，均取自 schema。 */
+data class CoreIrEffectNames(val builtins: Set<String>, val reserved: Set<String>)
+
+fun coreIrFuncProblems(func: JsonNode, path: String, hasProfile: Boolean, names: CoreIrEffectNames): List<CoreIrProblem> {
     val out = mutableListOf<CoreIrProblem>()
     val effectParams = func.path("effectParams").map { it.asText() }
     effectParams.forEachIndexed { k, p ->
-        if (asciiLower(p) in builtins) out += CoreIrProblem("$path/effectParams/$k", "effect-param-shadows-builtin")
+        if (asciiLower(p) in names.reserved) out += CoreIrProblem("$path/effectParams/$k", "effect-param-shadows-builtin")
     }
+    // effects 按首次声明顺序去重：重复条目报后出现的那个；非 io / cpu 的条目必须是已声明的效应变量
+    val seenEffects = mutableSetOf<String>()
     func.path("effects").forEachIndexed { k, e ->
-        if (e.asText() !in effectParams && e.asText() !in builtins) out += CoreIrProblem("$path/effects/$k", "undeclared-effect-var")
+        val name = e.asText()
+        if (!seenEffects.add(name)) out += CoreIrProblem("$path/effects/$k", "duplicate-effect")
+        else if (name !in effectParams && name !in names.builtins) out += CoreIrProblem("$path/effects/$k", "undeclared-effect-var")
     }
     // ADR 0055 #12：档案模块中返回 Verdict 的规则必须是数组，其余函数必须为 null
     if (func.path("inputRefs").isArray != (hasProfile && coreIrReturnsVerdict(func))) {
@@ -456,12 +463,12 @@ fun coreIrFuncProblems(func: JsonNode, path: String, hasProfile: Boolean, builti
 }
 
 /** validateCoreIrInvariants 的参考实现：输入须已通过 schema；结果按 (path, code) 排序。 */
-fun coreIrInvariantProblems(module: JsonNode, builtins: Set<String>): List<CoreIrProblem> {
+fun coreIrInvariantProblems(module: JsonNode, names: CoreIrEffectNames): List<CoreIrProblem> {
     val out = mutableListOf<CoreIrProblem>()
     coreIrDuplicateArgs(module, "", out)
     val hasProfile = !module.path("profile").isNull
     module.path("decls").forEachIndexed { i, decl ->
-        if (decl.path("kind").asText() == "Func") out += coreIrFuncProblems(decl, "/decls/$i", hasProfile, builtins)
+        if (decl.path("kind").asText() == "Func") out += coreIrFuncProblems(decl, "/decls/$i", hasProfile, names)
     }
     return out.sortedWith(compareBy({ it.path }, { it.code }))
 }
@@ -571,7 +578,18 @@ val verifyCoreIrSchema = tasks.register("verifyCoreIrSchema") {
     inputs.dir(coreIrDir)
     doLast {
         val (schemaNode, schema) = loadCoreIrSchema()
-        val builtins = schemaNode.path("\$defs").path("BuiltinEffect").path("enum").map { it.asText() }.toSet()
+        val defs = schemaNode.path("\$defs")
+        val names = CoreIrEffectNames(
+            defs.path("BuiltinEffect").path("enum").map { it.asText() }.toSet(),
+            defs.path("ReservedEffectName").path("enum").map { it.asText() }.toSet(),
+        )
+        // EffectVarName 的 pattern 须恰好排除 ReservedEffectName（任意大小写），两处不能各说各话
+        val varName = Regex(defs.path("EffectVarName").path("pattern").asText())
+        val leaked = names.reserved.flatMap { listOf(it, it.uppercase(), it.replaceFirstChar(Char::uppercaseChar)) }
+            .filter { varName.matches(it) }
+        if (leaked.isNotEmpty() || !varName.matches("E") || !names.reserved.containsAll(names.builtins)) {
+            throw GradleException("EffectVarName / ReservedEffectName / BuiltinEffect 不一致：$leaked")
+        }
         val mismatches = mutableListOf<String>()
         val expected = coreIrJson.readTree(coreIrFixturesDir.resolve("expected-problems.json"))
         val listed = expected.map { it.path("file").asText() }
@@ -605,7 +623,7 @@ val verifyCoreIrSchema = tasks.register("verifyCoreIrSchema") {
             }
             if (errors.isNotEmpty()) { mismatches += "$name：期望通过 schema，实际 ${errors.map { it.second }}"; continue }
             if (name.startsWith("ok-")) collectKinds(doc, seenKinds)
-            val actual = coreIrInvariantProblems(doc, builtins)
+            val actual = coreIrInvariantProblems(doc, names)
             val wanted = want.sortedWith(compareBy({ it.path }, { it.code }))
             if (actual != wanted) mismatches += "$name：期望 $wanted，实际 $actual"
         }

@@ -506,11 +506,9 @@
       "retTypeInferred": false,
       "annotations": [],
       "retAnnotations": [],
-      "effects": [
-        "IO"
-      ],
+      "effects": [],
       "effectParams": [
-        "IO"
+        "Async"
       ],
       "effectCaps": [],
       "effectCapsExplicit": false,

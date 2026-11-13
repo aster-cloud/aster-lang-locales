@@ -74,7 +74,7 @@
     "E210": "Fügen Sie den Effekttypparameter der Effektparameterliste der Funktionssignatur hinzu.",
     "E211": "Geben Sie explizite Effekte an (pure/cpu/io/workflow) oder entfernen Sie ungenutzte Effektvariablen.",
     "E212": "Deklarieren Sie ihn über ASTER_EFFECT_CONFIG-Präfixe, geben Sie eine importierte Effektsignatur an oder verwenden Sie einen bekannten Stdlib-Namensraum.",
-    "E213": "Benennen Sie den Effektparameter um; die Namen eingebauter Effekte (io, cpu, pure) sind unabhängig von der Groß-/Kleinschreibung reserviert.",
+    "E213": "Benennen Sie den Effektparameter um; die Effektnamen io, cpu, pure und async sind unabhängig von der Groß-/Kleinschreibung reserviert.",
     "E300": "Aktualisieren Sie das Fähigkeitsmanifest oder passen Sie die Funktion an.",
     "E301": "Deklarieren Sie die tatsächlich genutzten Fähigkeiten im Funktionskopf.",
     "E302": "Entfernen Sie ungenutzte Fähigkeitsdeklarationen der Übersichtlichkeit halber.",

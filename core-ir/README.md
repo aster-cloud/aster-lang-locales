@@ -24,6 +24,7 @@ Core IR v2 的唯一真相源（ADR 0055 §3）。`core-ir.v2.schema.json` 是 J
 - 所有 JSON 整数引用 `$defs/Int32`；只有 `Timeout.milliseconds` 用 `$defs/SafeInt`。
 - `Double.value`、`Range.min` / `max` 引用 `$defs/CanonicalDecimal`，其 pattern 与 ADR 0055 §5 逐字相同。`Long.value`、`Decimal.value` 沿用 v1 的字符串，schema 不约束其格式。
 - 每个带 `kind` 的节点都有非 null 的 `origin`（ADR 0055 #17、§6），约束元素 `Required` / `Range` / `Pattern` 也不例外：ADR #4 只列出约束的语义字段，origin 按 #17 统一补上。`Field`、`Param`、`Annotation`、`AnnotationArg`、`FieldInit`、`RetryPolicy`、`Timeout` 没有 `kind`，也不带 `origin`，与 Java `CoreModel` 现状一致。
+- `Func.effects` 的元素要么属于 `$defs/BuiltinEffect`（`io`、`cpu`，小写），要么匹配 `$defs/EffectVarName`。后者拒绝任意大小写的保留名 `io`、`cpu`、`pure`、`async`。`pure`、`async` 与未知效应名都不授权任何效应（core `EffectChecker` 把它们视同 PURE），lowering 不把它们写入 `effects`，所以 `"pure"`、`"async"`、`"IO"` 都会被 schema 拒收。`effects` 按首次声明顺序排列、不重复。`effectParams` 的元素仍是普通字符串，与保留名的冲突由不变式检查，以便报出 E213 对应的问题。
 - `AnnotationArg.name` 以 `$` 开头时只能是 `$0`、`$1`…，具名参数不能以 `$` 开头。
 - `Origin.role` 取 ADR 0051 的十个角色名之一，或者为 null。
 
@@ -34,8 +35,9 @@ schema 表达不了的约束由两引擎各自的 `validateCoreIrInvariants` 检
 | code | 规则 | path |
 |---|---|---|
 | `dup-annotation-arg` | 同一个注解的 `args` 中参数名重复。检查树中所有 `annotations` 与 `retAnnotations`（Func、Field、Param，含 Lambda 形参） | 后出现的那个参数，例如 `/decls/1/fields/1/annotations/0/args/2` |
-| `undeclared-effect-var` | `Func.effects` 的条目既不等于该函数 `effectParams` 中的某个名字，也不是内建效应名（`$defs/BuiltinEffect`：`io`、`cpu`、`pure`，区分大小写）。因此大写的具体效应名（如 `"IO"`）也报这一条 | 该条目，例如 `/decls/4/effects/1` |
-| `effect-param-shadows-builtin` | `Func.effectParams` 的条目按 ASCII 大小写不敏感比较等于某个内建效应名 | 该条目，例如 `/decls/4/effectParams/0` |
+| `undeclared-effect-var` | `Func.effects` 的条目（schema 已保证它是 `io` / `cpu`，或不是保留名）既不是 `io` / `cpu`，也不等于该函数 `effectParams` 中的某个名字 | 该条目，例如 `/decls/4/effects/1` |
+| `duplicate-effect` | `Func.effects` 中同一名字出现多次（lowering 按首次声明顺序去重） | 后出现的那个条目，例如 `/decls/3/effects/1` |
+| `effect-param-shadows-builtin` | `Func.effectParams` 的条目按 ASCII 大小写不敏感比较等于某个保留效应名（`$defs/ReservedEffectName`：`io`、`cpu`、`pure`、`async`） | 该条目，例如 `/decls/4/effectParams/0` |
 | `input-refs-state` | `Func.inputRefs` 的 null / 数组状态不合法（ADR 0055 #12）：模块 `profile` 非 null 且函数返回 Verdict 时必须是数组（可以为空），其余情况必须为 null | `/decls/<i>/inputRefs` |
 
 「返回 Verdict」与 core `GovernanceChecker.returnsVerdict` 同义：`ret` 是 `{kind:"TypeName", name:"Verdict"}`；或者沿 `Block` / `Scope` 的语句、`If` 的两个分支、`Match` 各分支体可达的某个 `Return`，其 `expr` 是 `Call`，`target` 是 `Name`，名字为 `Verdict.allow`、`Verdict.deny`、`Verdict.require_approval`、`Verdict.escalate` 之一。
@@ -55,6 +57,6 @@ ADR 0055 为两种源码错误新增两个码（共享码表 `test-support/src/m
 | 码 | 名称 | 参数 | 阶段 | 说明 |
 |---|---|---|---|---|
 | E900 | `PARSE_DUPLICATE_ANNOTATION_ARG` | `annotation`、`name` | 解析 | 同一注解内参数名重复（ADR #3）。解析诊断原有码段 E050–E069 已用满，E070 起为 PII，E033–E049 留给类型检查（ADR 0051 §16.1），因此解析诊断的续段取空置的 E900–E999。句型 key 为 `syntax-diagnostics` 的 `duplicateAnnotationArg` |
-| E213 | `EFFECT_PARAM_SHADOWS_BUILTIN` | `name`、`func` | 类型检查 | 效应参数与内建效应同名（ADR #5），与 E210 / E211 同属效应变量一族 |
+| E213 | `EFFECT_PARAM_SHADOWS_BUILTIN` | `name`、`func` | 类型检查 | 效应参数与保留效应名（io、cpu、pure、async，大小写不敏感）同名（ADR #5），与 E210 / E211 同属效应变量一族 |
 
 zh / de 译文在本仓 overlay，hi 的 overlay 在 aster-lang-hi。

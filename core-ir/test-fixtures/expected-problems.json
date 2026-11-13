@@ -90,6 +90,42 @@
     ]
   },
   {
+    "file": "bad-effects-async.json",
+    "problems": [
+      {
+        "path": "/decls/3/effects/0",
+        "code": "schema"
+      }
+    ]
+  },
+  {
+    "file": "bad-effects-duplicate.json",
+    "problems": [
+      {
+        "path": "/decls/3/effects/1",
+        "code": "duplicate-effect"
+      }
+    ]
+  },
+  {
+    "file": "bad-effects-pure.json",
+    "problems": [
+      {
+        "path": "/decls/3/effects/1",
+        "code": "schema"
+      }
+    ]
+  },
+  {
+    "file": "bad-effects-uppercase-io.json",
+    "problems": [
+      {
+        "path": "/decls/3/effects/0",
+        "code": "schema"
+      }
+    ]
+  },
+  {
     "file": "bad-inputrefs-nonprofile-array.json",
     "problems": [
       {
