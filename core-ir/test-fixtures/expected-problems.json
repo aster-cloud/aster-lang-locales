@@ -1,0 +1,307 @@
+[
+  {
+    "file": "bad-annotation-map-params.json",
+    "problems": [
+      {
+        "path": "/decls/3/annotations/0",
+        "code": "schema"
+      }
+    ]
+  },
+  {
+    "file": "bad-annotation-value-float.json",
+    "problems": [
+      {
+        "path": "/decls/1/fields/1/annotations/0/args/0/value",
+        "code": "schema"
+      }
+    ]
+  },
+  {
+    "file": "bad-annotation-value-int32-overflow.json",
+    "problems": [
+      {
+        "path": "/decls/1/fields/1/annotations/0/args/0/value",
+        "code": "schema"
+      }
+    ]
+  },
+  {
+    "file": "bad-annotation-value-null.json",
+    "problems": [
+      {
+        "path": "/decls/1/fields/1/annotations/0/args/0/value",
+        "code": "schema"
+      }
+    ]
+  },
+  {
+    "file": "bad-decimal-exponent.json",
+    "problems": [
+      {
+        "path": "/decls/3/body/statements/0/expr/value",
+        "code": "schema"
+      }
+    ]
+  },
+  {
+    "file": "bad-decimal-trailing-newline.json",
+    "problems": [
+      {
+        "path": "/decls/3/body/statements/0/expr/value",
+        "code": "schema"
+      }
+    ]
+  },
+  {
+    "file": "bad-decimal-unanchored.json",
+    "problems": [
+      {
+        "path": "/decls/3/body/statements/0/expr/value",
+        "code": "schema"
+      }
+    ]
+  },
+  {
+    "file": "bad-decimal-whitespace.json",
+    "problems": [
+      {
+        "path": "/decls/3/body/statements/0/expr/value",
+        "code": "schema"
+      }
+    ]
+  },
+  {
+    "file": "bad-dup-annotation-arg.json",
+    "problems": [
+      {
+        "path": "/decls/1/fields/1/annotations/0/args/2",
+        "code": "dup-annotation-arg"
+      }
+    ]
+  },
+  {
+    "file": "bad-effect-param-shadows-builtin.json",
+    "problems": [
+      {
+        "path": "/decls/4/effectParams/0",
+        "code": "effect-param-shadows-builtin"
+      }
+    ]
+  },
+  {
+    "file": "bad-effects-async.json",
+    "problems": [
+      {
+        "path": "/decls/3/effects/0",
+        "code": "schema"
+      }
+    ]
+  },
+  {
+    "file": "bad-effects-duplicate.json",
+    "problems": [
+      {
+        "path": "/decls/3/effects/1",
+        "code": "duplicate-effect"
+      }
+    ]
+  },
+  {
+    "file": "bad-effects-pure.json",
+    "problems": [
+      {
+        "path": "/decls/3/effects/1",
+        "code": "schema"
+      }
+    ]
+  },
+  {
+    "file": "bad-effects-uppercase-io.json",
+    "problems": [
+      {
+        "path": "/decls/3/effects/0",
+        "code": "schema"
+      }
+    ]
+  },
+  {
+    "file": "bad-inputrefs-nonprofile-array.json",
+    "problems": [
+      {
+        "path": "/decls/3/inputRefs",
+        "code": "input-refs-state"
+      }
+    ]
+  },
+  {
+    "file": "bad-inputrefs-profile-nonverdict-array.json",
+    "problems": [
+      {
+        "path": "/decls/4/inputRefs",
+        "code": "input-refs-state"
+      }
+    ]
+  },
+  {
+    "file": "bad-inputrefs-profile-verdict-null.json",
+    "problems": [
+      {
+        "path": "/decls/3/inputRefs",
+        "code": "input-refs-state"
+      }
+    ]
+  },
+  {
+    "file": "bad-int-literal-overflow.json",
+    "problems": [
+      {
+        "path": "/decls/3/body/statements/1/expr/value",
+        "code": "schema"
+      }
+    ]
+  },
+  {
+    "file": "bad-line-underflow.json",
+    "problems": [
+      {
+        "path": "/decls/2/origin/start/line",
+        "code": "schema"
+      }
+    ]
+  },
+  {
+    "file": "bad-missing-origin-on-constraint.json",
+    "problems": [
+      {
+        "path": "/decls/1/fields/0/constraints/0/origin",
+        "code": "schema"
+      }
+    ]
+  },
+  {
+    "file": "bad-missing-origin-on-typename.json",
+    "problems": [
+      {
+        "path": "/decls/3/ret/origin",
+        "code": "schema"
+      }
+    ]
+  },
+  {
+    "file": "bad-missing-schema-version.json",
+    "problems": [
+      {
+        "path": "/schemaVersion",
+        "code": "schema"
+      }
+    ]
+  },
+  {
+    "file": "bad-negative-zero.json",
+    "problems": [
+      {
+        "path": "/decls/3/body/statements/0/expr/value",
+        "code": "schema"
+      }
+    ]
+  },
+  {
+    "file": "bad-noncanonical-decimal.json",
+    "problems": [
+      {
+        "path": "/decls/3/body/statements/0/expr/value",
+        "code": "schema"
+      }
+    ]
+  },
+  {
+    "file": "bad-null-list.json",
+    "problems": [
+      {
+        "path": "/decls/3/annotations",
+        "code": "schema"
+      }
+    ]
+  },
+  {
+    "file": "bad-omitted-empty-array.json",
+    "problems": [
+      {
+        "path": "/decls/3/retAnnotations",
+        "code": "schema"
+      }
+    ]
+  },
+  {
+    "file": "bad-patctor-names.json",
+    "problems": [
+      {
+        "path": "/decls/3/body/statements/2/cases/0/pattern/names",
+        "code": "schema"
+      }
+    ]
+  },
+  {
+    "file": "bad-range-both-null.json",
+    "problems": [
+      {
+        "path": "/decls/1/fields/0/constraints/1",
+        "code": "schema"
+      }
+    ]
+  },
+  {
+    "file": "bad-range-number.json",
+    "problems": [
+      {
+        "path": "/decls/1/fields/0/constraints/1/min",
+        "code": "schema"
+      }
+    ]
+  },
+  {
+    "file": "bad-schema-version-1.json",
+    "problems": [
+      {
+        "path": "/schemaVersion",
+        "code": "schema"
+      }
+    ]
+  },
+  {
+    "file": "bad-schema-version-string.json",
+    "problems": [
+      {
+        "path": "/schemaVersion",
+        "code": "schema"
+      }
+    ]
+  },
+  {
+    "file": "bad-undeclared-effect-var.json",
+    "problems": [
+      {
+        "path": "/decls/4/effects/1",
+        "code": "undeclared-effect-var"
+      }
+    ]
+  },
+  {
+    "file": "bad-unknown-field.json",
+    "problems": [
+      {
+        "path": "/decls/3/declaredEffects",
+        "code": "schema"
+      }
+    ]
+  },
+  {
+    "file": "ok-all-node-kinds.json",
+    "problems": []
+  },
+  {
+    "file": "ok-inputrefs-profile-verdict-empty.json",
+    "problems": []
+  }
+]

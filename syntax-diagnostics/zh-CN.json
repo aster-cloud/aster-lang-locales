@@ -32,6 +32,7 @@
   "invalidValue": "无效的{construct} {value}；允许的取值：{allowed}",
   "callArity": "{callee} 需要恰好 {expected} 个参数，实际 {actual} 个",
   "unknownName": "未知的{kind} {name}",
+  "duplicateAnnotationArg": "注解 @{annotation} 重复给出了参数 {name}",
   "or": "或",
   "more": "等",
   "token.indent": "缩进",

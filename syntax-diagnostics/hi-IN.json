@@ -32,6 +32,7 @@
   "invalidValue": "अमान्य {construct} {value}; अनुमत: {allowed}",
   "callArity": "{callee} को ठीक {expected} तर्क चाहिए, मिले {actual}",
   "unknownName": "अज्ञात {kind} {name}",
+  "duplicateAnnotationArg": "एनोटेशन @{annotation} में तर्क {name} दोहराया गया है",
   "or": " या ",
   "more": " आदि",
   "token.indent": "इंडेंट",
