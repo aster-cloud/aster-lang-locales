@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aster-lang.cloud/schema/type-inference/test-vectors/v1",
+  "title": "Aster 推断命名规则共用测试向量",
+  "description": "两引擎单测逐条运行：给定名字与约束（IR v2 形状，不带 origin），推断类型须等于 expected（ADR 0056 §3.2）。",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "constraints": {
+        "type": "array",
+        "items": {
+          "$ref": "#/$defs/Constraint"
+        }
+      },
+      "expected": {
+        "enum": [
+          "Text",
+          "Int",
+          "Float",
+          "Bool",
+          "DateTime"
+        ]
+      }
+    },
+    "required": [
+      "name",
+      "constraints",
+      "expected"
+    ],
+    "additionalProperties": false
+  },
+  "$defs": {
+    "Decimal": {
+      "description": "规范十进制串（ADR 0055 §5，与 core-ir.v2.schema.json 的 CanonicalDecimal 相同）。",
+      "type": "string",
+      "pattern": "^(0|-?[1-9][0-9]*(\\.[0-9]*[1-9])?|-?0\\.[0-9]*[1-9])$"
+    },
+    "Constraint": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "Required"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "Range"
+            },
+            "min": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/Decimal"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "max": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/Decimal"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "min",
+            "max"
+          ],
+          "additionalProperties": false,
+          "not": {
+            "properties": {
+              "min": {
+                "type": "null"
+              },
+              "max": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "Pattern"
+            },
+            "regexp": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "regexp"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

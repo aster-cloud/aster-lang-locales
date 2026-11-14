@@ -654,3 +654,49 @@ val verifyCoreIrSchema = tasks.register("verifyCoreIrSchema") {
 subprojects {
     tasks.matching { it.name == "check" }.configureEach { dependsOn(verifyCoreIrSchema) }
 }
+
+// ── 推断命名规则（ADR 0056 §3.2）──────────────────────────────────────────────────────────────
+// type-inference/naming-rules.json 是两引擎推断形参 / 字段类型的唯一真相源，core 与 aster-lang-ts 各持一份
+// 逐字节副本（sibling parity 测试守护）。verifyTypeInferenceRules 检查两份 schema 符合 2020-12 元 schema，
+// 规则表与共用测试向量各自通过 schema，且规则表满足 schema 表达不了的约束；向量与算法的自洽由
+// node --test type-inference/*.test.mjs（参考实现 infer.mjs）负责。
+val typeInferenceDir = rootProject.file("type-inference")
+
+fun loadTypeInferenceSchema(name: String): com.networknt.schema.Schema {
+    val file = typeInferenceDir.resolve(name)
+    if (!file.isFile) throw GradleException("缺少 schema：$file")
+    val node = coreIrJson.readTree(file)
+    val registry = SchemaRegistry.withDefaultDialect(SpecificationVersion.DRAFT_2020_12)
+    val metaErrors = registry.getSchema(SchemaLocation.of("https://json-schema.org/draft/2020-12/schema")).validate(node)
+    if (metaErrors.isNotEmpty()) throw GradleException("$name 不符合 JSON Schema 2020-12 元 schema：\n" + metaErrors.joinToString("\n"))
+    return registry.getSchema(SchemaLocation.of(node.path("\$id").asText()), node)
+}
+
+val verifyTypeInferenceRules = tasks.register("verifyTypeInferenceRules") {
+    group = "verification"
+    description = "校验推断命名规则表与共用测试向量（ADR 0056 §3.2）"
+    inputs.dir(typeInferenceDir)
+    doLast {
+        val problems = mutableListOf<String>()
+        val rules = coreIrJson.readTree(typeInferenceDir.resolve("naming-rules.json"))
+        val vectors = coreIrJson.readTree(typeInferenceDir.resolve("test-vectors.json"))
+        loadTypeInferenceSchema("naming-rules.schema.json").validate(rules).forEach { problems += "naming-rules.json：$it" }
+        loadTypeInferenceSchema("test-vectors.schema.json").validate(vectors).forEach { problems += "test-vectors.json：$it" }
+        // 同一个词 / 串出现在两条规则里时，胜负取决于优先级与数组顺序，容易被误改；除布尔前缀与末词
+        // （active / valid 在首词与末词两条规则里各有一份）外不允许重复
+        val owners = mutableMapOf<Pair<String, String>, Int>()
+        rules.path("rules").forEachIndexed { i, rule ->
+            val kind = if (rule.has("strings")) "text" else rule.path("match").asText()
+            (rule.path("words").takeIf { it.isArray } ?: rule.path("strings")).forEach { w ->
+                val prev = owners.put(kind to w.asText(), i)
+                if (prev != null) problems += "规则 $prev 与规则 $i 在同一种匹配方式下重复了「${w.asText()}」"
+            }
+        }
+        if (problems.isNotEmpty()) throw GradleException("推断命名规则校验失败：\n" + problems.joinToString("\n"))
+        logger.lifecycle("verifyTypeInferenceRules: ${rules.path("rules").size()} 条规则、${vectors.size()} 条测试向量通过 schema")
+    }
+}
+
+subprojects {
+    tasks.matching { it.name == "check" }.configureEach { dependsOn(verifyTypeInferenceRules) }
+}

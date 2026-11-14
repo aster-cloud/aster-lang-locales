@@ -28,9 +28,9 @@ class DeDeOverlayTest {
         DeDeLexiconPlugin plugin = new DeDeLexiconPlugin();
         Map<String, String> overlays = plugin.getOverlayResources();
         assertThat(overlays).containsKeys(
-                "typeInferenceRules", "inputGenerationRules", "lspUiTexts",
+                "inputGenerationRules", "lspUiTexts",
                 "diagnosticMessages", "diagnosticHelp");
-        assertThat(overlays).hasSize(5);
+        assertThat(overlays).hasSize(4);
     }
 
     /**
@@ -59,30 +59,6 @@ class DeDeOverlayTest {
     @DisplayName("overlay 路径位于 overlays/de-DE/ 下且在 classpath 上只有一份（防多语言包同 classpath 时互相遮蔽）")
     void overlayPathsAreNamespacedAndUnique() {
         assertThat(OverlayResources.problems(new DeDeLexiconPlugin(), "de-DE")).isEmpty();
-    }
-
-    @Test
-    @DisplayName("type-inference-rules.json 格式正确且正则可编译")
-    void testTypeInferenceRulesJson() throws Exception {
-        JsonNode root = loadOverlay("overlays/de-DE/type-inference-rules.json");
-        assertThat(root.get("version").asInt()).isEqualTo(1);
-        JsonNode rules = root.get("rules");
-        assertThat(rules.isArray()).isTrue();
-        assertThat(rules.size()).isGreaterThan(0);
-        for (JsonNode rule : rules) {
-            assertThat(rule.has("pattern")).isTrue();
-            assertThat(rule.has("type")).isTrue();
-            assertThat(rule.has("priority")).isTrue();
-            String pattern = rule.get("pattern").asText();
-            String flags = rule.has("flags") ? rule.get("flags").asText() : "";
-            try {
-                int javaFlags = flags.contains("i") ? Pattern.CASE_INSENSITIVE : 0;
-                Pattern.compile(pattern, javaFlags);
-            } catch (PatternSyntaxException e) {
-                throw new AssertionError("无效正则: " + pattern, e);
-            }
-            assertThat(rule.get("type").asText()).isIn("Bool", "Int", "Float", "Text", "DateTime");
-        }
     }
 
     @Test

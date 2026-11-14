@@ -58,7 +58,6 @@ public final class EnUsPlugin implements LexiconPlugin, VocabularyPlugin {
     @Override
     public Map<String, String> getOverlayResources() {
         return Map.of(
-                "typeInferenceRules", "overlays/en-US/type-inference-rules.json",
                 // ★同类遗漏：磁盘上有 overlays/input-generation-rules.json 却未注册。
                 //   issue #80 只点了 de 的 lspUiTexts，这条是排查时一并发现的。
                 "inputGenerationRules", "overlays/en-US/input-generation-rules.json",

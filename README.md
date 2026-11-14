@@ -96,6 +96,12 @@ backbone 时会抛出 `GradleException`；本地找不到时会告警并跳过�
 - 码表新增错误码时：先更新副本，再给每个语言补齐译文；发布顺序为本仓与 `aster-lang-hi` 先发版，
   `aster-lang-ts` 再重新生成诊断译文表。
 
+## 推断命名规则
+
+未标注类型的形参 / 字段按名字推断类型，规则表 `type-inference/naming-rules.json` 是两引擎的唯一真相源，
+与词法表无关（ADR 0056 §3.2）；语言包不再带 `type-inference-rules.json` overlay。详见
+[`type-inference/README.md`](type-inference/README.md)。
+
 ## 插件加载机制不受合并影响
 
 合并改变的是语言包的**构建来源**，没有改变**加载机制**。`LexiconRegistry`
