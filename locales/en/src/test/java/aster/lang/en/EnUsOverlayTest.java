@@ -9,8 +9,6 @@ import org.junit.jupiter.api.Test;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,8 +25,8 @@ class EnUsOverlayTest {
     void testOverlayResources() {
         EnUsPlugin plugin = new EnUsPlugin();
         Map<String, String> overlays = plugin.getOverlayResources();
-        assertThat(overlays).containsKeys("typeInferenceRules", "inputGenerationRules", "lspUiTexts");
-        assertThat(overlays).hasSize(3);
+        assertThat(overlays).containsKeys("inputGenerationRules", "lspUiTexts");
+        assertThat(overlays).hasSize(2);
     }
 
     /**
@@ -56,36 +54,6 @@ class EnUsOverlayTest {
     @DisplayName("overlay 路径位于 overlays/en-US/ 下且在 classpath 上只有一份（防多语言包同 classpath 时互相遮蔽）")
     void overlayPathsAreNamespacedAndUnique() {
         assertThat(OverlayResources.problems(new EnUsPlugin(), "en-US")).isEmpty();
-    }
-
-    @Test
-    @DisplayName("type-inference-rules.json 格式正确且正则可编译")
-    void testTypeInferenceRulesJson() throws Exception {
-        JsonNode root = loadOverlay("overlays/en-US/type-inference-rules.json");
-        assertThat(root.has("version")).isTrue();
-        assertThat(root.get("version").asInt()).isEqualTo(1);
-
-        JsonNode rules = root.get("rules");
-        assertThat(rules.isArray()).isTrue();
-        assertThat(rules.size()).isGreaterThan(0);
-
-        for (JsonNode rule : rules) {
-            assertThat(rule.has("pattern")).isTrue();
-            assertThat(rule.has("type")).isTrue();
-            assertThat(rule.has("priority")).isTrue();
-
-            String pattern = rule.get("pattern").asText();
-            String flags = rule.has("flags") ? rule.get("flags").asText() : "";
-            try {
-                int javaFlags = flags.contains("i") ? Pattern.CASE_INSENSITIVE : 0;
-                Pattern.compile(pattern, javaFlags);
-            } catch (PatternSyntaxException e) {
-                throw new AssertionError("无效正则: " + pattern, e);
-            }
-
-            String type = rule.get("type").asText();
-            assertThat(type).isIn("Bool", "Int", "Float", "Text", "DateTime");
-        }
     }
 
     @Test

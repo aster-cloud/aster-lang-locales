@@ -73,7 +73,6 @@ public final class ZhCnPlugin implements LexiconPlugin, VocabularyPlugin {
     @Override
     public Map<String, String> getOverlayResources() {
         return Map.of(
-                "typeInferenceRules", "overlays/zh-CN/type-inference-rules.json",
                 "inputGenerationRules", "overlays/zh-CN/input-generation-rules.json",
                 "diagnosticMessages", "overlays/zh-CN/diagnostic-messages.json",
                 "diagnosticHelp", "overlays/zh-CN/diagnostic-help.json",

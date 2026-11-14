@@ -28,10 +28,10 @@ class ZhCnOverlayTest {
         ZhCnPlugin plugin = new ZhCnPlugin();
         Map<String, String> overlays = plugin.getOverlayResources();
         assertThat(overlays).containsKeys(
-                "typeInferenceRules", "inputGenerationRules",
+                "inputGenerationRules",
                 "diagnosticMessages", "diagnosticHelp", "lspUiTexts"
         );
-        assertThat(overlays).hasSize(5);
+        assertThat(overlays).hasSize(4);
     }
 
     /**
@@ -59,19 +59,6 @@ class ZhCnOverlayTest {
     @DisplayName("overlay 路径位于 overlays/zh-CN/ 下且在 classpath 上只有一份（防多语言包同 classpath 时互相遮蔽）")
     void overlayPathsAreNamespacedAndUnique() {
         assertThat(OverlayResources.problems(new ZhCnPlugin(), "zh-CN")).isEmpty();
-    }
-
-    @Test
-    @DisplayName("type-inference-rules.json 格式正确且正则可编译")
-    void testTypeInferenceRulesJson() throws Exception {
-        JsonNode root = loadOverlay("overlays/zh-CN/type-inference-rules.json");
-        assertThat(root.get("version").asInt()).isEqualTo(1);
-        JsonNode rules = root.get("rules");
-        assertThat(rules.isArray()).isTrue();
-        assertThat(rules.size()).isGreaterThan(0);
-        for (JsonNode rule : rules) {
-            assertValidRegexRule(rule);
-        }
     }
 
     @Test

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aster-lang.cloud/schema/type-inference/naming-rules/v1",
+  "title": "Aster 推断命名规则表",
+  "description": "未标注形参 / 字段类型的命名规则（ADR 0056 §3.2）。本文件所在目录的 naming-rules.json 是唯一真相源，core 与 aster-lang-ts 各持一份逐字节副本，由 sibling parity 测试守护。rules 的数组顺序有意义：同优先级取靠前者。",
+  "type": "object",
+  "properties": {
+    "version": { "const": 1, "description": "格式版本，只在格式变化时递增。" },
+    "default": { "$ref": "#/$defs/TypeName", "description": "没有规则命中时的类型。" },
+    "rules": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/Rule" } }
+  },
+  "required": ["version", "default", "rules"],
+  "additionalProperties": false,
+  "$defs": {
+    "TypeName": { "enum": ["Text", "Int", "Float", "Bool", "DateTime"] },
+    "Word": {
+      "description": "分词后的词：ASCII 小写字母或数字串（分词结果都是 ASCII 小写）。",
+      "type": "string",
+      "pattern": "^(?:[a-z]+|[0-9]+)$"
+    },
+    "Text": {
+      "description": "与 ASCII 小写化之后的整个名字比较的前缀 / 后缀；不得含 ASCII 大写字母（否则永远不命中）。",
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[^A-Z]+$"
+    },
+    "Rule": {
+      "type": "object",
+      "properties": {
+        "type": { "$ref": "#/$defs/TypeName" },
+        "priority": { "type": "integer", "minimum": 0 },
+        "match": { "enum": ["firstWord", "lastWord", "lastWordMulti", "anyWord", "textPrefix", "textSuffix"] },
+        "words": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/Word" } },
+        "strings": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/Text" } }
+      },
+      "required": ["type", "priority", "match"],
+      "additionalProperties": false,
+      "if": { "properties": { "match": { "enum": ["textPrefix", "textSuffix"] } } },
+      "then": { "required": ["strings"], "not": { "required": ["words"] } },
+      "else": { "required": ["words"], "not": { "required": ["strings"] } }
+    }
+  }
+}
