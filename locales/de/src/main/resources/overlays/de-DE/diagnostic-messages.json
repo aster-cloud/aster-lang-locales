@@ -110,6 +110,7 @@
     "E706": "Regel '{rule}' verletzt das Profil '{profile}': {requirement}",
     "E707": "Die Governance-Prüfung für Modul '{module}' (Profil '{profile}') konnte nicht ausgeführt werden; Speichern ist blockiert, bis sie erfolgreich ist",
     "E708": "Regel '{rule}' liest Eingaben, die sich nicht statisch bestimmen lassen ({construct}); Profil '{profile}' verlangt verifizierte Eingaben",
+    "W709": "Regel '{rule}' gibt Text zurück, der aus dem @pii-Feld '{field}' gebildet wird; die Ausführungsausgabe wird unmaskiert gespeichert und angezeigt",
     "E720": "Regel '{rule}' kann nicht nach Cedar exportiert werden: {reason}",
     "E721": "Regel '{rule}' verwendet {construct}, wofür es keine Cedar-Übersetzung gibt",
     "E722": "Kontextschlüssel '{key}' in Regel '{rule}' wird sowohl als {first} als auch als {second} verwendet",
