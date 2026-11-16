@@ -110,6 +110,7 @@
     "E706": "规则 '{rule}' 违反档案 '{profile}'：{requirement}",
     "E707": "无法对模块 '{module}' 执行治理检查（档案 '{profile}'）；检查成功前禁止保存",
     "E708": "规则 '{rule}' 读取的输入无法静态确定（{construct}）；档案 '{profile}' 要求输入经过验证",
+    "W709": "规则 '{rule}' 返回的 Text 由 @pii 字段 '{field}' 构成；执行输出会原样保存并在日志中不打码展示",
     "E720": "规则 '{rule}' 无法导出为 Cedar：{reason}",
     "E721": "规则 '{rule}' 使用了 {construct}，它没有对应的 Cedar 翻译",
     "E722": "规则 '{rule}' 中的上下文键 '{key}' 同时被当作 {first} 和 {second} 使用",
