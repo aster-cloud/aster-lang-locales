@@ -133,6 +133,7 @@
     "E805": "Feld '{written}' an Position {role} ist mehrdeutig zwischen: {candidates}",
     "E806": "Muster '{written}' an Position {role} ist mehrdeutig zwischen: {candidates}",
     "E807": "Doppelte Deklaration von '{written}' an Position {role}",
+    "E808": "Der Alias '{alias}' ({kind}) wird im Quelltext als Name verwendet: '{name}'",
     "W800": "Deklaration '{written}' an Position {role} verdeckt einen Vokabulareintrag",
     "W801": "'{written}' an Position {role} wurde ohne bekannten Empfängertyp aufgelöst",
     "E900": "Annotation @{annotation} wiederholt das Argument {name}"

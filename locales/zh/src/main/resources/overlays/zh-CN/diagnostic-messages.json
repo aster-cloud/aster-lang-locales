@@ -133,6 +133,7 @@
     "E805": "{role} 位置的字段 '{written}' 存在歧义，候选: {candidates}",
     "E806": "{role} 位置的模式 '{written}' 存在歧义，候选: {candidates}",
     "E807": "在 {role} 位置重复声明 '{written}'",
+    "E808": "别名 '{alias}'（{kind}）在源码中被当作名字使用：'{name}'",
     "W800": "{role} 位置的声明 '{written}' 遮蔽了词汇表条目",
     "W801": "在 {role} 位置解析 '{written}' 时接收者类型未知",
     "E900": "注解 @{annotation} 重复给出了参数 {name}"
