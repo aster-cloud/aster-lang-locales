@@ -133,6 +133,7 @@
     "E805": "Fügen Sie dem Empfänger (Parameter oder Let) eine Typannotation hinzu, damit das Feld anhand seines deklarierten Typs aufgelöst wird, oder benennen Sie eines der kollidierenden Felder um.",
     "E806": "Schreiben Sie einen qualifizierten Namen (z. B. Stufe.Hoch) oder fügen Sie eine Typannotation hinzu.",
     "E807": "Benennen Sie eine der Deklarationen um oder entfernen Sie das Duplikat.",
+    "E808": "Benennen Sie den Namen um oder ersetzen Sie den Alias durch eine Mehrwortphrase.",
     "W800": "Benennen Sie die Deklaration um, falls die Verdeckung unbeabsichtigt ist; die Deklaration hat Vorrang vor dem Vokabulareintrag.",
     "W801": "Fügen Sie dem Empfänger eine Typannotation hinzu, damit der Name anhand seines Typs geprüft werden kann.",
     "E900": "Geben Sie jedes benannte Argument einer Annotation höchstens einmal an."
