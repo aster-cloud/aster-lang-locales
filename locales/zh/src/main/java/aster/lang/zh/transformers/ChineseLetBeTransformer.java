@@ -21,13 +21,26 @@ public final class ChineseLetBeTransformer implements SyntaxTransformer {
     public static final ChineseLetBeTransformer INSTANCE = new ChineseLetBeTransformer();
 
     /**
+     * 中文词法空白：ASCII 空格、制表符与全角空格 U+3000（aster-lang-ts#348 的语言规则）。
+     * <p>
+     * 本变换器在 preTranslationTransformers 链里执行，早于 core 的全角转半角，所以 U+3000 此时仍是原样，须显式列出。
+     * 其余 Unicode 空白（U+00A0、U+2000–U+200A 等）不是空白，由词法器报 E050；换行也不属于空白，
+     * 绑定不得跨行。
+     */
+    private static final String WS = "[ \\t\\u3000]";
+
+    /**
      * 匹配 {@code 令 X 定义为 Y} 模式（v2 关键字）。
      * <p>
      * X 可以是中文标识符（字母、数字、下划线），不贪婪匹配到第一个 {@code 定义为}。
+     * <p>
+     * 此前用 {@code UNICODE_CHARACTER_CLASS} 下的 {@code \s}，它匹配任意 Unicode 空白与换行：
+     * {@code 令 X 定义为 Y} 里的 U+00A0 被当作空白吞掉、{@code 定义为} 后换行也能匹配，Java 接受 ts 报 E050 / E055 的源码
+     * （aster-lang-locales#143）。空白收紧到 {@link #WS}，与词法器一致。
      */
     private static final Pattern CHINESE_LET_BE = Pattern.compile(
-            "^(\\s*)令\\s+([\\p{L}][\\p{L}0-9_]*)\\s+定义为\\s+",
-            Pattern.MULTILINE | Pattern.UNICODE_CHARACTER_CLASS
+            "^(" + WS + "*)令" + WS + "+([\\p{L}][\\p{L}0-9_]*)" + WS + "+定义为" + WS + "+",
+            Pattern.MULTILINE
     );
 
     private ChineseLetBeTransformer() {}
