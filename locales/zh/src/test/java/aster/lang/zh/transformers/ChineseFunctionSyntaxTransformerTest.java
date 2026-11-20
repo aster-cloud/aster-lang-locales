@@ -141,17 +141,18 @@ class ChineseFunctionSyntaxTransformerTest {
     }
 
     @Test
-    @DisplayName("★与旧模式结果逐字相同（随机输入，覆盖各类 Unicode 空白与行终止符）")
-    void testEquivalentToLegacyPattern() {
-        // 旧模式在空行与未闭合函数头上会二次回溯，新实现须只改性能、不改结果。
-        Pattern legacy = Pattern.compile(
-                "^(\\s*)(?:规则|Rule)\\s+([\\p{L}][\\p{L}0-9_]*)\\s*[(（]([^)）]*?)[)）]\\s*(.*)$",
-                Pattern.MULTILINE | Pattern.UNICODE_CHARACTER_CLASS);
+    @DisplayName("★与直写模式结果逐字相同（随机输入，覆盖各类 Unicode 空白与行终止符）")
+    void testEquivalentToPlainPattern() {
+        // 直写模式在空行与未闭合函数头上会二次回溯；rewriteRuleFunc 的截断只改性能、不改结果。
+        Pattern plain = Pattern.compile(
+                "^([ \\t\\u3000]*)(?:规则|Rule)[ \\t\\u3000]+([\\p{L}][\\p{L}0-9_]*)[ \\t\\u3000]*"
+                        + "[(（]([^)）]*?)[)）][ \\t\\u3000]*(.*)$",
+                Pattern.MULTILINE);
         Random random = new Random(236);
         int rewritten = 0;
         for (int i = 0; i < 50_000; i++) {
             String input = FuzzSource.next(random);
-            String expected = legacyRewrite(legacy, input);
+            String expected = plainRewrite(plain, input);
             assertThat(ChineseFunctionSyntaxTransformer.rewriteRuleFunc(input))
                     .as("输入 %s", input.codePoints().mapToObj(c -> String.format("U+%04X", c)).toList())
                     .isEqualTo(expected);
@@ -159,7 +160,37 @@ class ChineseFunctionSyntaxTransformerTest {
                 rewritten++;
             }
         }
-        assertThat(rewritten).as("随机输入中须有足够多真正发生重排的用例").isGreaterThan(5_000);
+        assertThat(rewritten).as("随机输入中须有足够多真正发生重排的用例").isGreaterThan(500);
+    }
+
+    @Test
+    @DisplayName("函数头里的其他 Unicode 空白不当空白：原样留下，由词法报 E050（aster-lang-locales#147）")
+    void testUnicodeWhitespaceIsNotLexicalWhitespace() {
+        for (String input : new String[]{
+                "规则\u2003f（x 作为 整数），产出 整数：",
+                "规则\u00A0f（x 作为 整数），产出 整数：",
+                "规则\u000Bf（x 作为 整数），产出 整数：",
+                "规则 f\u00A0（x 作为 整数），产出 整数：",
+                "规则 f\u2003（x 作为 整数），产出 整数：",
+                "\u00A0规则 f（x 作为 整数），产出 整数："}) {
+            assertThat(transformer.transform(input, config, segmenter)).as(input).isEqualTo(input);
+        }
+        // 右括号之后的 Unicode 空白留在输出里（此前被吞掉）
+        assertThat(transformer.transform("规则 f（x 作为 整数）\u2003，产出 整数：", config, segmenter))
+                .isEqualTo("Rule f given x 作为 整数 \u2003，产出 整数：");
+    }
+
+    @Test
+    @DisplayName("函数头的空白不跨行：关键词、名字、括号之间换行时不重排；右括号之后换行时只重排到行尾")
+    void testHeaderWhitespaceDoesNotSpanLines() {
+        assertThat(transformer.transform("规则\nf（x 作为 整数），产出 整数：", config, segmenter))
+                .isEqualTo("规则\nf（x 作为 整数），产出 整数：");
+        assertThat(transformer.transform("规则 f\n（x 作为 整数），产出 整数：", config, segmenter))
+                .isEqualTo("规则 f\n（x 作为 整数），产出 整数：");
+        assertThat(transformer.transform("规则 f（x 作为 整数）\n，产出 整数：", config, segmenter))
+                .isEqualTo("Rule f given x 作为 整数 \n，产出 整数：");
+        assertThat(transformer.transform("规则\tf\t（x 作为 整数）\t，产出 整数：", config, segmenter))
+                .isEqualTo("Rule f given x 作为 整数 ，产出 整数：");
     }
 
     /** 生成函数头形状的随机源码：每个槽位随机取空白、行终止符或干扰字符，并随机拼接噪声行。 */
@@ -195,8 +226,8 @@ class ChineseFunctionSyntaxTransformerTest {
         }
     }
 
-    private static String legacyRewrite(Pattern legacy, String s) {
-        Matcher m = legacy.matcher(s);
+    private static String plainRewrite(Pattern plain, String s) {
+        Matcher m = plain.matcher(s);
         StringBuilder sb = new StringBuilder();
         while (m.find()) {
             String params = m.group(3).trim();
@@ -219,7 +250,7 @@ class ChineseFunctionSyntaxTransformerTest {
     @Test
     @DisplayName("★大量空白行或未闭合函数头时耗时线性（防正则二次回溯）")
     void testAdversarialInputIsLinear() {
-        // 旧模式 ^(\s*) 与跨行参数组在这两类输入上随长度平方增长。
+        // 不截断时，跨行参数组在这两类输入上随长度平方增长。
         String blank = " \n".repeat(64_000);
         String unclosed = "规则 a(\n".repeat(16_000);
         long start = System.nanoTime();
@@ -229,7 +260,7 @@ class ChineseFunctionSyntaxTransformerTest {
         assertThat(transformer.transform(blank + ")", config, segmenter)).isEqualTo(blank + ")");
         assertThat(transformer.transform(unclosed + ")", config, segmenter)).startsWith("Rule a given ");
         long elapsedMs = (System.nanoTime() - start) / 1_000_000;
-        // 旧模式约 54 秒 + 10 秒；5 秒上限留足并行负载余量。
+        // 不截断时约 10 秒；5 秒上限留足并行负载余量。
         assertThat(elapsedMs).as("线性实现应在 5 秒内完成，实际 %d ms", elapsedMs).isLessThan(5_000);
     }
 

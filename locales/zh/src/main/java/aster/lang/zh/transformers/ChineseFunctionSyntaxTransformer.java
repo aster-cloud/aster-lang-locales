@@ -31,22 +31,21 @@ public final class ChineseFunctionSyntaxTransformer implements SyntaxTransformer
      * 仍是原样，只认半角会让全角写法静默漏过（issue #91）。行尾的 {@code ：} 无需在此处理，
      * 它已被 chinese-punctuation 转成 {@code :} 并落在末尾捕获组里原样保留。
      * <p>
-     * 字符集逐项写出，与旧模式 {@code ^(\s*)…\s+…\s*…\s*(.*)$}（MULTILINE + UNICODE_CHARACTER_CLASS）
-     * 的匹配结果完全相同，同时让 aster-lang-ts 的同名变换器能用同一组字符集逐字复现：
+     * 词法空白只认 ASCII 空格、tab 与 zh-CN 的 U+3000（aster-lang-ts#348 规则；U+3000 随后由全角转半角换成空格）：
+     * 函数头各处的空白（行首缩进、关键词与名字之间、名字与括号之间、右括号之后）都只认 {@code SP}，不跨行。
+     * 不认其他 Unicode 空白与换行：否则 {@code 规则<U+2003>f（…）}、{@code f<NBSP>（}、{@code ）<U+2003>，}
+     * 以及在关键词、名字、括号之间换行的写法会被重排成合法函数头，绕过词法的空白规则（aster-lang-locales#147）。
+     * 这些字符原样留下，由词法报 E050；换行留给语法报错。
      * <ul>
-     *   <li>{@code WS} = Unicode White_Space，即旧模式的 {@code \s}；</li>
-     *   <li>{@code LT} = Java 行终止符，{@code ^} 认它们之后的位置，{@code .} 不匹配它们；</li>
-     *   <li>缩进组只取 {@code WS} 减 {@code LT}：旧模式从空行行首起跑时把空行一并捕获又原样输出，
-     *       改为从函数头所在行起跑，输出相同，但不再在每个空行起点重扫整段空白；</li>
-     *   <li>末尾 {@code [^LT]*} 即旧模式的 {@code (.*)$}。</li>
+     *   <li>{@code LT} = Java 行终止符：{@code (?<![^LT])} 即行首，末尾 {@code [^LT]*} 取该行剩余部分；</li>
+     *   <li>参数组 {@code [^)）]*?} 不变（可含换行与任意字符），与 aster-lang-ts 的同名变换器逐字一致。</li>
      * </ul>
      */
-    private static final String WS = "\\t\\n\\u000B\\u000C\\r \\u0085\\u00A0\\u1680\\u2000-\\u200A\\u2028\\u2029\\u202F\\u205F\\u3000";
+    private static final String SP = " \\t\\u3000";
     private static final String LT = "\\n\\r\\u0085\\u2028\\u2029";
-    private static final String HWS = "\\t\\u000B\\u000C \\u00A0\\u1680\\u2000-\\u200A\\u202F\\u205F\\u3000";
     private static final Pattern RULE_FUNC = Pattern.compile(
-            "(?<![^" + LT + "])([" + HWS + "]*)(?:规则|Rule)[" + WS + "]+([\\p{L}][\\p{L}0-9_]*)[" + WS + "]*"
-                    + "[(（]([^)）]*?)[)）][" + WS + "]*([^" + LT + "]*)"
+            "(?<![^" + LT + "])([" + SP + "]*)(?:规则|Rule)[" + SP + "]+([\\p{L}][\\p{L}0-9_]*)[" + SP + "]*"
+                    + "[(（]([^)）]*?)[)）][" + SP + "]*([^" + LT + "]*)"
     );
 
     private ChineseFunctionSyntaxTransformer() {}
@@ -57,7 +56,7 @@ public final class ChineseFunctionSyntaxTransformer implements SyntaxTransformer
         //   本类此前是 7 个中文变换器里唯一忽略 segmenter 的——直接对整段源码跑正则，
         //   于是字符串字面量里形如 `规则 X(...)` 的内容会被当作函数声明改写。
         //   RULE_FUNC 锚定行首，多行字符串里自成一行的内容尤其危险。
-        //   同目录另外 6 个变换器（Punctuation/Possessive/Operator/SetTo/ResultIs/LetBe）
+        //   同目录另外 5 个变换器（Punctuation/Possessive/Operator/ResultIs/LetBe）
         //   一律走 transformOutsideStrings 或 replaceOutsideStrings。
         return segmenter.transformOutsideStrings(source, ChineseFunctionSyntaxTransformer::rewriteRuleFunc);
     }
@@ -65,7 +64,7 @@ public final class ChineseFunctionSyntaxTransformer implements SyntaxTransformer
     /**
      * 只对「最后一个右括号所在函数头」及其之前的部分跑正则。
      * <p>
-     * 每个匹配都必须含右括号，且以右括号后的空白与该行剩余部分收尾，所以截断点之后不可能有匹配，
+     * 每个匹配都必须含右括号，且以右括号后同一行的剩余部分收尾，所以截断点之后不可能有匹配，
      * 之前的匹配也不会越过截断点——结果与整段匹配相同。不截断时，最后一个右括号之后每个
      * {@code 规则 名(} 行首都会让惰性参数组扫到片段末尾再失败，耗时随源码长度平方增长
      * （1.6 万个未闭合函数头约 10 秒）。
@@ -75,26 +74,20 @@ public final class ChineseFunctionSyntaxTransformer implements SyntaxTransformer
         return cut == 0 ? s : rewriteMatchable(s.substring(0, cut)) + s.substring(cut);
     }
 
-    /** 最后一个右括号之后跳过空白，再到下一个行终止符（或片段末尾）为止；无右括号时为 0。 */
+    /**
+     * 最后一个右括号之后到下一个行终止符（或片段末尾）为止；无右括号时为 0。右括号之后的 {@code SP} 与该行剩余部分
+     * 都不含行终止符，所以匹配不会越过这一行。
+     */
     static int matchableEnd(String s) {
         int i = Math.max(s.lastIndexOf(')'), s.lastIndexOf('\uFF09'));
         if (i < 0) {
             return 0;
         }
         i++;
-        while (i < s.length() && isWhiteSpace(s.charAt(i))) {
-            i++;
-        }
         while (i < s.length() && !isLineTerminator(s.charAt(i))) {
             i++;
         }
         return i;
-    }
-
-    private static boolean isWhiteSpace(char c) {
-        return c == ' ' || (c >= '\t' && c <= '\r') || c == '\u0085' || c == '\u00A0' || c == '\u1680'
-                || (c >= '\u2000' && c <= '\u200A') || c == '\u2028' || c == '\u2029' || c == '\u202F'
-                || c == '\u205F' || c == '\u3000';
     }
 
     private static boolean isLineTerminator(char c) {

@@ -120,16 +120,15 @@ class ZhCnPluginTest {
     }
 
     @Test
-    @DisplayName("7 个中文变换器已注册")
+    @DisplayName("6 个中文变换器已注册")
     void testTransformersRegistered() {
         Map<String, ?> transformers = plugin.getTransformers();
-        assertThat(transformers).hasSize(7);
+        assertThat(transformers).hasSize(6);
         assertThat(transformers).containsKeys(
                 "chinese-punctuation",
                 "chinese-possessive",
                 "chinese-operator",
                 "chinese-function-syntax",
-                "chinese-set-to",
                 "chinese-result-is",
                 "chinese-let-be"
         );
@@ -144,7 +143,8 @@ class ZhCnPluginTest {
         assertThat(TransformerRegistry.contains("chinese-possessive")).isTrue();
         assertThat(TransformerRegistry.contains("chinese-operator")).isTrue();
         assertThat(TransformerRegistry.contains("chinese-function-syntax")).isTrue();
-        assertThat(TransformerRegistry.contains("chinese-set-to")).isTrue();
+        // 「将 X 设为 Y → Let X be Y」已按 ADR 0052（truffle#151）停用并删除：Set 不得改写成 Let
+        assertThat(TransformerRegistry.contains("chinese-set-to")).isFalse();
         assertThat(TransformerRegistry.contains("chinese-result-is")).isTrue();
         assertThat(TransformerRegistry.contains("chinese-let-be")).isTrue();
     }
