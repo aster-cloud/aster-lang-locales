@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  * 改写成 {@code Return}；本变换器只处理翻译后仍留在行首的 {@code 结果为}。
  * <p>
  * 空白只认 ASCII 空格、tab 与 U+3000（aster-lang-ts#348 规则），不跨行：缩进与 {@code 结果为} 之后的空白都是
- * {@code [ \t　]}。其他 Unicode 空白与换行不是词法空白，不能被这里吞掉（aster-lang-locales#147）。
+ * {@code [ \t]} 加 U+3000。其他 Unicode 空白与换行不是词法空白，不能被这里吞掉（aster-lang-locales#147）。
  */
 public final class ChineseResultIsTransformer implements SyntaxTransformer {
 
