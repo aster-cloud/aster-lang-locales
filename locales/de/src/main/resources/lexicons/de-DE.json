@@ -14,6 +14,7 @@
     "TYPE_WITH": "mit",
     "TYPE_HAS": "hat",
     "TYPE_ONE_OF": "als eines von",
+    "TYPE_ALIAS": "Typ",
     "FUNC_TO": "Regel",
     "FUNC_GIVEN": "gegeben",
     "FUNC_PRODUCE": "liefert",
