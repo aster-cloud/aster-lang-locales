@@ -60,4 +60,17 @@ class ChineseResultIsTransformerTest {
         String result = transformer.transform(input, config, segmenter);
         assertThat(result).isEqualTo(input);
     }
+
+    @Test
+    @DisplayName("空白只认空格、tab 与 U+3000，不跨行（aster-lang-locales#147）")
+    void testOnlyLexicalWhitespace() {
+        assertThat(transformer.transform("\t结果为\tx", config, segmenter)).isEqualTo("\tReturn x");
+        assertThat(transformer.transform("\u3000\u3000结果为\u3000x", config, segmenter)).isEqualTo("\u3000\u3000Return x");
+        for (String input : new String[]{"结果为\u00A0x", "结果为\u2003x", "结果为\u000Bx", "结果为\fx",
+                "结果为\nx", "\u00A0结果为 x", "\n\n结果为\n  x"}) {
+            assertThat(transformer.transform(input, config, segmenter)).as(input).isEqualTo(input);
+        }
+        // 空行之后的行首照常改写（缩进不跨行吞掉前面的空行）
+        assertThat(transformer.transform("\n\n  结果为 x", config, segmenter)).isEqualTo("\n\n  Return x");
+    }
 }
