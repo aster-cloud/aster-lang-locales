@@ -136,6 +136,8 @@
     "E808": "别名 '{alias}'（{kind}）在源码中被当作名字使用：'{name}'",
     "W800": "{role} 位置的声明 '{written}' 遮蔽了词汇表条目",
     "W801": "在 {role} 位置解析 '{written}' 时接收者类型未知",
-    "E900": "注解 @{annotation} 重复给出了参数 {name}"
+    "W802": "'{keyword}' 被读作关键词 {kind}：名字变为 '{name}'",
+    "E900": "注解 @{annotation} 重复给出了参数 {name}",
+    "E901": "{keyword} 是关键词 {kind}，不能用作名字，请改名"
   }
 }

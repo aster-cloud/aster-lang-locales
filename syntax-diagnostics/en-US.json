@@ -33,6 +33,7 @@
   "callArity": "{callee} takes exactly {expected} argument(s), got {actual}",
   "unknownName": "Unknown {kind} {name}",
   "duplicateAnnotationArg": "Annotation @{annotation} repeats the argument {name}",
+  "keywordAsName": "{keyword} is the keyword {kind} and cannot be used as a name; rename it",
   "or": " or ",
   "more": ", …",
   "token.indent": "indent",
