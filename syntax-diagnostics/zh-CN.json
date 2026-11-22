@@ -33,6 +33,7 @@
   "callArity": "{callee} 需要恰好 {expected} 个参数，实际 {actual} 个",
   "unknownName": "未知的{kind} {name}",
   "duplicateAnnotationArg": "注解 @{annotation} 重复给出了参数 {name}",
+  "keywordAsName": "{keyword} 是关键词 {kind}，不能用作名字，请改名",
   "or": "或",
   "more": "等",
   "token.indent": "缩进",

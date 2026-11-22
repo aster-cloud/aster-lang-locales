@@ -136,6 +136,8 @@
     "E808": "Benennen Sie den Namen um oder ersetzen Sie den Alias durch eine Mehrwortphrase.",
     "W800": "Benennen Sie die Deklaration um, falls die Verdeckung unbeabsichtigt ist; die Deklaration hat Vorrang vor dem Vokabulareintrag.",
     "W801": "Fügen Sie dem Empfänger eine Typannotation hinzu, damit der Name anhand seines Typs geprüft werden kann.",
-    "E900": "Geben Sie jedes benannte Argument einer Annotation höchstens einmal an."
+    "W802": "Benennen Sie ihn um, um einen eigenen Namen zu behalten; zur Laufzeit wird der Name '{name}' verwendet.",
+    "E900": "Geben Sie jedes benannte Argument einer Annotation höchstens einmal an.",
+    "E901": "Wählen Sie einen Namen, der kein Schlüsselwort ist, zum Beispiel indem Sie ein Wort anfügen."
   }
 }

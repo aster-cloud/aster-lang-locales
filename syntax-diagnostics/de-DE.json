@@ -33,6 +33,7 @@
   "callArity": "{callee} erwartet genau {expected} Argument(e), {actual} erhalten",
   "unknownName": "Unbekannt ({kind}): {name}",
   "duplicateAnnotationArg": "Annotation @{annotation} wiederholt das Argument {name}",
+  "keywordAsName": "{keyword} ist das Schlüsselwort {kind} und kann nicht als Name verwendet werden; benennen Sie ihn um",
   "or": " oder ",
   "more": " usw.",
   "token.indent": "Einrückung",

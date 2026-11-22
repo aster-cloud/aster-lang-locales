@@ -136,6 +136,8 @@
     "E808": "Der Alias '{alias}' ({kind}) wird im Quelltext als Name verwendet: '{name}'",
     "W800": "Deklaration '{written}' an Position {role} verdeckt einen Vokabulareintrag",
     "W801": "'{written}' an Position {role} wurde ohne bekannten Empfängertyp aufgelöst",
-    "E900": "Annotation @{annotation} wiederholt das Argument {name}"
+    "W802": "'{keyword}' wird als Schlüsselwort {kind} gelesen: Der Name wird zu '{name}'",
+    "E900": "Annotation @{annotation} wiederholt das Argument {name}",
+    "E901": "{keyword} ist das Schlüsselwort {kind} und kann nicht als Name verwendet werden; benennen Sie ihn um"
   }
 }
