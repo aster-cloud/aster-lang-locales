@@ -33,7 +33,8 @@
   "callArity": "{callee} takes exactly {expected} argument(s), got {actual}",
   "unknownName": "Unknown {kind} {name}",
   "duplicateAnnotationArg": "Annotation @{annotation} repeats the argument {name}",
-  "keywordAsName": "{keyword} is the keyword {kind} and cannot be used as a name; rename it",
+  "keywordAsName": "{keyword} is the keyword {kind} and cannot be used as a name; write it in backticks to use it as a name",
+  "invalidEscape": "Invalid name escape: {reason}",
   "or": " or ",
   "more": ", …",
   "token.indent": "indent",
@@ -125,5 +126,8 @@
   "token.typeAliasName": "type alias name",
   "token.variantName": "variant name (type identifier)",
   "token.whenCondition": "`when` condition",
+  "token.escapeUnterminated": "the closing backtick is missing",
+  "token.escapeEmpty": "nothing is written between the backticks",
+  "token.escapeInvalidChar": "{char} cannot be part of a name",
   "style.spaceQuotesAfterHan": "false"
 }
