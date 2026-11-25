@@ -32,14 +32,15 @@ public final class ChineseLetBeTransformer implements SyntaxTransformer {
     /**
      * 匹配 {@code 令 X 定义为 Y} 模式（v2 关键字）。
      * <p>
-     * X 可以是中文标识符（字母、数字、下划线），不贪婪匹配到第一个 {@code 定义为}。
+     * X 可以是中文标识符（字母、数字、下划线），不贪婪匹配到第一个 {@code 定义为}；也可以是名字转义 {@code `x`}（ADR 0064），
+     * 转义按捕获组原样带到 {@code Let `x` be}（core 的分段器只放行整个包含转义的匹配，转义内容不被改动）。
      * <p>
      * 此前用 {@code UNICODE_CHARACTER_CLASS} 下的 {@code \s}，它匹配任意 Unicode 空白与换行：
      * {@code 令 X 定义为 Y} 里的 U+00A0 被当作空白吞掉、{@code 定义为} 后换行也能匹配，Java 接受 ts 报 E050 / E055 的源码
      * （aster-lang-locales#143）。空白收紧到 {@link #WS}，与词法器一致。
      */
     private static final Pattern CHINESE_LET_BE = Pattern.compile(
-            "^(" + WS + "*)令" + WS + "+([\\p{L}][\\p{L}0-9_]*)" + WS + "+定义为" + WS + "+",
+            "^(" + WS + "*)令" + WS + "+(`[^`\\r\\n]+`|[\\p{L}][\\p{L}0-9_]*)" + WS + "+定义为" + WS + "+",
             Pattern.MULTILINE
     );
 
