@@ -33,7 +33,8 @@
   "callArity": "{callee} erwartet genau {expected} Argument(e), {actual} erhalten",
   "unknownName": "Unbekannt ({kind}): {name}",
   "duplicateAnnotationArg": "Annotation @{annotation} wiederholt das Argument {name}",
-  "keywordAsName": "{keyword} ist das Schlüsselwort {kind} und kann nicht als Name verwendet werden; benennen Sie ihn um",
+  "keywordAsName": "{keyword} ist das Schlüsselwort {kind} und kann nicht als Name verwendet werden; schreiben Sie ihn in Backticks, um ihn als Namen zu verwenden",
+  "invalidEscape": "Ungültiges Namens-Escape: {reason}",
   "or": " oder ",
   "more": " usw.",
   "token.indent": "Einrückung",
@@ -125,5 +126,8 @@
   "token.typeAliasName": "Typaliasname",
   "token.variantName": "Variantenname (Typbezeichner)",
   "token.whenCondition": "`when`-Bedingung",
+  "token.escapeUnterminated": "der schließende Backtick fehlt",
+  "token.escapeEmpty": "zwischen den Backticks steht nichts",
+  "token.escapeInvalidChar": "{char} darf nicht in einem Namen vorkommen",
   "style.spaceQuotesAfterHan": "false"
 }

@@ -33,7 +33,8 @@
   "callArity": "{callee} को ठीक {expected} तर्क चाहिए, मिले {actual}",
   "unknownName": "अज्ञात {kind} {name}",
   "duplicateAnnotationArg": "एनोटेशन @{annotation} में तर्क {name} दोहराया गया है",
-  "keywordAsName": "{keyword} कीवर्ड {kind} है और नाम के रूप में उपयोग नहीं किया जा सकता; इसका नाम बदलें",
+  "keywordAsName": "{keyword} कीवर्ड {kind} है और नाम के रूप में उपयोग नहीं किया जा सकता; इसे नाम के रूप में उपयोग करने के लिए बैकटिक में लिखें",
+  "invalidEscape": "अमान्य नाम एस्केप: {reason}",
   "or": " या ",
   "more": " आदि",
   "token.indent": "इंडेंट",
@@ -125,5 +126,8 @@
   "token.typeAliasName": "प्रकार उपनाम",
   "token.variantName": "वेरिएंट नाम (प्रकार पहचानकर्ता)",
   "token.whenCondition": "`when` शर्त",
+  "token.escapeUnterminated": "समापन बैकटिक नहीं है",
+  "token.escapeEmpty": "बैकटिक के बीच कुछ नहीं लिखा है",
+  "token.escapeInvalidChar": "{char} नाम का हिस्सा नहीं हो सकता",
   "style.spaceQuotesAfterHan": "false"
 }

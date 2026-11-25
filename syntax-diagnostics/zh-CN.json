@@ -33,7 +33,8 @@
   "callArity": "{callee} 需要恰好 {expected} 个参数，实际 {actual} 个",
   "unknownName": "未知的{kind} {name}",
   "duplicateAnnotationArg": "注解 @{annotation} 重复给出了参数 {name}",
-  "keywordAsName": "{keyword} 是关键词 {kind}，不能用作名字，请改名",
+  "keywordAsName": "{keyword} 是关键词 {kind}，不能用作名字；写成反引号形式即可用作名字",
+  "invalidEscape": "名字转义无效：{reason}",
   "or": "或",
   "more": "等",
   "token.indent": "缩进",
@@ -125,5 +126,8 @@
   "token.typeAliasName": "类型别名",
   "token.variantName": "变体名（类型标识符）",
   "token.whenCondition": "when 条件",
+  "token.escapeUnterminated": "缺少闭合的反引号",
+  "token.escapeEmpty": "两个反引号之间没有内容",
+  "token.escapeInvalidChar": "{char} 不能出现在名字里",
   "style.spaceQuotesAfterHan": "true"
 }

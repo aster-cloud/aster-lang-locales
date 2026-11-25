@@ -138,6 +138,7 @@
     "W801": "'{written}' an Position {role} wurde ohne bekannten Empfängertyp aufgelöst",
     "W802": "'{keyword}' wird als Schlüsselwort {kind} gelesen: Der Name wird zu '{name}'",
     "E900": "Annotation @{annotation} wiederholt das Argument {name}",
-    "E901": "{keyword} ist das Schlüsselwort {kind} und kann nicht als Name verwendet werden; benennen Sie ihn um"
+    "E901": "{keyword} ist das Schlüsselwort {kind} und kann nicht als Name verwendet werden; schreiben Sie ihn in Backticks, um ihn als Namen zu verwenden",
+    "E902": "Ungültiges Namens-Escape: {reason}"
   }
 }

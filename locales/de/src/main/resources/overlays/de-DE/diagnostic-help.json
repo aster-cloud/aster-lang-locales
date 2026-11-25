@@ -33,7 +33,7 @@
     "E030": "Entfernen Sie zyklische Abhängigkeiten oder strukturieren Sie sie um, damit eine topologische Ausführung möglich ist.",
     "E031": "Machen Sie beide Operanden zu Decimal (Suffix m) oder verwenden Sie Int/Long, die exakt zu Decimal erweitert werden.",
     "E032": "Passen Sie den Aufruf so an, dass genau die deklarierte Anzahl an Argumenten übergeben wird.",
-    "E050": "Entfernen Sie das Zeichen oder ersetzen Sie es durch gültige Aster-Syntax.",
+    "E050": "Entfernen Sie das Zeichen oder ersetzen Sie es durch gültige Aster-Syntax; ein Namens-Escape verwendet den ASCII-Backtick `.",
     "E051": "Schließen Sie die Zeichenkette in derselben Zeile mit einem passenden Anführungszeichen ab.",
     "E052": "Rücken Sie jeden verschachtelten Block um genau 2 Leerzeichen ein und kehren Sie auf eine umschließende Ebene zurück.",
     "E053": "Verwenden Sie einen kleineren Wert, ergänzen Sie das Suffix 'L' für Long oder schreiben Sie ein Decimal-Literal.",
@@ -133,11 +133,12 @@
     "E805": "Fügen Sie dem Empfänger (Parameter oder Let) eine Typannotation hinzu, damit das Feld anhand seines deklarierten Typs aufgelöst wird, oder benennen Sie eines der kollidierenden Felder um.",
     "E806": "Schreiben Sie einen qualifizierten Namen (z. B. Stufe.Hoch) oder fügen Sie eine Typannotation hinzu.",
     "E807": "Benennen Sie eine der Deklarationen um oder entfernen Sie das Duplikat.",
-    "E808": "Benennen Sie den Namen um oder ersetzen Sie den Alias durch eine Mehrwortphrase.",
+    "E808": "Schreiben Sie den Namen in Backticks (`{name}`), um ihn als Namen zu behalten, benennen Sie ihn um oder ersetzen Sie den Alias durch eine Mehrwortphrase.",
     "W800": "Benennen Sie die Deklaration um, falls die Verdeckung unbeabsichtigt ist; die Deklaration hat Vorrang vor dem Vokabulareintrag.",
     "W801": "Fügen Sie dem Empfänger eine Typannotation hinzu, damit der Name anhand seines Typs geprüft werden kann.",
-    "W802": "Benennen Sie ihn um, um einen eigenen Namen zu behalten; zur Laufzeit wird der Name '{name}' verwendet.",
+    "W802": "Schreiben Sie ihn in Backticks (`{keyword}`), um ihn als Namen zu behalten; sonst wird zur Laufzeit der Name '{name}' verwendet.",
     "E900": "Geben Sie jedes benannte Argument einer Annotation höchstens einmal an.",
-    "E901": "Wählen Sie einen Namen, der kein Schlüsselwort ist, zum Beispiel indem Sie ein Wort anfügen."
+    "E901": "Schreiben Sie den Namen in Backticks, zum Beispiel `name`, oder wählen Sie einen Namen, der kein Schlüsselwort ist.",
+    "E902": "Schreiben Sie einen Namen zwischen zwei ASCII-Backticks in derselben Zeile, zum Beispiel `name`."
   }
 }

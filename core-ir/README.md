@@ -52,12 +52,13 @@ schema 表达不了的约束由两引擎各自的 `validateCoreIrInvariants` 检
 
 ## 诊断码
 
-ADR 0055 与 ADR 0056 修订 A6 新增的码（共享码表 `test-support/src/main/resources/diagnostics/error_codes.json`，真源是 aster-lang-ts `shared/error_codes.json`，core 有逐字节副本）：
+ADR 0055、ADR 0056 修订 A6 与 ADR 0064 新增的码（共享码表 `test-support/src/main/resources/diagnostics/error_codes.json`，真源是 aster-lang-ts `shared/error_codes.json`，core 有逐字节副本）：
 
 | 码 | 名称 | 参数 | 阶段 | 说明 |
 |---|---|---|---|---|
 | E900 | `PARSE_DUPLICATE_ANNOTATION_ARG` | `annotation`、`name` | 解析 | 同一注解内参数名重复（ADR #3）。解析诊断原有码段 E050–E069 已用满，E070 起为 PII，E033–E049 留给类型检查（ADR 0051 §16.1），因此解析诊断的续段取空置的 E900–E999。句型 key 为 `syntax-diagnostics` 的 `duplicateAnnotationArg` |
 | E901 | `PARSE_KEYWORD_AS_NAME` | `keyword`、`kind` | 解析 | 名字位置上的结构关键词（If / Let / Match / Otherwise / Return / Rule / Define / When 及其本地化拼写），两引擎都拒绝（ADR 0056 修订 A6 K1）。`keyword` 是 `kw.*` 槽位，按作者语言显示；`kind` 是 SemanticTokenKind 名。句型 key 为 `syntax-diagnostics` 的 `keywordAsName` |
+| E902 | `PARSE_INVALID_ESCAPE` | `reason`、`char`（仅 `invalid_char`） | 词法 | 名字转义 `` `x` `` 格式错误（ADR 0064 N1a）：`reason` 为 `unterminated`（同一行没有闭合反引号）、`empty`（两个反引号之间为空）或 `invalid_char`（`char` 是第一个不能作标识符首字符 / 续字符的字符，带单引号），按此优先级判定，位置是开头的反引号。原因片段的文案是 `syntax-diagnostics` 的 `token.escapeUnterminated` / `token.escapeEmpty` / `token.escapeInvalidChar`，句型 key 为 `invalidEscape` |
 | W802 | `KEYWORD_RENAMED_AS_NAME` | `name`、`keyword`、`kind` | 名称解析前 | 非英文源码里的名字由本地化关键词翻译而来（如 zh `版本` → `version`）：名字等于某个内置关键词的英文拼写、而所在源码行没有这个英文拼写。按该拼写取名（IR 不变）并告警（ADR 0056 修订 A6 K3） |
 | E213 | `EFFECT_PARAM_SHADOWS_BUILTIN` | `name`、`func` | 类型检查 | 效应参数与保留效应名（io、cpu、pure、async，大小写不敏感）同名（ADR #5），与 E210 / E211 同属效应变量一族 |
 

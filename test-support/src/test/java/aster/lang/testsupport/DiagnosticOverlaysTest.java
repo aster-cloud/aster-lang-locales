@@ -27,11 +27,11 @@ class DiagnosticOverlaysTest {
     }
 
     @Test
-    @DisplayName("英文码表副本含 138 个错误码，且包含 ADR 0051 的 E800–E807 / W800–W801、§16 的 E050–E069、lowering 的 E600–E606、档案输入引用的 E708、ADR 0055 的 E213 / E900 、@pii 字段流入返回 Text 的 W709 、ADR 0059 策略包导出的 E730–E735 / E737–E739、ADR 0060 别名名字守卫的 E808 与 ADR 0056 修订 A6 关键词当名字的 E901 / W802")
+    @DisplayName("英文码表副本含 139 个错误码，且包含 ADR 0051 的 E800–E807 / W800–W801、§16 的 E050–E069、lowering 的 E600–E606、档案输入引用的 E708、ADR 0055 的 E213 / E900 、@pii 字段流入返回 Text 的 W709 、ADR 0059 策略包导出的 E730–E735 / E737–E739、ADR 0060 别名名字守卫的 E808 与 ADR 0056 修订 A6 关键词当名字的 E901 / W802 与 ADR 0064 名字转义的 E902")
     void baselineHasAllCodes() {
         Map<String, DiagnosticOverlays.English> baseline = DiagnosticOverlays.baseline();
-        assertThat(baseline).hasSize(138);
-        assertThat(baseline).containsKeys("E050", "E069", "E213", "E600", "E606", "E708", "E730", "E735", "E737", "E739", "E800", "E801", "E802", "E803", "E804", "E805", "E806", "E807", "E808", "E900", "E901", "W709", "W800", "W801", "W802");
+        assertThat(baseline).hasSize(139);
+        assertThat(baseline).containsKeys("E050", "E069", "E213", "E600", "E606", "E708", "E730", "E735", "E737", "E739", "E800", "E801", "E802", "E803", "E804", "E805", "E806", "E807", "E808", "E900", "E901", "E902", "W709", "W800", "W801", "W802");
     }
 
     @Test
