@@ -35,6 +35,7 @@
   "duplicateAnnotationArg": "Annotation @{annotation} repeats the argument {name}",
   "keywordAsName": "{keyword} is the keyword {kind} and cannot be used as a name; write it in backticks to use it as a name",
   "invalidEscape": "Invalid name escape: {reason}",
+  "keywordRenamedAsName": "'{keyword}' is read as the keyword {kind}: the name becomes '{name}'",
   "or": " or ",
   "more": ", …",
   "token.indent": "indent",

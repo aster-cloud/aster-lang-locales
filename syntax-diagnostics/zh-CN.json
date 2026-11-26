@@ -35,6 +35,7 @@
   "duplicateAnnotationArg": "注解 @{annotation} 重复给出了参数 {name}",
   "keywordAsName": "{keyword} 是关键词 {kind}，不能用作名字；写成反引号形式即可用作名字",
   "invalidEscape": "名字转义无效：{reason}",
+  "keywordRenamedAsName": "'{keyword}' 被读作关键词 {kind}：名字变为 '{name}'",
   "or": "或",
   "more": "等",
   "token.indent": "缩进",

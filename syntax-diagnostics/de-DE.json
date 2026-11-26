@@ -35,6 +35,7 @@
   "duplicateAnnotationArg": "Annotation @{annotation} wiederholt das Argument {name}",
   "keywordAsName": "{keyword} ist das Schlüsselwort {kind} und kann nicht als Name verwendet werden; schreiben Sie ihn in Backticks, um ihn als Namen zu verwenden",
   "invalidEscape": "Ungültiges Namens-Escape: {reason}",
+  "keywordRenamedAsName": "'{keyword}' wird als Schlüsselwort {kind} gelesen: Der Name wird zu '{name}'",
   "or": " oder ",
   "more": " usw.",
   "token.indent": "Einrückung",

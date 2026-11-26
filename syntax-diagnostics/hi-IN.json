@@ -35,6 +35,7 @@
   "duplicateAnnotationArg": "एनोटेशन @{annotation} में तर्क {name} दोहराया गया है",
   "keywordAsName": "{keyword} कीवर्ड {kind} है और नाम के रूप में उपयोग नहीं किया जा सकता; इसे नाम के रूप में उपयोग करने के लिए बैकटिक में लिखें",
   "invalidEscape": "अमान्य नाम एस्केप: {reason}",
+  "keywordRenamedAsName": "'{keyword}' को कीवर्ड {kind} के रूप में पढ़ा जाता है: नाम '{name}' हो जाता है",
   "or": " या ",
   "more": " आदि",
   "token.indent": "इंडेंट",

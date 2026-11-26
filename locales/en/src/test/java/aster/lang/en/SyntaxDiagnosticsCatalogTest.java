@@ -118,7 +118,7 @@ class SyntaxDiagnosticsCatalogTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"en-US", "zh-CN", "de-DE", "hi-IN"})
-    @DisplayName("E050–E069 与 E900 / E901 / E902 每个码都有句型模板（aster-cloud 编辑器按码 + params 渲染，aster-lang-ts#302）")
+    @DisplayName("E050–E069 与 E900 / E901 / E902 / W802 每个码都有句型模板（aster-cloud 编辑器按码 + params 渲染，aster-lang-ts#302）")
     void codeTemplatesPresent(String locale) throws Exception {
         // 句型 key 与 aster-lang-ts parse-issue.ts 的 Issue.* 构造名一致；模板措辞与 overlays diagnostic-messages 同码译文一致
         assertThat(load(locale)).containsKeys(
@@ -131,7 +131,9 @@ class SyntaxDiagnosticsCatalogTest {
             // E901（ADR 0056 修订 A6 K1：结构关键词当名字）
             "keywordAsName",
             // E902（ADR 0064 N1a：名字转义格式错误）与其三种原因片段
-            "invalidEscape", "token.escapeUnterminated", "token.escapeEmpty", "token.escapeInvalidChar");
+            "invalidEscape", "token.escapeUnterminated", "token.escapeEmpty", "token.escapeInvalidChar",
+            // W802（ADR 0056 修订 A6 K3：关键词被改名为名字，告警）
+            "keywordRenamedAsName");
     }
 
     @ParameterizedTest
