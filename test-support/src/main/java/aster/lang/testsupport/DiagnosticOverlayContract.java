@@ -98,11 +98,11 @@ public abstract class DiagnosticOverlayContract {
     public static final List<String> SYNTAX_CATALOG_VERBATIM = List.of(
             "unterminatedString", "literalOutOfRange", "nestingTooDeep", "misplaced",
             "emptyBlock", "invalidValue", "callArity", "unknownName",
-            "duplicateAnnotationArg", "keywordAsName", "invalidEscape", "keywordRenamedAsName");
+            "keywordAsName", "invalidEscape", "keywordRenamedAsName");
 
     /**
      * 语法目录（仓根 syntax-diagnostics/<id>.json，随 :en jar 进测试 classpath）与本语言包 overlay 的同码译文对齐：
-     * 全部映射句型的占位符集合一致；#126 新增的 8 条逐字一致。
+     * 全部映射句型的占位符集合一致；#126 新增的 8 条与 E901 / E902 / W802 逐字一致（E900 只校占位符：hi overlay 与目录措辞有差异）。
      */
     @Test
     @DisplayName("syntax-diagnostics 句型与 diagnostic-messages 同码译文对齐（占位符集合；新增句型逐字）")
