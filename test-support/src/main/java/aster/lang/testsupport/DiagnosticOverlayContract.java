@@ -90,12 +90,15 @@ public abstract class DiagnosticOverlayContract {
             Map.entry("unexpectedExpecting", "E062"), Map.entry("noViable", "E063"),
             Map.entry("misplaced", "E065"), Map.entry("emptyBlock", "E066"),
             Map.entry("invalidValue", "E067"), Map.entry("callArity", "E068"),
-            Map.entry("unknownName", "E069"));
+            Map.entry("unknownName", "E069"),
+            Map.entry("duplicateAnnotationArg", "E900"), Map.entry("keywordAsName", "E901"),
+            Map.entry("invalidEscape", "E902"), Map.entry("keywordRenamedAsName", "W802"));
 
     /** 文案逐字取自 overlay 的句型（aster-lang-locales#126 新增；早先的句型因排版空格差异只校占位符）。 */
     public static final List<String> SYNTAX_CATALOG_VERBATIM = List.of(
             "unterminatedString", "literalOutOfRange", "nestingTooDeep", "misplaced",
-            "emptyBlock", "invalidValue", "callArity", "unknownName");
+            "emptyBlock", "invalidValue", "callArity", "unknownName",
+            "duplicateAnnotationArg", "keywordAsName", "invalidEscape", "keywordRenamedAsName");
 
     /**
      * 语法目录（仓根 syntax-diagnostics/<id>.json，随 :en jar 进测试 classpath）与本语言包 overlay 的同码译文对齐：
