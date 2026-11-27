@@ -133,7 +133,9 @@ class SyntaxDiagnosticsCatalogTest {
             // E902（ADR 0064 N1a：名字转义格式错误）与其三种原因片段
             "invalidEscape", "token.escapeUnterminated", "token.escapeEmpty", "token.escapeInvalidChar",
             // W802（ADR 0056 修订 A6 K3：关键词被改名为名字，告警）
-            "keywordRenamedAsName");
+            "keywordRenamedAsName",
+            // E055 的可选参数 escape（aster-lang-core#329）：接在消息之后的名字转义提示，占位符 {escape} 为源码原文
+            "escapeNameHint");
     }
 
     @ParameterizedTest

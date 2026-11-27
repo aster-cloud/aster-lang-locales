@@ -16,6 +16,7 @@
   "unrecognizedCharacter": "Unrecognized character or symbol",
   "inlineIfHint": "Write a one-line condition as \"{if} condition {then} {return} …\", or put \"{return} …\" on its own indented line below the condition",
   "withHint": "{message}. {hint}",
+  "escapeNameHint": "Write it in backticks (`{escape}`) to use it as a name",
   "expected": "Expected {token}",
   "expectedAfter": "Expected {token} after {after}",
   "expectedIn": "Expected {token} in {context}",

@@ -16,6 +16,7 @@
   "unrecognizedCharacter": "Nicht erkanntes Zeichen oder Symbol",
   "inlineIfHint": "Schreiben Sie eine einzeilige Bedingung als „{if} Bedingung {then} {return} …“ oder setzen Sie „{return} …“ eingerückt in eine eigene Zeile unter die Bedingung",
   "withHint": "{message}. {hint}",
+  "escapeNameHint": "Schreiben Sie es in Backticks (`{escape}`), um es als Namen zu verwenden",
   "expected": "{token} erwartet",
   "expectedAfter": "Nach {after} wird {token} erwartet",
   "expectedIn": "In {context} wird {token} erwartet",
