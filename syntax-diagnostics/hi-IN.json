@@ -16,6 +16,7 @@
   "unrecognizedCharacter": "अपरिचित वर्ण या प्रतीक",
   "inlineIfHint": "एक-पंक्ति की शर्त को \"{if} शर्त {then} {return} …\" के रूप में लिखें, या \"{return} …\" को शर्त के नीचे अलग इंडेंट की गई पंक्ति में रखें",
   "withHint": "{message}। {hint}",
+  "escapeNameHint": "इसे नाम के रूप में उपयोग करने के लिए बैकटिक में लिखें (`{escape}`)",
   "expected": "{token} अपेक्षित है",
   "expectedAfter": "{after} के बाद {token} अपेक्षित है",
   "expectedIn": "{context} में {token} अपेक्षित है",

@@ -16,6 +16,7 @@
   "unrecognizedCharacter": "存在无法识别的字符或符号",
   "inlineIfHint": "单行条件请写成「{if} 条件 {then} {return} …」，或把「{return} …」换行缩进写在条件下方",
   "withHint": "{message}。{hint}",
+  "escapeNameHint": "写成反引号形式（`{escape}`）即可用作名字",
   "expected": "此处应为{token}",
   "expectedAfter": "{after}之后应为{token}",
   "expectedIn": "{context}中应为{token}",
